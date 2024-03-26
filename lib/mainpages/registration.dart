@@ -10,31 +10,32 @@ class Registration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     ThemeController themeController = Get.find();
 
     return MaterialApp(
-      title: 'Registration'.tr,
-      debugShowCheckedModeBanner: false,
-      theme: lightThemeData,
-      darkTheme: darkThemeData,
-      themeMode: themeController.themeSetting.value=='isLight'? ThemeMode.light: ThemeMode.dark,
-      home: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Center(child: Text('Registration'.tr, style: Get.theme.textTheme.titleLarge!.copyWith(
-              color: Get.theme.colorScheme.onPrimary,
-            ))),
+        title: 'Registration'.tr,
+        debugShowCheckedModeBanner: false,
+        theme: lightThemeData,
+        darkTheme: darkThemeData,
+        themeMode: themeController.themeSetting.value == 'isLight'
+            ? ThemeMode.light
+            : ThemeMode.dark,
+        home: SafeArea(
+          child: Scaffold(
+            appBar: AppBar(
+              title: Center(
+                  child: Text('Registration'.tr,
+                      style: Get.theme.textTheme.titleLarge!.copyWith(
+                        color: Get.theme.colorScheme.onPrimary,
+                      ))),
+            ),
+            body: registrationPage(context, Get.width, Get.height),
           ),
-          body: registrationPage(context, Get.width, Get.height),
-        ),
-      )
-    );
+        ));
   }
 }
 
-Widget registrationPage(BuildContext context, double _width, double _height){
-
+Widget registrationPage(BuildContext context, double _width, double _height) {
   final _formKey = GlobalKey<FormState>();
 
   String _pass1 = "";
@@ -47,7 +48,7 @@ Widget registrationPage(BuildContext context, double _width, double _height){
 
   bool isNumeric(String s) {
     int? num = int.tryParse(s);
-    if(num == null ) {
+    if (num == null) {
       return false;
     } else {
       return true;
@@ -55,14 +56,14 @@ Widget registrationPage(BuildContext context, double _width, double _height){
   }
 
   return Center(
-    child: SingleChildScrollView(
-      child: Container(
-        width: formWidth(_width),
-        height: Get.height - kToolbarHeight,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.all(16),
+    child: Container(
+      width: formWidth(_width),
+      height: Get.height - kToolbarHeight,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -74,7 +75,10 @@ Widget registrationPage(BuildContext context, double _width, double _height){
             SizedBox(
                 width: 70,
                 height: 70,
-                child: Image.asset(themeController.themeSetting.value=='isLight'?"assets/images/logo_inv.png":"assets/images/logo.png")),
+                child: Image.asset(
+                    themeController.themeSetting.value == 'isLight'
+                        ? "assets/images/logo_inv.png"
+                        : "assets/images/logo.png")),
             const SizedBox(
               height: 24,
             ),
@@ -85,14 +89,14 @@ Widget registrationPage(BuildContext context, double _width, double _height){
                 child: Column(
                   children: [
                     TextFormField(
-                      onChanged: (value){
+                      onChanged: (value) {
                         regController.userData.value.userId = value;
                       },
-                      onSaved: (value){
+                      onSaved: (value) {
                         regController.userData.value.userId = value!;
                       },
-                      validator: (value){
-                        if(value!=null && value.isNotEmpty) {
+                      validator: (value) {
+                        if (value != null && value.isNotEmpty) {
                           if (value.contains("@") && value.contains(".")) {
                             _unameOk = true;
                             return null;
@@ -114,24 +118,20 @@ Widget registrationPage(BuildContext context, double _width, double _height){
                         //helperText: 'contoh: nama@mailserver.com',
                         //counterText: '0 characters',
                         //border: OutlineInputBorder(),
-
-
                       ),
                     ),
-
                     const SizedBox(
                       height: 18,
                     ),
-
                     TextFormField(
-                      onChanged: (value){
+                      onChanged: (value) {
                         regController.userData.value.alias = value;
                       },
-                      onSaved: (value){
+                      onSaved: (value) {
                         regController.userData.value.alias = value!;
                       },
-                      validator: (value){
-                        if(isNumeric(value!) && value.length>=10) {
+                      validator: (value) {
+                        if (isNumeric(value!) && value.length >= 10) {
                           return null;
                         } else {
                           return "Masukkan nomor HP yang benar";
@@ -146,25 +146,21 @@ Widget registrationPage(BuildContext context, double _width, double _height){
                         //helperText: 'Nomor HP anda',
                         //counterText: '0 characters',
                         //border: OutlineInputBorder(),
-
-
                       ),
                     ),
-
                     const SizedBox(
                       height: 18,
                     ),
-
                     TextFormField(
-                      onChanged: (value){
+                      onChanged: (value) {
                         regController.userData.value.name = value;
                       },
-                      onSaved: (value){
+                      onSaved: (value) {
                         regController.userData.value.name = value!;
                       },
-                      validator: (value){
-                        if(value!=null && value.isNotEmpty) {
-                          if (value.length>3) {
+                      validator: (value) {
+                        if (value != null && value.isNotEmpty) {
+                          if (value.length > 3) {
                             return null;
                           } else {
                             return "Masukkan nama anda yang benar";
@@ -183,24 +179,21 @@ Widget registrationPage(BuildContext context, double _width, double _height){
                         // helperText: 'Nama anda',
                         //counterText: '0 characters',
                         //border: OutlineInputBorder(),
-
                       ),
                     ),
-
                     const SizedBox(
                       height: 18,
                     ),
-
-                    Obx((){
+                    Obx(() {
                       return TextFormField(
-                        onChanged: (value){
+                        onChanged: (value) {
                           _pass1 = value;
                         },
-                        onSaved: (value){
+                        onSaved: (value) {
                           _pass1 = value!;
                         },
-                        validator: (value){
-                          if(value!=null && value.isNotEmpty) {
+                        validator: (value) {
+                          if (value != null && value.isNotEmpty) {
                             if (value.length >= 6) {
                               _passOk = true;
                               return null;
@@ -214,8 +207,9 @@ Widget registrationPage(BuildContext context, double _width, double _height){
                           }
                         },
                         keyboardType: TextInputType.text,
-                        obscureText: regController.showButton1.value.isTrue?true:false,
-
+                        obscureText: regController.showButton1.value.isTrue
+                            ? true
+                            : false,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.password),
                           // icon: const Icon(Icons.password),
@@ -224,43 +218,43 @@ Widget registrationPage(BuildContext context, double _width, double _height){
                           //helperText: 'password/kode',
                           //counterText: '0 characters',
                           //border: const OutlineInputBorder(),
-                          suffixIcon: Obx((){
-                            if (regController.showButton1.value.isTrue){
+                          suffixIcon: Obx(() {
+                            if (regController.showButton1.value.isTrue) {
                               return IconButton(
-                                icon: Icon(Icons.visibility, color: Get.theme.colorScheme.secondary),
-                                onPressed: (){
-                                  regController.showButton1.value = RxBool(false);
+                                icon: Icon(Icons.visibility,
+                                    color: Get.theme.colorScheme.secondary),
+                                onPressed: () {
+                                  regController.showButton1.value =
+                                      RxBool(false);
                                 },
                               );
                             } else {
                               return IconButton(
-                                icon: Icon(Icons.visibility_off, color: Get.theme.colorScheme.secondary),
-                                onPressed: (){
-                                  regController.showButton1.value = RxBool(true);
+                                icon: Icon(Icons.visibility_off,
+                                    color: Get.theme.colorScheme.secondary),
+                                onPressed: () {
+                                  regController.showButton1.value =
+                                      RxBool(true);
                                 },
                               );
                             }
-
                           }),
                         ),
                       );
                     }),
-
-
                     const SizedBox(
                       height: 18,
                     ),
-
-                    Obx((){
+                    Obx(() {
                       return TextFormField(
-                        onChanged: (value){
+                        onChanged: (value) {
                           _pass2 = value;
                         },
-                        onSaved: (value){
+                        onSaved: (value) {
                           _pass2 = value!;
                         },
-                        validator: (value){
-                          if(value!=null && value.isNotEmpty) {
+                        validator: (value) {
+                          if (value != null && value.isNotEmpty) {
                             if (value.length >= 6) {
                               _passOk = true;
                               return null;
@@ -274,7 +268,9 @@ Widget registrationPage(BuildContext context, double _width, double _height){
                           }
                         },
                         keyboardType: TextInputType.text,
-                        obscureText: regController.showButton2.value.isTrue?true:false,
+                        obscureText: regController.showButton2.value.isTrue
+                            ? true
+                            : false,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.password),
                           // icon: const Icon(Icons.password),
@@ -284,21 +280,25 @@ Widget registrationPage(BuildContext context, double _width, double _height){
                           //counterText: '0 characters',
                           //border: const OutlineInputBorder(),
 
-                          suffixIcon: Obx((){
-                            if (regController.showButton2.value.isTrue){
+                          suffixIcon: Obx(() {
+                            if (regController.showButton2.value.isTrue) {
                               return IconButton(
                                 padding: EdgeInsets.zero,
-                                icon: Icon(Icons.visibility, color: Get.theme.colorScheme.secondary),
-                                onPressed: (){
-                                  regController.showButton2.value = RxBool(false);
+                                icon: Icon(Icons.visibility,
+                                    color: Get.theme.colorScheme.secondary),
+                                onPressed: () {
+                                  regController.showButton2.value =
+                                      RxBool(false);
                                 },
                               );
                             } else {
                               return IconButton(
                                 padding: EdgeInsets.zero,
-                                icon: Icon(Icons.visibility_off, color: Get.theme.colorScheme.secondary),
-                                onPressed: (){
-                                  regController.showButton2.value = RxBool(true);
+                                icon: Icon(Icons.visibility_off,
+                                    color: Get.theme.colorScheme.secondary),
+                                onPressed: () {
+                                  regController.showButton2.value =
+                                      RxBool(true);
                                 },
                               );
                             }
@@ -306,72 +306,73 @@ Widget registrationPage(BuildContext context, double _width, double _height){
                         ),
                       );
                     }),
-
                     const SizedBox(
                       height: 48,
                     ),
-
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed:  (){
+                            onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
                                 regController.views.value = "REG_ONGOING";
-                                regController.userData.value.roles="ROLE_USER";
-                                regController.submitRegistration(regController.userData.value, _pass1, _pass2);
+                                regController.userData.value.roles =
+                                    "ROLE_USER";
+                                regController.submitRegistration(
+                                    regController.userData.value,
+                                    _pass1,
+                                    _pass2);
                               }
                             },
                             child: Container(
                               padding: const EdgeInsets.all(12),
-                              child: Text("Registration".tr, style: Get.theme.textTheme.bodyMedium!.copyWith(
-                                color: Get.theme.colorScheme.onPrimary,
-                              ),),
+                              child: Text(
+                                "Registration".tr,
+                                style: Get.theme.textTheme.bodyMedium!.copyWith(
+                                  color: Get.theme.colorScheme.onPrimary,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
-
                     const SizedBox(
                       height: 24,
                     ),
-
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Expanded(
                           child: OutlinedButton(
-                            onPressed:  (){
+                            onPressed: () {
                               Get.back();
                             },
                             child: Container(
                               padding: const EdgeInsets.all(12),
-                              child: Text("back".tr, style: Get.theme.textTheme.bodyMedium!.copyWith(
-                                color: Get.theme.colorScheme.primary,
-                              ),),
+                              child: Text(
+                                "back".tr,
+                                style: Get.theme.textTheme.bodyMedium!.copyWith(
+                                  color: Get.theme.colorScheme.primary,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
-
                     const SizedBox(
                       height: 12,
                     ),
-
                   ],
                 ),
               ),
             ),
-
           ],
         ),
       ),
     ),
   );
 }
-
-

@@ -14,72 +14,91 @@ import '../../util/style.dart';
 import '../../util/theme.dart' as theme_color;
 import '../../bloc/theme_controller.dart';
 
-
-Widget mainPage(double _width, double _height){
-
+Widget mainPage(double _width, double _height) {
   ThemeController _themeController = Get.find();
 
   double envWidth = Get.width;
-  double _widthElement = envWidth<420?envWidth/2:envWidth>=420&&envWidth<680?envWidth/3:envWidth>=680&&envWidth<1200?envWidth/4: envWidth>=1200&&envWidth<1600?envWidth/5:envWidth/6;
-
+  double _widthElement = envWidth < 420
+      ? envWidth / 2
+      : envWidth >= 420 && envWidth < 680
+          ? envWidth / 3
+          : envWidth >= 680 && envWidth < 1200
+              ? envWidth / 4
+              : envWidth >= 1200 && envWidth < 1600
+                  ? envWidth / 5
+                  : envWidth / 6;
 
   return SizedBox(
     height: _height,
     width: _width,
-    child:  SingleChildScrollView(
+    child: SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-
           SizedBox(
-            height: Get.height*0.67,
+            height: Get.height * 0.67,
             child: Column(
               children: [
-
-                Text("main page", style: Get.textTheme.displayLarge!.copyWith(
-                  color:  _themeController.themeSetting.value=='isLight'?theme_color.textColorLight[0]:theme_color.textColorDark[0],
-                ),),
-                Text("Display", style: Get.textTheme.displayMedium!.copyWith(
-                  color:  _themeController.themeSetting.value=='isLight'?theme_color.textColorLight[0]:theme_color.textColorDark[0],
-                )),
-                Text("Title", style: Get.textTheme.titleLarge!.copyWith(
-                  color:  _themeController.themeSetting.value=='isLight'?theme_color.textColorLight[1]:theme_color.textColorDark[1],
-                )),
-                Text("Body", style: Get.textTheme.bodyLarge!.copyWith(
-                  color:  _themeController.themeSetting.value=='isLight'?theme_color.textColorLight[2]:theme_color.textColorDark[2],
-                )),
-                Text("Label", style: Get.textTheme.labelLarge!.copyWith(
-                  color:  _themeController.themeSetting.value=='isLight'?theme_color.textColorLight[3]:theme_color.textColorDark[3],
-                )),
-
+                Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage(
+                              'assets/images/cows-green-field.jpg'))),
+                ),
+                Text(
+                  "main page 1",
+                  style: Get.textTheme.displayLarge!.copyWith(
+                    color: _themeController.themeSetting.value == 'isLight'
+                        ? theme_color.textColorLight[0]
+                        : theme_color.textColorDark[0],
+                  ),
+                ),
+                Text("Display",
+                    style: Get.textTheme.displayMedium!.copyWith(
+                      color: _themeController.themeSetting.value == 'isLight'
+                          ? theme_color.textColorLight[0]
+                          : theme_color.textColorDark[0],
+                    )),
+                Text("Title",
+                    style: Get.textTheme.titleLarge!.copyWith(
+                      color: _themeController.themeSetting.value == 'isLight'
+                          ? theme_color.textColorLight[1]
+                          : theme_color.textColorDark[1],
+                    )),
+                Text("Body",
+                    style: Get.textTheme.bodyLarge!.copyWith(
+                      color: _themeController.themeSetting.value == 'isLight'
+                          ? theme_color.textColorLight[2]
+                          : theme_color.textColorDark[2],
+                    )),
+                Text("Label",
+                    style: Get.textTheme.labelLarge!.copyWith(
+                      color: _themeController.themeSetting.value == 'isLight'
+                          ? theme_color.textColorLight[3]
+                          : theme_color.textColorDark[3],
+                    )),
                 ElevatedButton(
-                    onPressed: (){}, child: Text("Button", style: Get.textTheme.labelLarge!.copyWith(
-                    color: Get.theme.colorScheme.onPrimary,
-                ))),
-
+                    onPressed: () {},
+                    child: Text("Button",
+                        style: Get.textTheme.labelLarge!.copyWith(
+                          color: Get.theme.colorScheme.onPrimary,
+                        ))),
               ],
             ),
           ),
-
-
-
-
-
-
-
-          const SizedBox(height: 16, width: 0,),
-
+          const SizedBox(
+            height: 16,
+            width: 0,
+          ),
         ],
       ),
     ),
   );
 }
 
-
-
-Widget dataElement(String title, String data, String position, double width, int titleLines, int headLines) {
-
+Widget dataElement(String title, String data, String position, double width,
+    int titleLines, int headLines) {
   return Container(
     width: width,
     margin: const EdgeInsets.fromLTRB(1, 1, 0, 0),
@@ -93,7 +112,11 @@ Widget dataElement(String title, String data, String position, double width, int
       borderRadius: BorderRadius.circular(3),
     ),
     child: Column(
-      crossAxisAlignment: position=='start'?CrossAxisAlignment.start:position=='center'?CrossAxisAlignment.center:CrossAxisAlignment.end,
+      crossAxisAlignment: position == 'start'
+          ? CrossAxisAlignment.start
+          : position == 'center'
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.end,
       children: [
         AutoSizeText(title,
             maxLines: titleLines,
@@ -106,12 +129,4 @@ Widget dataElement(String title, String data, String position, double width, int
       ],
     ),
   );
-
 }
-
-
-
-
-
-
-

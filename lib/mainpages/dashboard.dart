@@ -1,104 +1,138 @@
 import 'package:flutter/material.dart';
+//import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:insurance/adminpages/admin_dashboard.dart';
-
-import '../bloc/login_controller.dart';
-import '../bloc/session_controller.dart';
-import '../bloc/theme_controller.dart';
-import '../util/theme.dart';
+import 'package:insurance/bloc/dashboard_controller.dart';
+import 'package:insurance/bloc/login_controller.dart';
+import 'package:insurance/mainpages/Sppa/sppa_view.dart';
+import 'package:insurance/util/screen_size.dart';
+import 'package:insurance/widgets/custom_textfield.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    print('in dashboard');
+    DashboardController controller = Get.put(DashboardController());
 
-    LoginController loginController = Get.find();
-    SessionController sessionController = Get.find();
-    ThemeController themeController = Get.find();
-    sessionController.registerActivity();
-
-    return MaterialApp(
-      title: 'Dashboard'.tr,
-      debugShowCheckedModeBanner: false,
-      theme: lightThemeData,
-      darkTheme: darkThemeData,
-      themeMode: themeController.themeSetting.value=='isLight'? ThemeMode.light: ThemeMode.dark,
-      home: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Dashboard'.tr),
+    return Scaffold(
+        appBar: AppBar(title: Text('Dashboard'), actions: [
+          Container(
+            height: 80,
+            margin: EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text('${controller.loginController.check.value.userData.name}',
+                    style: Get.textTheme.labelSmall),
+                // Text(
+                //     '${controller.loginController.check.value.userData.userId}',
+                //     style: Get.textTheme.labelSmall),
+                // Text('${controller.loginController.check.value.userData.roles}')
+              ],
+            ),
           ),
-          body: Column(
-            children: [
-
-              Wrap(
-                children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    margin: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
+        ]),
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Center(
+              child: Container(
+                width: formWidth(Get.width),
+                child: Column(
+                  children: [
+                    SizedBox(height: 10),
+                    Row(children: [
+                      Expanded(flex: 3, child: TextBodyMedium('Topik')),
+                      Expanded(
+                          flex: 1,
+                          child: Center(
+                            child: Text('Jumlah',
+                                style: Get.theme.textTheme.bodyMedium!.copyWith(
+                                    color: Get.theme.colorScheme.secondary)),
+                          ))
+                    ]),
+                    Divider(
+                        height: 30,
+                        thickness: 0.5,
+                        color: Get.theme.colorScheme.secondary),
+                    Row(children: [
+                      Expanded(
+                          flex: 3,
+                          child: Text(
+                              'Profile  -  ${controller.loginController.check.value.userData.name}',
+                              style: Get.theme.textTheme.bodyMedium!.copyWith(
+                                  color: Get.theme.colorScheme.secondary))),
+                      Expanded(
+                          flex: 1, child: Center(child: TextBodyMedium('0')))
+                    ]),
+                    Divider(
+                        height: 30,
+                        thickness: 0.25,
+                        color: Get.theme.colorScheme.secondary),
+                    Obx(() {
+                      if (controller.listAktifSppa.isNotEmpty) {
+                        return Row(children: [
+                          Expanded(flex: 3, child: TextBodyMedium('Sppa')),
+                          Expanded(
+                              flex: 1,
+                              child: TextButton(
+                                  onPressed: () {
+                                    Get.toNamed('/sppa');
+                                  },
+                                  child: Center(
+                                    child: Text(
+                                        '${controller.listAktifSppa.value.length}',
+                                        style: Get.theme.textTheme.bodyMedium!
+                                            .copyWith(
+                                                color: Get.theme.colorScheme
+                                                    .secondary)),
+                                  )))
+                        ]);
+                      } else
+                        return Row();
+                    }),
+                    SizedBox(height: 20),
+                    Row(children: [
+                      Expanded(flex: 3, child: TextBodyMedium('Polis')),
+                      Expanded(
+                          flex: 1, child: Center(child: TextBodyMedium('0')))
+                    ]),
+                    SizedBox(height: 20),
+                    Row(children: [
+                      Expanded(flex: 3, child: TextBodyMedium('Klaim')),
+                      Expanded(
+                          flex: 1, child: Center(child: TextBodyMedium('0')))
+                    ]),
+                    SizedBox(height: 20),
+                    Row(children: [
+                      Expanded(flex: 3, child: TextBodyMedium('Endorsement')),
+                      Expanded(
+                          flex: 1, child: Center(child: TextBodyMedium('0')))
+                    ]),
+                    SizedBox(height: 40),
+                    Obx(
+                      () {
+                        if (controller.loginController.check.value.roles
+                                .contains("ROLE_SUPER") ||
+                            controller.loginController.check.value.roles
+                                .contains("ROLE_ADMIN")) {
+                          return Center(child: AdminDashboard());
+                        } else {
+                          return Container();
+                        }
+                      },
                     ),
-
-                    child: loginController.imageData.value.available==true?ClipRRect(
-                        clipBehavior: Clip.antiAlias,
-                        borderRadius: BorderRadius.circular(100),
-                        child: SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: Image.memory(loginController.imageData.value.img, width: 100, height: 100,)))
-                    : CircleAvatar(
-                        backgroundColor: Get.theme.colorScheme.background,
-                        child: SizedBox(
-                            width: 100,
-                            height: 100,
-                            //child: Image.asset(themeController.themeSetting.value=='isLight'?"assets/images/logo_inv.png":"assets/images/logo.png"))),
-                            child: Icon(Icons.person_2_rounded, size: 66, color: themeController.themeSetting.value=='isLight'?Colors.black87:Colors.white60),),),
-                  ),
-                  Container(
-                    height: 100,
-                    margin: EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('name', style: Get.textTheme.labelSmall),
-                            Text(loginController.check.value.userData.name),
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('username', style: Get.textTheme.labelSmall),
-                            Text(loginController.check.value.userData.userId),
-                          ],
-                        ),
-
-
-                      ],
-                    ),
-                  ),
-                ],
+                    SizedBox(height: 20),
+                  ],
+                ),
               ),
-
-              Obx((){
-                  if (loginController.check.value.roles.contains("ROLE_SUPER") || loginController.check.value.roles.contains("ROLE_ADMIN")){
-                    return Center(child: AdminDashboard());
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
-            ],
+            ),
           ),
-        )
-      ),
-    );
+        ));
   }
 }

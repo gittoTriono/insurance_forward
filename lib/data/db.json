@@ -1,0 +1,667 @@
+{
+  "Customer": [
+    {
+      "id": "10",
+      "customerId": "SASPRI12-10",
+      "fullName": "Mukiban Saleh",
+      "alamat": {
+        "jalan": "jl. satu no 2",
+        "rt": "002",
+        "rw": "012",
+        "kelurahan": "Warung Jati",
+        "kecamatan": "Pancoran",
+        "kota": "Jakarta Selatan",
+        "tipeDati2": "Kota",
+        "namaDati2": "Jakarta Selatan",
+        "kodePos": "12750"
+      },
+      "ktp": "1234093456780012",
+      "npwp": "",
+      "noTelp": "08113456767",
+      "email": "kibal.saleh@email.id",
+      "pekerjaan": "peternak",
+      "alamatKantor": null,
+      "salesId": "SASPRI12",
+      "marketingId": "SASPRINAS",
+      "brokerId": "1",
+      "bankAccount": null,
+      "codeUpline": "",
+      "custGroupCode": "SASPRI12",
+      "groupName": "Kelompok Peternak Maju Terus",
+      "registeredDt": 100000012,
+      "status": "Aktif"
+    },
+    {
+      "id": "7416",
+      "customerId": "SASPRI12-05",
+      "fullName": "Sri Muryati",
+      "alamat": {
+        "jalan": "jl. togo no 2",
+        "rt": "001",
+        "rw": "010",
+        "kelurahan": "Menteng Dalem",
+        "kecamatan": "Menteng",
+        "kota": "Jakarta Selatan",
+        "tipeDati2": "Kota",
+        "namaDati2": "Jakarta Selatan",
+        "kodePos": "12550"
+      },
+      "ktp": "123400456780012",
+      "npwp": "",
+      "noTelp": "07883456123",
+      "email": "Sri.Muryati@email.id",
+      "pekerjaan": "peternak",
+      "alamatKantor": null,
+      "salesId": "SASPRI12",
+      "marketingId": "SASPRINAS",
+      "brokerId": "1",
+      "bankAccount": null,
+      "codeUpline": "",
+      "custGroupCode": "SASPRI10",
+      "groupName": "Kelompok Peternak Sejahtera",
+      "registeredDt": 100000012,
+      "status": "Aktif"
+    }
+  ],
+  "KategoriProduk": [
+    {
+      "id": "1",
+      "kategoriCode": "ATS",
+      "subKategoriCode": "SP",
+      "kategoriDeskripsi": "Sapi Fattening",
+      "iconFilename": "assets/icon/icon_ats_sp_trspn.png",
+      "status": 1
+    },
+    {
+      "id": "2",
+      "kategoriCode": "ATS",
+      "subKategoriCode": "SI",
+      "kategoriDeskripsi": "Sapi Breeding",
+      "iconFilename": "assets/icon/icon_ats_si_trspn.png",
+      "status": 1
+    },
+    {
+      "id": "3",
+      "kategoriCode": "ATS",
+      "subKategoriCode": "SO",
+      "kategoriDeskripsi": "Sapi Pejantan",
+      "iconFilename": "assets/icon/icon_ats_so.png",
+      "status": 1
+    }
+  ],
+  "ProdukAsuransi": [
+    {
+      "id": "1",
+      "productCode": "JNDATSSP1",
+      "productName": "Asuransi Sapi Fattening Jasindo",
+      "productKategori": "ATS",
+      "productSubKategori": "SP",
+      "codeAsuransi": "Jasindo",
+      "productShortDescription": "Perlindungan dari risiko akibat meninggal karena penyakit, kecelakaan atau pencurian.",
+      "productLongDescription": "Perlindungan dari risiko akibat meninggal karena penyakit, kecelakaan atau pencurian.",
+      "manfaatShort": [
+        "1. Pengurusan Cepat",
+        "2. Klaim Cepat",
+        "3. Premi kompetitif"
+      ],
+      "manfaatAdditional": [
+        "4. Tersedia bantuan premi pemerintah."
+      ],
+      "pengecualianShort": [
+        "1. Kematian atas wabah yang diumumkan oleh Pemerintah",
+        "2. Pengawasan kesehatan yang tidak teratur."
+      ],
+      "pengecualianAdditional": [
+        ""
+      ],
+      "tncDescription": [
+        "tncDescription"
+      ],
+      "klaimDescription": [
+        "klaimDescription"
+      ],
+      "rateCalculationMethod": "Normal",
+      "status": 1,
+      "ratePremi": 0.011,
+      "tenor": 4,
+      "logoUri": "assets/icon/icon_bull2.png"
+    },
+    {
+      "id": "2",
+      "productCode": "JNDATSSI1",
+      "productName": "Asuransi Sapi Breeding Jasindo",
+      "productKategori": "ATS",
+      "productSubKategori": "SI",
+      "codeAsuransi": "Jasindo",
+      "productShortDescription": "Perlindungan dari risiko akibat meninggal karena penyakit, kecelakaan atau pencurian.",
+      "productLongDescription": "Perlindungan dari risiko akibat meninggal karena penyakit, kecelakaan atau pencurian.",
+      "manfaatShort": [
+        "1. Pengurusan Cepat",
+        "2. Klaim Cepat",
+        "3. Premi kompetitif"
+      ],
+      "manfaatAdditional": [
+        "4. Tersedia bantuan premi pemerintah."
+      ],
+      "pengecualianShort": [
+        "1. Kematian atas wabah yang diumumkan oleh Pemerintah",
+        "2. Pengawasan kesehatan yang tidak teratur."
+      ],
+      "pengecualianAdditional": [
+        ""
+      ],
+      "tncDescription": [
+        "tncDescription"
+      ],
+      "klaimDescription": [
+        "klaimDescription"
+      ],
+      "rateCalculationMethod": "Normal",
+      "status": 1,
+      "ratePremi": 0.033,
+      "tenor": 12,
+      "logoUri": "assets/icon/icon_cow2.png"
+    },
+    {
+      "id": "3",
+      "productCode": "JTNATSSP1",
+      "productName": "Asuransi Sapi Fattening Jasa Tania",
+      "productKategori": "ATS",
+      "productSubKategori": "SP",
+      "codeAsuransi": "JasaTania",
+      "productShortDescription": "Perlindungan dari risiko akibat meninggal karena penyakit, kecelakaan atau pencurian.",
+      "productLongDescription": "Perlindungan dari risiko akibat meninggal karena penyakit, kecelakaan atau pencurian.",
+      "manfaatShort": [
+        "1. Pengurusan Cepat",
+        "2. Klaim Cepat",
+        "3. Premi kompetitif"
+      ],
+      "manfaatAdditional": [
+        "4. Tersedia bantuan premi pemerintah."
+      ],
+      "pengecualianShort": [
+        "1. Kematian atas wabah yang diumumkan oleh Pemerintah",
+        "2. Pengawasan kesehatan yang tidak teratur."
+      ],
+      "pengecualianAdditional": [
+        ""
+      ],
+      "tncDescription": [
+        "tncDescription"
+      ],
+      "klaimDescription": [
+        "klaimDescription"
+      ],
+      "rateCalculationMethod": "Normal",
+      "status": 1,
+      "ratePremi": 0.01,
+      "tenor": 4,
+      "logoUri": "assets/icon/icon_bull2.png"
+    },
+    {
+      "id": "4",
+      "productCode": "JTNATSSI1",
+      "productName": "Asuransi Sapi Breeding Jasa Tania",
+      "productKategori": "ATS",
+      "productSubKategori": "SI",
+      "codeAsuransi": "Jasa Tania",
+      "productShortDescription": "Perlindungan dari risiko akibat meninggal karena penyakit, kecelakaan atau pencurian.",
+      "productLongDescription": "Perlindungan dari risiko akibat meninggal karena penyakit, kecelakaan atau pencurian.",
+      "manfaatShort": [
+        "1. Pengurusan Cepat",
+        "2. Klaim Cepat",
+        "3. Premi kompetitif"
+      ],
+      "manfaatAdditional": [
+        "4. Tersedia bantuan premi pemerintah."
+      ],
+      "pengecualianShort": [
+        "1. Kematian atas wabah yang diumumkan oleh Pemerintah",
+        "2. Pengawasan kesehatan yang tidak teratur."
+      ],
+      "pengecualianAdditional": [
+        ""
+      ],
+      "tncDescription": [
+        "tncDescription"
+      ],
+      "klaimDescription": [
+        "klaimDescription"
+      ],
+      "rateCalculationMethod": "Normal",
+      "status": 1,
+      "ratePremi": 0.03,
+      "tenor": 12,
+      "logoUri": "assets/icon/icon_cow2.png"
+    }
+  ],
+  "SppaHeader": [
+    {
+      "sppaId": "",
+      "customerId": "SASPRI12-10",
+      "salesId": "SASPRI12",
+      "marketingId": "SASPRINAS",
+      "brokerId": "1",
+      "asuransiName": "JasaTania",
+      "produkCode": "JTNATSSP1",
+      "produkName": "Asuransi Sapi Fattening Jasa Tania",
+      "kategori": "ATS",
+      "subKategori": "SP",
+      "statusSppa": 1,
+      "nilaiPertanggungan": 22000000,
+      "tenor": 4,
+      "premiRate": 0.01,
+      "premiAmount": 110000,
+      "polisId": "",
+      "id": "6a6f"
+    },
+    {
+      "sppaId": "",
+      "customerId": "SASPRI12-05",
+      "salesId": "SASPRI12",
+      "marketingId": "SASPRINAS",
+      "brokerId": "1",
+      "asuransiName": "JasaTania",
+      "produkCode": "JTNATSSP1",
+      "produkName": "Asuransi Sapi Fattening Jasa Tania",
+      "kategori": "ATS",
+      "subKategori": "SP",
+      "statusSppa": 1,
+      "nilaiPertanggungan": 21000000,
+      "tenor": 4,
+      "premiRate": 0.01,
+      "premiAmount": 210000,
+      "polisId": "",
+      "id": "07fa"
+    },
+    {
+      "sppaId": "",
+      "customerId": "SASPRI12-05",
+      "salesId": "SASPRI12",
+      "marketingId": "SASPRINAS",
+      "brokerId": "1",
+      "asuransiName": "Jasa Tania",
+      "produkCode": "JTNATSSI1",
+      "produkName": "Asuransi Sapi Breeding Jasa Tania",
+      "kategori": "ATS",
+      "subKategori": "SI",
+      "statusSppa": 1,
+      "nilaiPertanggungan": 11000000,
+      "tenor": 12,
+      "premiRate": 0.03,
+      "premiAmount": 330000,
+      "polisId": "",
+      "id": "5120"
+    },
+    {
+      "sppaId": "",
+      "customerId": "SASPRI12-05",
+      "salesId": "SASPRI12",
+      "marketingId": "SASPRINAS",
+      "brokerId": "1",
+      "asuransiName": "Jasindo",
+      "produkCode": "JNDATSSP1",
+      "produkName": "Asuransi Sapi Fattening Jasindo",
+      "kategori": "ATS",
+      "subKategori": "SP",
+      "statusSppa": 1,
+      "nilaiPertanggungan": 20500000,
+      "tenor": 4,
+      "premiRate": 0.011,
+      "premiAmount": 225500,
+      "polisId": "",
+      "id": "edcf"
+    },
+    {
+      "sppaId": "",
+      "customerId": "SASPRI12-05",
+      "salesId": "SASPRI12",
+      "marketingId": "SASPRINAS",
+      "brokerId": "1",
+      "asuransiName": "Jasindo",
+      "produkCode": "JNDATSSP1",
+      "produkName": "Asuransi Sapi Fattening Jasindo",
+      "kategori": "ATS",
+      "subKategori": "SP",
+      "statusSppa": 1,
+      "nilaiPertanggungan": 10000000,
+      "tenor": 4,
+      "premiRate": 0.011,
+      "premiAmount": 110000,
+      "polisId": "",
+      "id": "9bd5"
+    }
+  ],
+  "SppaStatus": [
+    {
+      "sppaId": "6a6f",
+      "initSubmitDtMillis": 0,
+      "initSubmitDt": "",
+      "statusSppa": 1,
+      "tglSubmitSalesMillis": 0,
+      "tglSubmitSales": "",
+      "tglReviewSalesMillis": 0,
+      "tglReviewSales": "",
+      "salesNote": "",
+      "tglSubmitBrokerMillis": 0,
+      "tglSubmitBroker": "",
+      "tglReviewBroker": 0,
+      "tglReviewBrokerMillis": "",
+      "brokerNote": "",
+      "tglSubmitAsuransiMillis": 0,
+      "tglSubmitAsuransi": "",
+      "tglResponseAsuransiMillis": 0,
+      "tglResponseAsuransi": "",
+      "statusResponseAsuransi": 0,
+      "tglCreated": "19-Mar-2024",
+      "tglCreatedMillis": 1710840874105,
+      "tglLastUpdate": "23-Mar-2024",
+      "tglLastUpdateMillis": 1711164474728,
+      "id": "27ca"
+    },
+    {
+      "id": "7e86",
+      "sppaId": "07fa",
+      "initSubmitDtMillis": 0,
+      "initSubmitDt": "",
+      "statusSppa": 1,
+      "tglSubmitSalesMillis": 0,
+      "tglSubmitSales": "",
+      "tglReviewSalesMillis": 0,
+      "tglReviewSales": "",
+      "salesNote": "",
+      "tglSubmitBrokerMillis": 0,
+      "tglSubmitBroker": "",
+      "tglReviewBroker": 0,
+      "tglReviewBrokerMillis": "",
+      "brokerNote": "",
+      "tglSubmitAsuransiMillis": 0,
+      "tglSubmitAsuransi": "",
+      "tglResponseAsuransiMillis": 0,
+      "tglResponseAsuransi": "",
+      "statusResponseAsuransi": 0,
+      "tglCreated": "22-Mar-2024",
+      "tglCreatedMillis": 1711110487707,
+      "tglLastUpdate": "22-Mar-2024",
+      "tglLastUpdateMillis": 1711110487707
+    },
+    {
+      "id": "1a56",
+      "sppaId": "5120",
+      "initSubmitDtMillis": 0,
+      "initSubmitDt": "",
+      "statusSppa": 1,
+      "tglSubmitSalesMillis": 0,
+      "tglSubmitSales": "",
+      "tglReviewSalesMillis": 0,
+      "tglReviewSales": "",
+      "salesNote": "",
+      "tglSubmitBrokerMillis": 0,
+      "tglSubmitBroker": "",
+      "tglReviewBroker": 0,
+      "tglReviewBrokerMillis": "",
+      "brokerNote": "",
+      "tglSubmitAsuransiMillis": 0,
+      "tglSubmitAsuransi": "",
+      "tglResponseAsuransiMillis": 0,
+      "tglResponseAsuransi": "",
+      "statusResponseAsuransi": 0,
+      "tglCreated": "24-Mar-2024",
+      "tglCreatedMillis": 1711255209554,
+      "tglLastUpdate": "24-Mar-2024",
+      "tglLastUpdateMillis": 1711255209554
+    },
+    {
+      "id": "933e",
+      "sppaId": "edcf",
+      "initSubmitDtMillis": 0,
+      "initSubmitDt": "",
+      "statusSppa": 1,
+      "tglSubmitSalesMillis": 0,
+      "tglSubmitSales": "",
+      "tglReviewSalesMillis": 0,
+      "tglReviewSales": "",
+      "salesNote": "",
+      "tglSubmitBrokerMillis": 0,
+      "tglSubmitBroker": "",
+      "tglReviewBroker": 0,
+      "tglReviewBrokerMillis": "",
+      "brokerNote": "",
+      "tglSubmitAsuransiMillis": 0,
+      "tglSubmitAsuransi": "",
+      "tglResponseAsuransiMillis": 0,
+      "tglResponseAsuransi": "",
+      "statusResponseAsuransi": 0,
+      "tglCreated": "25-Mar-2024",
+      "tglCreatedMillis": 1711349598399,
+      "tglLastUpdate": "25-Mar-2024",
+      "tglLastUpdateMillis": 1711349598399
+    },
+    {
+      "id": "855a",
+      "sppaId": "9bd5",
+      "initSubmitDtMillis": 0,
+      "initSubmitDt": "",
+      "statusSppa": 1,
+      "tglSubmitSalesMillis": 0,
+      "tglSubmitSales": "",
+      "tglReviewSalesMillis": 0,
+      "tglReviewSales": "",
+      "salesNote": "",
+      "tglSubmitBrokerMillis": 0,
+      "tglSubmitBroker": "",
+      "tglReviewBroker": 0,
+      "tglReviewBrokerMillis": "",
+      "brokerNote": "",
+      "tglSubmitAsuransiMillis": 0,
+      "tglSubmitAsuransi": "",
+      "tglResponseAsuransiMillis": 0,
+      "tglResponseAsuransi": "",
+      "statusResponseAsuransi": 0,
+      "tglCreated": "26-Mar-2024",
+      "tglCreatedMillis": 1711437055397,
+      "tglLastUpdate": "26-Mar-2024",
+      "tglLastUpdateMillis": 1711437055397
+    }
+  ],
+  "TernakSapi": [
+    {
+      "id": "08d4",
+      "sppaId": "6a6f",
+      "seqNo": 1,
+      "nama": "SO - 6a6f001",
+      "earTag": "6a6f001",
+      "tglLahirMillis": 1679158800000,
+      "tglLahir": "19-Mar-2023",
+      "jenis": "SO",
+      "kelamin": "Jantan",
+      "hargaPerolehan": 6000000,
+      "nilaiPertanggungan": 6000000,
+      "status": 0,
+      "polisId": "",
+      "polisEndorsementId": "",
+      "klaimId": ""
+    },
+    {
+      "id": "849a",
+      "sppaId": "6a6f",
+      "seqNo": 2,
+      "nama": "SO - 6a6f002",
+      "earTag": "6a6f002",
+      "tglLahirMillis": 1679245200000,
+      "tglLahir": "20-Mar-2023",
+      "jenis": "SO",
+      "kelamin": "Jantan",
+      "hargaPerolehan": 5000000,
+      "nilaiPertanggungan": 5000000,
+      "status": 0,
+      "polisId": "",
+      "polisEndorsementId": "",
+      "klaimId": ""
+    },
+    {
+      "id": "19ae",
+      "sppaId": "07fa",
+      "seqNo": 1,
+      "nama": "BX - 333333",
+      "earTag": "333333",
+      "tglLahirMillis": 1679245200000,
+      "tglLahir": "20-Mar-2023",
+      "jenis": "BX",
+      "kelamin": "Jantan",
+      "hargaPerolehan": 10000000,
+      "nilaiPertanggungan": 10500000,
+      "status": 0,
+      "polisId": "",
+      "polisEndorsementId": "",
+      "klaimId": ""
+    },
+    {
+      "id": "4fe6",
+      "sppaId": "07fa",
+      "seqNo": 2,
+      "nama": "SO - 444444",
+      "earTag": "444444",
+      "tglLahirMillis": 1679158800000,
+      "tglLahir": "19-Mar-2023",
+      "jenis": "SO",
+      "kelamin": "Jantan",
+      "hargaPerolehan": 10000000,
+      "nilaiPertanggungan": 10500000,
+      "status": 0,
+      "polisId": "",
+      "polisEndorsementId": "",
+      "klaimId": ""
+    },
+    {
+      "id": "4ec8",
+      "sppaId": "5120",
+      "seqNo": 1,
+      "nama": "BX - 998877",
+      "earTag": "998877",
+      "tglLahirMillis": 1652461200000,
+      "tglLahir": "14-May-2022",
+      "jenis": "BX",
+      "kelamin": "Betina",
+      "hargaPerolehan": 10000000,
+      "nilaiPertanggungan": 11000000,
+      "status": 0,
+      "polisId": "",
+      "polisEndorsementId": "",
+      "klaimId": ""
+    },
+    {
+      "id": "9df0",
+      "sppaId": "edcf",
+      "seqNo": 1,
+      "nama": "PO - 5566777",
+      "earTag": "5566777",
+      "tglLahirMillis": 1655485200000,
+      "tglLahir": "18-Jun-2022",
+      "jenis": "PO",
+      "kelamin": "Jantan",
+      "hargaPerolehan": 9000000,
+      "nilaiPertanggungan": 10000000,
+      "status": 0,
+      "polisId": "",
+      "polisEndorsementId": "",
+      "klaimId": ""
+    },
+    {
+      "id": "cab0",
+      "sppaId": "edcf",
+      "seqNo": 2,
+      "nama": "SO - 5566888",
+      "earTag": "5566888",
+      "tglLahirMillis": 1655485200000,
+      "tglLahir": "18-Jun-2022",
+      "jenis": "SO",
+      "kelamin": "Jantan",
+      "hargaPerolehan": 9500000,
+      "nilaiPertanggungan": 10500000,
+      "status": 0,
+      "polisId": "",
+      "polisEndorsementId": "",
+      "klaimId": ""
+    },
+    {
+      "id": "46cd",
+      "sppaId": "9bd5",
+      "seqNo": 1,
+      "nama": "SO - 556677888",
+      "earTag": "556677888",
+      "tglLahirMillis": 1616691600000,
+      "tglLahir": "26-Mar-2021",
+      "jenis": "SO",
+      "kelamin": "Jantan",
+      "hargaPerolehan": 10000000,
+      "nilaiPertanggungan": 10000000,
+      "status": 0,
+      "polisId": "",
+      "polisEndorsementId": "",
+      "klaimId": ""
+    }
+  ],
+  "InfoAtsJasTan": [
+    {
+      "sppaId": "6a6f",
+      "lokasiKandang": "kalibata tower rafless",
+      "kriteriaPemeliharaan": "Ekstensif",
+      "sistemPakanTernak": "Dry Lot",
+      "infoMgmtKandang": "cctv full fire alarm",
+      "infoMgmtPakan": "sni plus susu",
+      "infoMgmtKesehatan": "dokter",
+      "id": "c82b"
+    },
+    {
+      "id": "60f0",
+      "sppaId": "07fa",
+      "lokasiKandang": "patrakomala",
+      "kriteriaPemeliharaan": "Semi Intensif",
+      "sistemPakanTernak": "Kombinasi",
+      "infoMgmtKandang": "kamarkamar",
+      "infoMgmtPakan": "baik",
+      "infoMgmtKesehatan": "bagus"
+    },
+    {
+      "id": "ffa1",
+      "sppaId": "5120",
+      "lokasiKandang": "cibubur ranch",
+      "kriteriaPemeliharaan": "Ekstensif",
+      "sistemPakanTernak": "Pasture Fattening",
+      "infoMgmtKandang": "open area",
+      "infoMgmtPakan": "rerumputan",
+      "infoMgmtKesehatan": "dedokteran"
+    },
+    {
+      "sppaId": "edcf",
+      "lokasiKandang": "jalan setia 2 ujung, desa kemucung, rt 03 rw 005, kelurahan jatiwaringin, kecamatan pondok gede, kota bekasi 17411",
+      "kriteriaPemeliharaan": "Ekstensif",
+      "sistemPakanTernak": "Dry Lot",
+      "infoMgmtKandang": "pengawasan full cctv, pembersihan harian, dan dikondisikan untuk senantiasa kering",
+      "infoMgmtPakan": "pakan dengan pelet berstandard sni, jumlah sesuai standard SASPRI. Air minum ad libitum dari sumur sendiri",
+      "infoMgmtKesehatan": "Monitoring kesehatan mingguan oleh dokter ",
+      "id": "8278"
+    },
+    {
+      "id": "6b56",
+      "sppaId": "9bd5",
+      "lokasiKandang": "desa kemusuk",
+      "kriteriaPemeliharaan": "Ekstensif",
+      "sistemPakanTernak": "Dry Lot",
+      "infoMgmtKandang": "aasdsdasdsa",
+      "infoMgmtPakan": "asdasdas",
+      "infoMgmtKesehatan": "asdasdd"
+    }
+  ],
+  "SppaCounters": [
+    {
+      "custProfileCounter": 0,
+      "salesCounter": 0,
+      "marketingCounter": 0,
+      "sppaCounter": 0,
+      "ternakCounter": 0,
+      "id": "cc99"
+    }
+  ]
+}
