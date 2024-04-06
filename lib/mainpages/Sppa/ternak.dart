@@ -15,8 +15,9 @@ class TernakSppa extends StatelessWidget {
     TernakController controller;
 
     SppaHeaderController sppaController = Get.find<SppaHeaderController>();
-    final sppaId = sppaController.sppaHeader.id;
+    //final sppaId = sppaController.sppaHeader.id;
 
+    // move this section to contoller initTernakPage()
     if (!sppaController.isNewSppa.value) {
       // load ternak for edit
       controller = Get.find<TernakController>();
@@ -26,7 +27,7 @@ class TernakSppa extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sppa (3 dari 4)'),
+        title: const Text('Sppa (4 dari 4)'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -130,12 +131,14 @@ class TernakSppa extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: InkWell(
                   onTap: () {
-                    // if (sppaController.isNewSppa.value) {
-                    //   Get.offAllNamed('/');
-                    // } else {
-                    //   Get.offAllNamed('/');
-                    // }
-                    Get.offAllNamed('/');
+                    if (sppaController.isNewSppa.value) {
+                      Get.until((route) => route.settings.name == '/dashboard');
+                    } else {
+                      Get.until(
+                        (route) => route.settings.name == '/sppa/sppaDetail',
+                      );
+                    }
+                    ;
                   },
                   child: Container(
                     decoration: BoxDecoration(

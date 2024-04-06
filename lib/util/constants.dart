@@ -17,12 +17,12 @@ String domain = "webdev.spotima.id";
 String ph_socket = "https://webdev.spotima.id";*/
 
 // local dev
-String ph = "http://localhost:8989";
-String domain = "localhost:8989";
-String ph_socket = "http://localhost:8989";
-// String ph = "http://192.168.100.139:8989";
-// String domain = "192.168.100.139:8989";
-// String ph_socket = "http://192.168.100.139:8989";
+String ph = "http://api.ph01.it:80";
+String domain = "api.ph01.it:80";
+String ph_socket = "http://api.ph01.it:80";
+// String ph = "http://192.168.100.139:80";
+// String domain = "192.168.100.139:80";
+// String ph_socket = "http://192.168.100.139:80";
 
 // local dev with json-server
 

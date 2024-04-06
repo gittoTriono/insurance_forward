@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:insurance/bloc/dashboard_controller.dart';
 import 'package:insurance/bloc/sppa_controller.dart';
 import 'package:insurance/mainpages/Sppa/sppa_main.dart';
+import 'package:insurance/model/sppa_header.dart';
 import 'package:insurance/widgets/custom_main_page_text_button.dart';
 import 'package:insurance/widgets/custom_textfield.dart';
 import 'binding/home_binding.dart';
@@ -28,10 +29,10 @@ import '../../util/theme.dart' as theme_color;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
+  Get.put(ProdukKategoriController());
+  Get.put(ProdukController());
   runApp(const InsuranceMart());
   Get.put(LoginController());
-  Get.put(ProdukKategoriController());
-  Get.lazyPut(() => ProdukController());
 }
 
 class InsuranceMart extends StatelessWidget {
@@ -48,6 +49,7 @@ class InsuranceMart extends StatelessWidget {
     //
     ProdukKategoriController thisProdukKatController = Get.find();
     ProdukController thisProdukController = Get.find();
+
     //
 
     void _onSelected(BuildContext context, int item) {
@@ -462,8 +464,6 @@ class InsuranceMart extends StatelessWidget {
                                           onTap: () {
                                             thisProdukController
                                                 .selected.value = e.value;
-                                            // print(
-                                            //   'Go to produkdetail for ${e.value.productCode!}');
                                             Get.toNamed(
                                                 '/dashboard/ProdukDetail');
                                           },
@@ -478,20 +478,6 @@ class InsuranceMart extends StatelessWidget {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.center,
                                                   children: [
-                                                    // Text(e.value.productCode!,
-                                                    //     style: Get.textTheme
-                                                    //         .bodyMedium!
-                                                    //         .copyWith(
-                                                    //       color: _themeController
-                                                    //                   .themeSetting
-                                                    //                   .value ==
-                                                    //               'isLight'
-                                                    //           ? theme_color
-                                                    //                   .textColorLight[
-                                                    //               2]
-                                                    //           : theme_color
-                                                    //               .textColorDark[2],
-                                                    //     )),
                                                     Image.asset(
                                                         e.value.logoUri!,
                                                         width: 80,
@@ -554,18 +540,38 @@ class InsuranceMart extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
 
-                  // Visibility(
-                  //   visible: _loginController.login.value.isTrue,
-                  //   child: ElevatedButton(
-                  //     onPressed: () {
-                  //       final sppaController = Get.put(SppaHeaderController());
-                  //       sppaController.isNewSppa.value = true;
-                  //       Get.toNamed('/sppa/main');
-                  //     },
-                  //     child: Text('Sppa Baru',
-                  //         style: TextStyle(color: Colors.white)),
-                  //   ),
-                  // ),
+                  Visibility(
+                    visible: !_loginController.login.value.isTrue,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Get.put(DashboardController());
+                        // print('Put DashboardController di depan');
+
+                        _loginController.check.value.roles = 'ROLE_CUSTOMER';
+                        _loginController.check.value.userData.name =
+                            'SASPRI12-10';
+                        Get.toNamed('/dashboard');
+                      },
+                      child: Text('Dashboard Customer',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+
+                  Visibility(
+                    visible: !_loginController.login.value.isTrue,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Get.put(DashboardController());
+                        // print('Put DashboardController di depan');
+                        _loginController.check.value.roles = 'ROLE_ADMIN';
+                        _loginController.check.value.userData.name = 'SASPRI12';
+                        Get.toNamed('/dashboard');
+                      },
+                      child: Text('Dashboard SASPRI',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
 
                   const SizedBox(height: 15),
                   Image.asset('assets/images/why_istpro.png', fit: BoxFit.fill),

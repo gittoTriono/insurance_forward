@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:insurance/bloc/sppa_addinfo_controller.dart';
 import 'package:insurance/bloc/sppa_controller.dart';
 import 'package:insurance/bloc/ternak_controller.dart';
 //import 'package:insurance_inputer/controller/counters.dart';
@@ -17,15 +18,22 @@ class SppaMaintenance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO  periksa di SppaController apakah isNewSppa?
-    // kalau iya create mode; no initialize texteditingcontroller
-    // kalau nggak edit mode; isi semua controller variable to accept update
+    final thisSppa = Get.arguments['sppaId'];
+    print('sppaId:$thisSppa');
 
-    SppaHeaderController sppaController = Get.find<SppaHeaderController>();
+    SppaHeaderController sppaController;
 
-    if (!sppaController.isNewSppa.value) {
-      final thisSppaId = Get.arguments['sppaId'];
-      print('sppa main for editing $thisSppaId');
+    if (thisSppa == '') {
+      sppaController = Get.put(SppaHeaderController());
+    } else {
+      sppaController = Get.find<SppaHeaderController>();
+    }
+
+    // TODO move this section to controller initSppaMainPage ()
+    if (thisSppa != '') {
+      //print('sppa main for editing $thisSppa');
+      sppaController.isNewSppa.value = false;
+
       // load existing sppa for editing
       sppaController.customerController.value.text =
           sppaController.sppaHeader.customerId!;
@@ -34,38 +42,46 @@ class SppaMaintenance extends StatelessWidget {
       sppaController.initProduct =
           sppaController.appProdukController.listAllProdukAsuransi.firstWhere(
               (e) => e.productName == sppaController.sppaHeader.produkName);
-      print('proof ${sppaController.initProduct!.productName}');
+      //print('proof ${sppaController.initProduct!.productName}');
+      // load PerluasanRisiko yang sudah dipilih
     } else {
-      print('sppa main for new');
+      //print('sppa main for new');
+      sppaController.isNewSppa.value = true;
       if (sppaController.sppaHeader.customerId != '') {
         sppaController.customerController.value.text =
             sppaController.sppaHeader.customerId!;
         // to load all customer data to sppaHeader
         sppaController.validateCustomer();
-        print(
-            'customer id sudah ada ${sppaController.customerController.value.text}');
+        // print(
+        //     'customer id sudah ada ${sppaController.customerController.value.text}');
       }
 
       if (sppaController.sppaHeader.produkCode != '') {
-        print('product code sudah ada ${sppaController.sppaHeader.produkCode}');
-        print(
-            'product loaded ada ${sppaController.appProdukController.listSelectedProdukAsuransi.value.length}');
+        // print('product code sudah ada ${sppaController.sppaHeader.produkCode}');
+        // print(
+        //     'product loaded ada ${sppaController.appProdukController.listSelectedProdukAsuransi.value.length}');
         sppaController.initProduct = sppaController
-            .appProdukController.listSelectedProdukAsuransi.value
+            .appProdukController.listSelectedProdukAsuransi
             .firstWhere(
                 (e) => e.productCode == sppaController.sppaHeader.produkCode);
         // to load all product data to sppaHeader
         sppaController.selectProduct(sppaController.initProduct!);
         sppaController.produkController.text =
             sppaController.initProduct!.productName!;
+
+        // load perluasanrisiko untuk produk ini
       } else {
-        print('product pilih dulu');
-        sppaController.initProduct = sppaController
-            .appProdukController.listAllProdukAsuransi.value.first;
-        SppaAddInfoController infoController = Get.put(SppaAddInfoController());
-        TernakController aTernakController = Get.put(TernakController());
+        //print('product pilih dulu');
+        // sppaController.appProdukController.getProdukAsuransiAll();
+
+        if (sppaController.appProdukController.listAllProdloaded.value) {
+          sppaController.initProduct =
+              sppaController.appProdukController.listAllProdukAsuransi.first;
+          sppaController.selectProduct(sppaController.initProduct!);
+        }
       }
     }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sppa (tahap 1 dari 3)'),
@@ -109,8 +125,8 @@ class SppaMaintenance extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Obx(() {
-                if (sppaController.appProdukController.listAllProdukAsuransi
-                    .value.isNotEmpty) {
+                if (sppaController
+                    .appProdukController.listAllProdukAsuransi.isNotEmpty) {
                   return Container(
                     // width: formWidth(Get.width),
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -130,7 +146,8 @@ class SppaMaintenance extends StatelessWidget {
                       hintText: 'Pilih produk',
                       onSelected: (ProdukAsuransi? value) {
                         // This is called when the user selects an item.
-                        sppaController.selectProduct(value!);
+                        print('selected: ${value!.productName}');
+                        sppaController.selectProduct(value);
 
                         sppaController.produkController.text =
                             '${value.productName}';
@@ -151,46 +168,48 @@ class SppaMaintenance extends StatelessWidget {
                   return Text('No Product Loaded.');
               }),
               const SizedBox(height: 40),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: InkWell(
-                  onTap: () {
-                    if (sppaController.isNewSppa.value) {
-                      sppaController.saveHeader();
-                      sppaController.nextButOk.value = true;
-                      // SppaAddInfoController controller =
-                      //     Get.put(SppaAddInfoController());
-                      Get.toNamed('/sppa/addInfo');
-                    } else {
-                      print(sppaController.sppaHeader.produkName);
-                      print(sppaController.produkController.text);
-                      print(sppaController.sppaHeader.customerId);
-                      print(sppaController.customerController.value.text);
-                      if (sppaController.sppaHeader.produkName ==
-                              sppaController.produkController.text &&
-                          sppaController.sppaHeader.customerId ==
-                              sppaController.customerController.value.text) {
-                        print('header no change');
-                      } else {
-                        print('header changed');
-                        sppaController.updateHeader();
-                      }
-                      Get.toNamed('/sppa/addInfo');
-                    }
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.lightBlueAccent,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      //print('field diclear');
+                      // sppaController.customerController.value.text = '';
+                      // sppaController.produkController.text = '';
+                      Get.back();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.lightBlueAccent,
+                      ),
+                      width: 100,
+                      height: 40,
+                      child: Center(
+                          child: Text('Batal',
+                              style: Get.theme.textTheme.bodyMedium!.copyWith(
+                                  color: Get.theme.colorScheme.onPrimary))),
                     ),
-                    width: Get.context!.width * 0.80,
-                    height: 40,
-                    child: Center(
-                        child: Text('Lanjut ',
-                            style: Get.theme.textTheme.bodyMedium!.copyWith(
-                                color: Get.theme.colorScheme.onPrimary))),
                   ),
-                ),
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed('/sppa/perluasan',
+                          arguments: {'sppaId', thisSppa});
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.lightBlueAccent,
+                      ),
+                      width: 100,
+                      height: 40,
+                      child: Center(
+                          child: Text('Lanjut',
+                              style: Get.theme.textTheme.bodyMedium!.copyWith(
+                                  color: Get.theme.colorScheme.onPrimary))),
+                    ),
+                  ),
+                ],
               )
             ],
           ),

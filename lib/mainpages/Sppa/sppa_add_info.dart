@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:insurance/bloc/sppa_addinfo_controller.dart';
 import 'package:insurance/bloc/sppa_controller.dart';
 import 'package:insurance/bloc/ternak_controller.dart';
 import 'package:insurance/util/screen_size.dart';
@@ -12,41 +13,41 @@ class SppaAddInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // load controllers and init
-    SppaAddInfoController controller;
+
     final SppaHeaderController sppaController =
         Get.find<SppaHeaderController>();
 
+    // TODO move this section to controller initSppaInfoPage()
     if (!sppaController.isNewSppa.value) {
       // load info data for editing
-      controller = Get.find<SppaAddInfoController>();
-      final sppaId = sppaController.sppaHeader.id;
-      controller.kandangController.text =
-          controller.infoAts.value.lokasiKandang!;
-      controller.mgmtKandangController.text =
-          controller.infoAts.value.infoMgmtKandang!;
-      controller.mgmtPakanController.text =
-          controller.infoAts.value.infoMgmtPakan!;
-      controller.mgmtKesehatanController.text =
-          controller.infoAts.value.infoMgmtKesehatan!;
-      controller.initSistemPakan = controller.infoAts.value.sistemPakanTernak!;
-      controller.initKriteriaPemeliharaan =
-          controller.infoAts.value.kriteriaPemeliharaan!;
+      sppaController.kandangController.text =
+          sppaController.infoAts.value.lokasiKandang!;
+      // controller.mgmtKandangController.text =
+      //     controller.infoAts.value.infoMgmtKandang!;
+      // controller.mgmtPakanController.text =
+      //     controller.infoAts.value.infoMgmtPakan!;
+      // controller.mgmtKesehatanController.text =
+      //     controller.infoAts.value.infoMgmtKesehatan!;
+      sppaController.initSistemPakan =
+          sppaController.infoAts.value.sistemPakanTernak!;
+      sppaController.initKriteriaPemeliharaan =
+          sppaController.infoAts.value.kriteriaPemeliharaan!;
     } else {
-      controller = Get.put(SppaAddInfoController());
-      controller.initKriteriaPemeliharaan =
-          controller.listKriteriaPemeliharaan.first;
-      controller.initSistemPakan = controller.listSistemPakan.first;
+      // sppaController = Get.put(SppaAddInfoController());
+      sppaController.initKriteriaPemeliharaan =
+          sppaController.listKriteriaPemeliharaan.first;
+      sppaController.initSistemPakan = sppaController.listSistemPakan.first;
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sppa (tahap 2 dari 3)'),
+        title: const Text('Sppa (tahap 3 dari 4)'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: SingleChildScrollView(
           child: Form(
-            key: controller.addInfoFormKey,
+            key: sppaController.addInfoFormKey,
             child: Column(
               children: [
                 const SizedBox(height: 15),
@@ -55,7 +56,7 @@ class SppaAddInfo extends StatelessWidget {
                 Container(
                   width: formWidth(Get.width),
                   child: TextFormField(
-                    controller: controller.kandangController,
+                    controller: sppaController.kandangController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Alamat Kandang',
@@ -74,27 +75,27 @@ class SppaAddInfo extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 15),
-                Container(
-                  width: formWidth(Get.width),
-                  child: TextFormField(
-                    controller: controller.mgmtKandangController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Management Kandang',
-                      counterStyle: TextStyle(fontSize: 9),
-                    ),
-                    maxLength: 150,
-                    minLines: 1,
-                    maxLines: 3,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "*Wajib diisi berupa penjelasan.";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                ),
+                // Container(
+                //   width: formWidth(Get.width),
+                //   child: TextFormField(
+                //     controller: controller.mgmtKandangController,
+                //     decoration: const InputDecoration(
+                //       border: OutlineInputBorder(),
+                //       labelText: 'Management Kandang',
+                //       counterStyle: TextStyle(fontSize: 9),
+                //     ),
+                //     maxLength: 150,
+                //     minLines: 1,
+                //     maxLines: 3,
+                //     validator: (value) {
+                //       if (value == null || value.isEmpty) {
+                //         return "*Wajib diisi berupa penjelasan.";
+                //       } else {
+                //         return null;
+                //       }
+                //     },
+                //   ),
+                // ),
                 const SizedBox(height: 15),
                 Container(
                   width: formWidth(Get.width),
@@ -105,7 +106,7 @@ class SppaAddInfo extends StatelessWidget {
                   child: DropdownMenu<String>(
                     width: formWidth(Get.width),
                     //   0.85, //Get.context!.width * 0.80,
-                    controller: controller.sisPemeliharaanController,
+                    controller: sppaController.sisPemeliharaanController,
                     label: const Text('Pemeliharaan Ternak'),
 
                     // expandedInsets: const EdgeInsets.symmetric(vertical: 10),
@@ -114,9 +115,9 @@ class SppaAddInfo extends StatelessWidget {
                       isDense: false,
                       floatingLabelAlignment: FloatingLabelAlignment.start,
                     ),
-                    initialSelection: controller.initKriteriaPemeliharaan,
+                    initialSelection: sppaController.initKriteriaPemeliharaan,
                     onSelected: (String? value) {},
-                    dropdownMenuEntries: controller.listKriteriaPemeliharaan
+                    dropdownMenuEntries: sppaController.listKriteriaPemeliharaan
                         .map<DropdownMenuEntry<String>>((String value) {
                       return DropdownMenuEntry<String>(
                           value: value, label: value);
@@ -136,16 +137,16 @@ class SppaAddInfo extends StatelessWidget {
                     //    0.85, // Get.context!.width * 0.80,
                     label: const Text('Sistem Pakan'),
                     textStyle: TextStyle(fontSize: 12),
-                    controller: controller.sisPakanController,
+                    controller: sppaController.sisPakanController,
                     // expandedInsets: const EdgeInsets.symmetric(vertical: 10),
                     inputDecorationTheme: const InputDecorationTheme(
                       isDense: false,
                     ),
-                    initialSelection: controller.initSistemPakan,
+                    initialSelection: sppaController.initSistemPakan,
                     onSelected: (String? value) {
                       // This is called when the user selects an item.
                     },
-                    dropdownMenuEntries: controller.listSistemPakan
+                    dropdownMenuEntries: sppaController.listSistemPakan
                         .map<DropdownMenuEntry<String>>((String value) {
                       return DropdownMenuEntry<String>(
                           value: value, label: value);
@@ -153,90 +154,60 @@ class SppaAddInfo extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 15),
-                Container(
-                  width: formWidth(Get.width),
-                  child: TextFormField(
-                    controller: controller.mgmtPakanController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Management Pakan',
-                      counterStyle: TextStyle(fontSize: 9),
-                    ),
-                    maxLength: 150,
-                    minLines: 1,
-                    maxLines: 3,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "*Wajib diisi.";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                ),
+                // Container(
+                //   width: formWidth(Get.width),
+                //   child: TextFormField(
+                //     controller: controller.mgmtPakanController,
+                //     decoration: const InputDecoration(
+                //       border: OutlineInputBorder(),
+                //       labelText: 'Management Pakan',
+                //       counterStyle: TextStyle(fontSize: 9),
+                //     ),
+                //     maxLength: 150,
+                //     minLines: 1,
+                //     maxLines: 3,
+                //     validator: (value) {
+                //       if (value == null || value.isEmpty) {
+                //         return "*Wajib diisi.";
+                //       } else {
+                //         return null;
+                //       }
+                //     },
+                //   ),
+                // ),
                 const SizedBox(height: 15),
-                Container(
-                  width: formWidth(Get.width),
-                  child: TextFormField(
-                    controller: controller.mgmtKesehatanController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Management Kesehatan',
-                      counterStyle: TextStyle(fontSize: 9),
-                    ),
-                    maxLength: 150,
-                    minLines: 1,
-                    maxLines: 3,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "*Wajib diisi.";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                ),
+                // Container(
+                //   width: formWidth(Get.width),
+                //   child: TextFormField(
+                //     controller: controller.mgmtKesehatanController,
+                //     decoration: const InputDecoration(
+                //       border: OutlineInputBorder(),
+                //       labelText: 'Management Kesehatan',
+                //       counterStyle: TextStyle(fontSize: 9),
+                //     ),
+                //     maxLength: 150,
+                //     minLines: 1,
+                //     maxLines: 3,
+                //     validator: (value) {
+                //       if (value == null || value.isEmpty) {
+                //         return "*Wajib diisi.";
+                //       } else {
+                //         return null;
+                //       }
+                //     },
+                //   ),
+                // ),
                 const SizedBox(height: 30),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: InkWell(
                     onTap: () {
                       if (sppaController.isNewSppa.value) {
-                        controller.saveInfoData();
+                        sppaController.saveHeader();
                         Get.put(TernakController());
                         Get.toNamed('/sppa/ternaklist');
                       } else {
-                        print(controller.infoAts.value.infoMgmtKandang);
-                        print(controller.mgmtKandangController.text);
-                        print(controller.infoAts.value.infoMgmtKesehatan);
-                        print(controller.mgmtKesehatanController.text);
-                        print(controller.infoAts.value.infoMgmtPakan);
-                        print(controller.mgmtPakanController.text);
-                        print(controller.infoAts.value.lokasiKandang);
-                        print(controller.kandangController.text);
-                        print(controller.infoAts.value.sistemPakanTernak);
-                        print(controller.sisPakanController.text);
-                        print(controller.infoAts.value.kriteriaPemeliharaan);
-                        print(controller.sisPemeliharaanController.text);
-
-                        if (controller.infoAts.value.infoMgmtKandang ==
-                                controller.mgmtKandangController.text &&
-                            controller.infoAts.value.infoMgmtKesehatan ==
-                                controller.mgmtKesehatanController.text &&
-                            controller.infoAts.value.infoMgmtPakan ==
-                                controller.mgmtPakanController.text &&
-                            controller.infoAts.value.lokasiKandang ==
-                                controller.kandangController.text &&
-                            controller.infoAts.value.sistemPakanTernak ==
-                                controller.sisPakanController.text &&
-                            controller.infoAts.value.kriteriaPemeliharaan ==
-                                controller.sisPemeliharaanController.text) {
-                          print('info no change');
-                        } else {
-                          print('info changed ');
-                          controller.updateInfoData();
-                        }
-                        Get.put(TernakController());
+                        sppaController.updateHeader();
                         Get.toNamed('/sppa/ternaklist');
                       }
                     },

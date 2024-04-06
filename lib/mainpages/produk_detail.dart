@@ -229,9 +229,21 @@ class ProdukDetail extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Visibility(
-                visible: newSPPAButtonVisible,
-                child: appBarTextButton('SPPA Baru', '/dashboard/newsppa')),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                OutlinedButton(
+                    onPressed: () {
+                      Get.toNamed(
+                        '/sppa/sppaDetail/hitungPremi',
+                      );
+                    },
+                    child: TextBodySmall('Hitung Premi')),
+                Visibility(
+                    visible: newSPPAButtonVisible,
+                    child: appBarTextButton('SPPA Baru', '/dashboard/newsppa')),
+              ],
+            ),
           ),
         ]),
       ),

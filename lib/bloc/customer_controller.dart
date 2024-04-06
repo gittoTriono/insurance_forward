@@ -22,7 +22,7 @@ class CustomerController extends GetxController {
     http.Response response = await client.get(url); // no authentication needed
     if (response.statusCode == 200) {
       var responseBodySppa = jsonDecode(response.body);
-      print(responseBodySppa);
+      // print(responseBodySppa);
       for (var i = 0; i < responseBodySppa.length; i++) {
         theCustomer.value = Customer.fromJson(responseBodySppa[i]);
         print('get customer: ${theCustomer.value.fullName}');

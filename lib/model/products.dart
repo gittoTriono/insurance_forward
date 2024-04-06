@@ -127,3 +127,82 @@ class ProdukAsuransi {
         'logoUri': logoUri,
       };
 }
+
+// ****************************************************************************
+
+class PerluasanRisiko {
+  String? id;
+//  String? perluasanRisikoId;
+  String? namaPerluasanRisiko;
+  String? codeAsuransi;
+  String? kategori;
+  String? subKategori;
+  String? codePreReq;
+  String? deskripsi;
+  List<int>? listNilaiPertanggungan;
+  List<int>? listJumlahTertanggung;
+  bool? selected; // for handling checkBoxes
+  double? rate;
+  int? status;
+
+  PerluasanRisiko({
+    this.id = '',
+//    this.perluasanRisikoId = '',
+    this.namaPerluasanRisiko = '',
+    this.codeAsuransi = '',
+    this.kategori = '',
+    this.subKategori = '',
+    this.codePreReq = '',
+    this.deskripsi = '',
+    this.listNilaiPertanggungan,
+    this.listJumlahTertanggung,
+    this.selected = false, // default, later set in checkbox
+    this.rate = 0.0,
+    this.status = 0,
+  });
+
+  factory PerluasanRisiko.fromJson(Map<String, dynamic> parsedJson) {
+    return PerluasanRisiko(
+      id: parsedJson['id'] as String?,
+//      perluasanRisikoId: parsedJson['perluasanRisikoId'] as String?,
+      namaPerluasanRisiko: parsedJson['namaPerluasanRisiko'] as String?,
+      codeAsuransi: parsedJson['codeAsuransi'] as String?,
+      kategori: parsedJson['kategori'] as String?,
+      subKategori: parsedJson['subKategori'] as String?,
+      codePreReq: parsedJson['codePreReq'] as String?,
+      deskripsi: parsedJson['deskripsi'] as String?,
+      listNilaiPertanggungan:
+          parsedJson['listNilaiPertanggungan'] as List<int>?,
+      listJumlahTertanggung: parsedJson['listJumlahTertanggung'] as List<int>?,
+      selected: false, // default, later set in checkbox
+      rate: parsedJson['rate'].toDouble(),
+      status: parsedJson['status'] as int?,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+//        'perluasanRisikoId': perluasanRisikoId,
+        'namaPerluasanRisiko': namaPerluasanRisiko,
+        'codeAsuransi': codeAsuransi,
+        'kategori': kategori,
+        'subKategori': subKategori,
+        'codePreReq': codePreReq,
+        'deskripsi': deskripsi,
+        'listNilaiPertanggungan': listNilaiPertanggungan,
+        'listJumlahTertanggung': listJumlahTertanggung,
+        'rate': rate,
+        'status': status,
+      };
+}
+
+// **************************************************************************
+
+class CheckBoxModal {
+  String titel;
+  bool value;
+  double rate;
+  int idx;
+  CheckBoxModal(
+      {required this.titel, this.value = false, this.rate = 0, this.idx = 0});
+}

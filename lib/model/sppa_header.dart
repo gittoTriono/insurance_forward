@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class SppaHeader {
   String? id;
   String? sppaId;
@@ -92,16 +94,18 @@ class SppaStatus {
   int? tglReviewSalesMillis;
   String? tglReviewSales;
   String? salesNote;
-  int? tglSubmitBrokerMillis;
-  String? tglSubmitBroker;
-  int? tglReviewBroker;
-  String? tglReviewBrokerMillis;
-  String? brokerNote;
-  int? tglSubmitAsuransiMillis;
-  String? tglSubmitAsuransi;
+  int? tglRecapMillis;
+  String? tglRecap;
+  String? recapSppaId;
+  // int? tglReviewBroker;
+  // String? tglReviewBrokerMillis;
+  // String? brokerNote;
+  // int? tglSubmitAsuransiMillis;
+  // String? tglSubmitAsuransi;
   int? tglResponseAsuransiMillis;
   String? tglResponseAsuransi;
   int? statusResponseAsuransi;
+  String? asuransiNote;
   String? tglCreated;
   int? tglCreatedMillis;
   String? tglLastUpdate;
@@ -118,16 +122,18 @@ class SppaStatus {
     this.tglReviewSalesMillis = 0,
     this.tglReviewSales = '',
     this.salesNote = '',
-    this.tglSubmitBrokerMillis = 0,
-    this.tglSubmitBroker = '',
-    this.tglReviewBroker = 0,
-    this.tglReviewBrokerMillis = '',
-    this.brokerNote = '',
-    this.tglSubmitAsuransiMillis = 0,
-    this.tglSubmitAsuransi = '',
+    this.tglRecapMillis = 0,
+    this.tglRecap = '',
+    this.recapSppaId = '',
+    // this.tglReviewBroker = 0,
+    // this.tglReviewBrokerMillis = '',
+    // this.brokerNote = '',
+    // this.tglSubmitAsuransiMillis = 0,
+    // this.tglSubmitAsuransi = '',
     this.tglResponseAsuransiMillis = 0,
     this.tglResponseAsuransi = '',
     this.statusResponseAsuransi = 0,
+    this.asuransiNote = '',
     this.tglCreated = '',
     this.tglCreatedMillis = 0,
     this.tglLastUpdate = '',
@@ -147,17 +153,19 @@ class SppaStatus {
       tglReviewSalesMillis: parsedJson['tglReviewSalesMillis'] as int?,
       tglReviewSales: parsedJson['tglReviewSales'] as String?,
       salesNote: parsedJson['salesNote'] as String?,
-      tglSubmitBrokerMillis: parsedJson['tglSubmitBrokerMillis'] as int?,
-      tglSubmitBroker: parsedJson['tglSubmitBroker'] as String?,
-      tglReviewBroker: parsedJson['tglReviewBroker'] as int?,
-      tglReviewBrokerMillis: parsedJson['tglReviewBrokerMillis'] as String?,
-      brokerNote: parsedJson['brokerNote'] as String?,
-      tglSubmitAsuransiMillis: parsedJson['tglSubmitAsuransiMillis'] as int?,
-      tglSubmitAsuransi: parsedJson['tglSubmitAsuransi'] as String?,
+      tglRecapMillis: parsedJson['tglRecapMillis'] as int?,
+      tglRecap: parsedJson['tglRecap'] as String?,
+      recapSppaId: parsedJson['recapSppaId'] as String?,
+      // tglReviewBroker: parsedJson['tglReviewBroker'] as int?,
+      // tglReviewBrokerMillis: parsedJson['tglReviewBrokerMillis'] as String?,
+      // brokerNote: parsedJson['brokerNote'] as String?,
+      // tglSubmitAsuransiMillis: parsedJson['tglSubmitAsuransiMillis'] as int?,
+      // tglSubmitAsuransi: parsedJson['tglSubmitAsuransi'] as String?,
       tglResponseAsuransiMillis:
           parsedJson['tglResponseAsuransiMillis'] as int?,
       tglResponseAsuransi: parsedJson['tglResponseAsuransi'] as String?,
       statusResponseAsuransi: parsedJson['statusResponseAsuransi'] as int?,
+      asuransiNote: parsedJson['asuransiNote'] as String?,
       tglCreated: parsedJson['tglCreated'] as String?,
       tglCreatedMillis: parsedJson['tglCreatedMillis'] as int?,
       tglLastUpdate: parsedJson['tglLastUpdate'] as String?,
@@ -176,16 +184,18 @@ class SppaStatus {
         'tglReviewSalesMillis': tglReviewSalesMillis,
         'tglReviewSales': tglReviewSales,
         'salesNote': salesNote,
-        'tglSubmitBrokerMillis': tglSubmitBrokerMillis,
-        'tglSubmitBroker': tglSubmitBroker,
-        'tglReviewBroker': tglReviewBroker,
-        'tglReviewBrokerMillis': tglReviewBrokerMillis,
-        'brokerNote': brokerNote,
-        'tglSubmitAsuransiMillis': tglSubmitAsuransiMillis,
-        'tglSubmitAsuransi': tglSubmitAsuransi,
+        'tglRecapMillis': tglRecapMillis,
+        'tglRecap': tglRecap,
+        'recapSppaId': recapSppaId,
+        // 'tglReviewBroker': tglReviewBroker,
+        // 'tglReviewBrokerMillis': tglReviewBrokerMillis,
+        // 'brokerNote': brokerNote,
+        // 'tglSubmitAsuransiMillis': tglSubmitAsuransiMillis,
+        // 'tglSubmitAsuransi': tglSubmitAsuransi,
         'tglResponseAsuransiMillis': tglResponseAsuransiMillis,
         'tglResponseAsuransi': tglResponseAsuransi,
         'statusResponseAsuransi': statusResponseAsuransi,
+        'asuransiNote': asuransiNote,
         'tglCreated': tglCreated,
         'tglCreatedMillis': tglCreatedMillis,
         'tglLastUpdate': tglLastUpdate,

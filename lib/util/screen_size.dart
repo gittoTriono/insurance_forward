@@ -1,4 +1,12 @@
-enum ScreenSize { verySmall, small, mediumSmall, medium, mediumLarge, large, extraLarge }
+enum ScreenSize {
+  verySmall,
+  small,
+  mediumSmall,
+  medium,
+  mediumLarge,
+  large,
+  extraLarge
+}
 
 const double _breakPoint1 = 360.0;
 const double _breakPoint2 = 480.0;
@@ -7,13 +15,11 @@ const double _breakPoint4 = 840.0;
 const double _breakPoint5 = 1024.0;
 const double _breakPoint6 = 1980.0;
 
-
-int screenSizeIndex(double width){
+int screenSizeIndex(double width) {
   return getScreenSizeIndex(getScreenSize(width));
 }
 
 ScreenSize getScreenSize(double width) {
-
   if (width < _breakPoint1) {
     return ScreenSize.verySmall;
   } else if (width >= _breakPoint1 && width <= _breakPoint2) {
@@ -33,12 +39,10 @@ ScreenSize getScreenSize(double width) {
   }
 }
 
-int getScreenSizeIndex(ScreenSize screen){
-
+int getScreenSizeIndex(ScreenSize screen) {
   int _idx;
 
-  switch(screen){
-
+  switch (screen) {
     case ScreenSize.verySmall:
       _idx = 0;
       break;
@@ -66,29 +70,40 @@ int getScreenSizeIndex(ScreenSize screen){
   }
 
   return _idx;
-
 }
 
-double formWidth(double _width){
-
+double formWidth(double _width) {
   int index = screenSizeIndex(_width);
 
-
-  if(index>5){
-    return 0.25*_width;
-  } else if(index>4){
-    return 0.35*_width;
-  } else if(index>3){
-    return 0.5*_width;
-  } else if(index>2){
-    return 0.6*_width;
-  } else if(index>1){
-    return 0.8*_width;
+  if (index > 5) {
+    return 0.25 * _width;
+  } else if (index > 4) {
+    return 0.35 * _width;
+  } else if (index > 3) {
+    return 0.5 * _width;
+  } else if (index > 2) {
+    return 0.6 * _width;
+  } else if (index > 1) {
+    return 0.8 * _width;
   } else {
-    return 0.9*_width;
+    return 0.9 * _width;
   }
-
 }
 
+double formWidth2(double _width) {
+  int index = screenSizeIndex(_width);
 
-
+  if (index > 5) {
+    return 0.8 * _width;
+  } else if (index > 4) {
+    return 0.8 * _width;
+  } else if (index > 3) {
+    return 0.8 * _width;
+  } else if (index > 2) {
+    return 0.8 * _width;
+  } else if (index > 1) {
+    return 0.85 * _width;
+  } else {
+    return 0.9 * _width;
+  }
+}

@@ -35,8 +35,6 @@ class TernakForm extends StatelessWidget {
                     style: TextStyle(fontSize: 12),
                     controller: controller.earTagController,
                     decoration: const InputDecoration(
-                      //isDense: true,
-                      //constraints: BoxConstraints.tightFor(),
                       border: OutlineInputBorder(),
                       labelText: 'Ear Tag',
                     ),
@@ -86,8 +84,6 @@ class TernakForm extends StatelessWidget {
                     label: const Text('Jenis Sapi'),
                     controller: controller.jenisController,
                     inputDecorationTheme: const InputDecorationTheme(
-                      //contentPadding: EdgeInsets.only(left: 10),
-                      isDense: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular(5),
@@ -119,8 +115,6 @@ class TernakForm extends StatelessWidget {
                     label: const Text('Jenis Kelamin'),
                     controller: controller.kelaminController,
                     inputDecorationTheme: const InputDecorationTheme(
-                      isDense: true,
-                      //contentPadding: EdgeInsets.only(left: 10),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular(5),
@@ -152,7 +146,6 @@ class TernakForm extends StatelessWidget {
 
                     controller: controller.perolehanController,
                     decoration: const InputDecoration(
-                      isDense: true,
                       hintText: 'Nilai pembelian',
                       hintStyle: TextStyle(fontSize: 12),
                       border: OutlineInputBorder(),
@@ -186,8 +179,11 @@ class TernakForm extends StatelessWidget {
                     ),
                     keyboardType: const TextInputType.numberWithOptions(),
                     validator: (value) {
+                      final nilai = double.parse(value!);
                       if (value == null || value.isEmpty) {
                         return "*Wajib disini.";
+                      } else if (nilai > 10000000) {
+                        return 'Nilai tidak boleh melebihi Rp. 10,000,000';
                       } else {
                         return null;
                       }
