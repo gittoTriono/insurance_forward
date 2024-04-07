@@ -3,7 +3,7 @@ import "package:get/get.dart";
 import "package:insurance/bloc/login_controller.dart";
 import "package:insurance/bloc/session_controller.dart";
 import "package:insurance/bloc/sppa_controller.dart";
-import "package:insurance/bloc/sppa_recap_controller.dart";
+//import "package:insurance/bloc/sppa_recap_controller.dart";
 import "package:insurance/bloc/theme_controller.dart";
 import "package:insurance/model/info_jastan.dart";
 import "package:insurance/model/sppa_header.dart";
@@ -12,7 +12,7 @@ import "package:insurance/model/ternak_sapi.dart";
 import "package:insurance/util/constants.dart";
 import 'package:http/http.dart' as http;
 //import "/model/products.dart";
-import "/util/constants.dart" as constant;
+//import "/util/constants.dart" as constant;
 
 class DashboardController extends GetxController {
   RxList<SppaHeader> listAktifSppa = <SppaHeader>[].obs;

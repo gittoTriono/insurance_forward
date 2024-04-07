@@ -395,7 +395,7 @@ class SppaDetail extends StatelessWidget {
                     spacing: 10,
                     runSpacing: 10,
                     //                  crossAxisAlignment: CrossAxisAlignment.start,
-                    children: aTernakController.listTernak.value
+                    children: aTernakController.listTernak
                         .map(
                           (e) => Container(
                             padding: EdgeInsets.symmetric(

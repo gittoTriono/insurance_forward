@@ -1,5 +1,5 @@
 import "dart:convert";
-import "package:intl/date_symbol_data_local.dart";
+//import "package:intl/date_symbol_data_local.dart";
 
 import "/util/constants.dart" as constant;
 import "package:get/get.dart";

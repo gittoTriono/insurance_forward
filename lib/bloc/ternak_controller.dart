@@ -7,7 +7,6 @@ import 'package:insurance/model/ternak_sapi.dart';
 import 'package:http/http.dart' as http;
 import 'package:insurance/util/constants.dart';
 import 'package:intl/intl.dart';
-import '/util/constants.dart' as constant;
 
 class TernakController extends GetxController {
   final GlobalKey<FormState> ternakFormKey = GlobalKey<FormState>();
