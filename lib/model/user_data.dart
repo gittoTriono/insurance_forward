@@ -1,5 +1,4 @@
 class UserModel {
-
   String userId;
   String type; //[HP, EMAIL]
   String dob; //YYYY-MM-DD
@@ -24,34 +23,33 @@ class UserModel {
   String partner;
   String classification;
 
-  UserModel( {
-    this.userId="",
-    this.type="",
-    this.dob="",
-    this.pob="",
-    this.imei="",
-    this.roles="",
-    this.name="",
-    this.alias="",
-    this.status="",
-    this.account="",
-    this.accountNonExpired=false,
-    this.enabled=false,
-    this.locked=false,
-    this.expired=true,
-    this.userTypes="",
-    this.trial=0,
-    this.chain="",
+  UserModel({
+    this.userId = "",
+    this.type = "",
+    this.dob = "",
+    this.pob = "",
+    this.imei = "",
+    this.roles = "",
+    this.name = "",
+    this.alias = "",
+    this.status = "",
+    this.account = "",
+    this.accountNonExpired = false,
+    this.enabled = false,
+    this.locked = false,
+    this.expired = true,
+    this.userTypes = "",
+    this.trial = 0,
+    this.chain = "",
     //this.token="",
     //this.pass="",
-    this.responseCode="",
-    this.responseMessage="",
-    this.partner="",
-    this.classification="",
-  }
-      );
+    this.responseCode = "",
+    this.responseMessage = "",
+    this.partner = "",
+    this.classification = "",
+  });
 
-  factory UserModel.fromJson(Map<String, dynamic> parsedJson){
+  factory UserModel.fromJson(Map<String, dynamic> parsedJson) {
     return UserModel(
       userId: parsedJson['userId'] as String,
       type: parsedJson['type'] as String,
@@ -65,7 +63,7 @@ class UserModel {
       account: parsedJson['account'] as String,
       accountNonExpired: parsedJson['accountNonExpired'] as bool,
       enabled: parsedJson['enabled'] as bool,
-      locked : parsedJson['locked'] as bool,
+      locked: parsedJson['locked'] as bool,
       expired: parsedJson['expired'] as bool,
       userTypes: parsedJson['userTypes'] as String,
       trial: parsedJson['trial'] as int,
@@ -79,36 +77,34 @@ class UserModel {
     );
   }
 
-  Map<String, dynamic> toJson() =>{
-    'userId': userId,
-    'type': type,
-    'dob': dob,
-    'pob': pob,
-    'imei': imei,
-    'roles': roles,
-    'name': name,
-    'alias': alias,
-    'status': status,
-    'account': account,
-    'accountNonExpired': accountNonExpired,
-    'enabled': enabled,
-    'locked': locked,
-    'expired': expired,
-    'userTypes': userTypes,
-    'trial': trial,
-    'chain': chain,
-    //'token': token,
-    //'pass': pass,
-    'responseCode': responseCode,
-    'responseMessage': responseMessage,
-    'partner': partner,
-    'classification': classification,
-  };
-
+  Map<String, dynamic> toJson() => {
+        'userId': userId,
+        'type': type,
+        'dob': dob,
+        'pob': pob,
+        'imei': imei,
+        'roles': roles,
+        'name': name,
+        'alias': alias,
+        'status': status,
+        'account': account,
+        'accountNonExpired': accountNonExpired,
+        'enabled': enabled,
+        'locked': locked,
+        'expired': expired,
+        'userTypes': userTypes,
+        'trial': trial,
+        'chain': chain,
+        //'token': token,
+        //'pass': pass,
+        'responseCode': responseCode,
+        'responseMessage': responseMessage,
+        'partner': partner,
+        'classification': classification,
+      };
 }
 
 class RegistrationModel {
-
   String userId;
   String type; //[HP, EMAIL]
   String dob; //YYYY-MM-DD
@@ -133,34 +129,33 @@ class RegistrationModel {
   String partner;
   String classification;
 
-  RegistrationModel( {
-    this.userId="",
-    this.type="",
-    this.dob="",
-    this.pob="",
-    this.imei="",
-    this.roles="",
-    this.name="",
-    this.alias="",
-    this.status="",
-    this.account="",
-    this.accountNonExpired=false,
-    this.enabled=false,
-    this.locked=false,
-    this.expired=true,
-    this.userTypes="",
-    this.trial=0,
-    this.chain="",
-    this.token="",
-    this.pass="",
-    this.responseCode="",
-    this.responseMessage="",
-    this.partner="",
-    this.classification="",
-  }
-      );
+  RegistrationModel({
+    this.userId = "",
+    this.type = "",
+    this.dob = "",
+    this.pob = "",
+    this.imei = "",
+    this.roles = "",
+    this.name = "",
+    this.alias = "",
+    this.status = "",
+    this.account = "",
+    this.accountNonExpired = false,
+    this.enabled = false,
+    this.locked = false,
+    this.expired = true,
+    this.userTypes = "",
+    this.trial = 0,
+    this.chain = "",
+    this.token = "",
+    this.pass = "",
+    this.responseCode = "",
+    this.responseMessage = "",
+    this.partner = "",
+    this.classification = "",
+  });
 
-  factory RegistrationModel.fromJson(Map<String, dynamic> parsedJson){
+  factory RegistrationModel.fromJson(Map<String, dynamic> parsedJson) {
     return RegistrationModel(
       userId: parsedJson['userId'] as String,
       type: parsedJson['type'] as String,
@@ -174,7 +169,7 @@ class RegistrationModel {
       account: parsedJson['account'] as String,
       accountNonExpired: parsedJson['accountNonExpired'] as bool,
       enabled: parsedJson['enabled'] as bool,
-      locked : parsedJson['locked'] as bool,
+      locked: parsedJson['locked'] as bool,
       expired: parsedJson['expired'] as bool,
       userTypes: parsedJson['userTypes'] as String,
       trial: parsedJson['trial'] as int,
@@ -188,51 +183,47 @@ class RegistrationModel {
     );
   }
 
-  Map<String, dynamic> toJson() =>{
-    'userId': userId,
-    'type': type,
-    'dob': dob,
-    'pob': pob,
-    'imei': imei,
-    'roles': roles,
-    'name': name,
-    'alias': alias,
-    'status': status,
-    'account': account,
-    'accountNonExpired': accountNonExpired,
-    'enabled': enabled,
-    'locked': locked,
-    'expired': expired,
-    'userTypes': userTypes,
-    'trial': trial,
-    'chain': chain,
-    'token': token,
-    'pass': pass,
-    'responseCode': responseCode,
-    'responseMessage': responseMessage,
-    'partner': partner,
-    'classification': classification,
-  };
-
+  Map<String, dynamic> toJson() => {
+        'userId': userId,
+        'type': type,
+        'dob': dob,
+        'pob': pob,
+        'imei': imei,
+        'roles': roles,
+        'name': name,
+        'alias': alias,
+        'status': status,
+        'account': account,
+        'accountNonExpired': accountNonExpired,
+        'enabled': enabled,
+        'locked': locked,
+        'expired': expired,
+        'userTypes': userTypes,
+        'trial': trial,
+        'chain': chain,
+        'token': token,
+        'pass': pass,
+        'responseCode': responseCode,
+        'responseMessage': responseMessage,
+        'partner': partner,
+        'classification': classification,
+      };
 }
 
 class SimpleUserModel {
-
   String userId;
   String token;
   String responseCode;
   String responseMessage;
 
+  SimpleUserModel({
+    this.userId = "",
+    this.token = "",
+    this.responseCode = "",
+    this.responseMessage = "",
+  });
 
-  SimpleUserModel( {
-    this.userId="",
-    this.token="",
-    this.responseCode="",
-    this.responseMessage="",
-
-    });
-
-  factory SimpleUserModel.fromJson(Map<String, dynamic> parsedJson){
+  factory SimpleUserModel.fromJson(Map<String, dynamic> parsedJson) {
     return SimpleUserModel(
       userId: parsedJson['userId'] as String,
       token: parsedJson['token'] as String,
@@ -241,11 +232,10 @@ class SimpleUserModel {
     );
   }
 
-  Map<String, dynamic> toJson() =>{
-    'userId': userId,
-    'token': token,
-    'responseCode': responseCode,
-    'responseMessage': responseMessage,
-  };
-
+  Map<String, dynamic> toJson() => {
+        'userId': userId,
+        'token': token,
+        'responseCode': responseCode,
+        'responseMessage': responseMessage,
+      };
 }

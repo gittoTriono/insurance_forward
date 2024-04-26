@@ -12,7 +12,10 @@ import 'package:insurance/mainpages/Sppa/sppa_submit.dart';
 import 'package:insurance/mainpages/Sppa/ternak_form.dart';
 import 'package:insurance/mainpages/Sppa/ternak_foto.dart';
 import 'package:insurance/mainpages/dashboard.dart';
-import 'package:insurance/mainpages/produk_detail.dart';
+import 'package:insurance/mainpages/product/produk_detail.dart';
+import 'package:insurance/mainpages/profile/kandang_form.dart';
+import 'package:insurance/mainpages/profile/profile_customer.dart';
+import 'package:insurance/mainpages/profile/profile_peternak.dart';
 import 'package:insurance/model/sppa_perluasan.dart';
 import 'package:insurance/model/sppa_recap.dart';
 import '../adminpages/user_registration.dart';
@@ -38,6 +41,9 @@ class AppPages {
     GetPage(name: '/dashboard', page: () => const Dashboard()),
     GetPage(name: '/dashboard/registration', page: () => RegistrationForm()),
     GetPage(name: '/dashboard/ProdukDetail', page: () => ProdukDetail()),
+    GetPage(name: '/profile', page: () => ProfileCustomer()),
+    GetPage(name: '/profile/kandang', page: () => ProfilePeternak()),
+    GetPage(name: '/kandang/form', page: () => FormKandang()),
     GetPage(name: '/sppa', page: () => const SppaView()),
     GetPage(name: '/sppa/sppaDetail', page: () => const SppaDetail()),
     GetPage(name: '/sppa/sppaDetail/hitungPremi', page: () => HitungPremi()),

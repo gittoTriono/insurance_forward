@@ -141,8 +141,7 @@ class RecapSppaDetailView extends StatelessWidget {
                                                   Get.toNamed(
                                                       '/sppa/sppaDetail',
                                                       arguments: {
-                                                        'sppaId': el.sppaId,
-                                                        'isNew': 'false'
+                                                        'sppaId': el.sppaId
                                                       });
                                                 },
                                                 icon: Icon(

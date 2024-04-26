@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:insurance/bloc/login_controller.dart';
 import 'package:insurance/bloc/produk_controller.dart';
-import '../model/products.dart';
-import '../widgets/custom_main_page_text_button.dart';
-import '../widgets/custom_textfield.dart';
+import '../../model/products.dart';
+import '../../widgets/custom_main_page_text_button.dart';
+import '../../widgets/custom_textfield.dart';
 
 class ProdukDetail extends StatelessWidget {
   const ProdukDetail({super.key});
@@ -12,6 +13,7 @@ class ProdukDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     ProdukController _produkCtrl = Get.find();
     ProdukAsuransi produk = _produkCtrl.selected.value;
+    LoginController loginController = Get.find();
 
     RxBool _benefitVis = true.obs;
     RxBool _klaimVis = false.obs;
@@ -240,8 +242,18 @@ class ProdukDetail extends StatelessWidget {
                     },
                     child: TextBodySmall('Hitung Premi')),
                 Visibility(
-                    visible: newSPPAButtonVisible,
-                    child: appBarTextButton('SPPA Baru', '/dashboard/newsppa')),
+                  visible: newSPPAButtonVisible,
+                  child: OutlinedButton(
+                      onPressed: () {
+                        loginController.check.value.userData.userId =
+                            'SASPRI12-05';
+                        Get.toNamed('/sppa/main', arguments: {
+                          'sppaId': '',
+                          'prodId': produk.productCode
+                        });
+                      },
+                      child: Text('Beli')),
+                ),
               ],
             ),
           ),

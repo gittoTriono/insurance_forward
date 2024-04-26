@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:insurance/bloc/login_controller.dart';
 import 'package:insurance/bloc/sppa_controller.dart';
 import 'package:insurance/bloc/ternak_controller.dart';
-//import 'package:insurance_inputer/controller/counters.dart';
 import 'package:insurance/model/products.dart';
 import 'package:insurance/model/sppa_header.dart';
 import 'package:insurance/util/screen_size.dart';
@@ -18,10 +18,14 @@ class SppaMaintenance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final thisSppa = Get.arguments['sppaId'];
-    print('sppaId:$thisSppa');
+    ProdukController prodController = Get.find();
+    LoginController loginController = Get.find();
 
     SppaHeaderController sppaController;
+
+    final thisSppa = Get.arguments['sppaId'];
+    final theProd = Get.arguments['prodId'];
+    print('sppa_main  sppaId:$thisSppa prod:$theProd');
 
     if (thisSppa == '') {
       sppaController = Get.put(SppaHeaderController());
@@ -29,62 +33,67 @@ class SppaMaintenance extends StatelessWidget {
       sppaController = Get.find<SppaHeaderController>();
     }
 
+    print(
+        'role ${loginController.check.value.roles} userId: ${loginController.check.value.userData.userId} ');
+
     // TODO move this section to controller initSppaMainPage ()
-    if (thisSppa != '') {
-      //print('sppa main for editing $thisSppa');
+    if (loginController.check.value.roles == 'ROLE_SALES') {
+      print('new sppa by ROLE_SALES');
+      sppaController.customerController.value.text = '';
+      sppaController.initProduct =
+          sppaController.appProdukController.listAllProdukAsuransi.first;
+      sppaController.isNewSppa.value = true;
+      sppaController.produkController.text = 'Pilih  Produk';
+    } else if (thisSppa != '') {
+      print('sppa main for editing $thisSppa');
       sppaController.isNewSppa.value = false;
 
       // load existing sppa for editing
       sppaController.customerController.value.text =
-          sppaController.sppaHeader.customerId!;
+          sppaController.sppaHeader.value.customerId!;
       sppaController.produkController.text =
-          sppaController.sppaHeader.produkName!;
-      sppaController.initProduct =
-          sppaController.appProdukController.listAllProdukAsuransi.firstWhere(
-              (e) => e.productName == sppaController.sppaHeader.produkName);
+          sppaController.sppaHeader.value.produkName!;
+      sppaController.initProduct = sppaController
+          .appProdukController.listAllProdukAsuransi
+          .firstWhere((e) =>
+              e.productName == sppaController.sppaHeader.value.produkName);
+      sppaController.produkController.text =
+          sppaController.initProduct!.productName!;
       //print('proof ${sppaController.initProduct!.productName}');
-      // load PerluasanRisiko yang sudah dipilih
-    } else {
-      //print('sppa main for new');
+    } else if (theProd != '') {
+      // buy from product catalog
+      print('sppa main for new sppa product $theProd');
+      print('user :${loginController.check.value.userData.userId}');
       sppaController.isNewSppa.value = true;
-      if (sppaController.sppaHeader.customerId != '') {
-        sppaController.customerController.value.text =
-            sppaController.sppaHeader.customerId!;
-        // to load all customer data to sppaHeader
-        sppaController.validateCustomer();
-        // print(
-        //     'customer id sudah ada ${sppaController.customerController.value.text}');
-      }
-
-      if (sppaController.sppaHeader.produkCode != '') {
-        // print('product code sudah ada ${sppaController.sppaHeader.produkCode}');
-        // print(
-        //     'product loaded ada ${sppaController.appProdukController.listSelectedProdukAsuransi.value.length}');
-        sppaController.initProduct = sppaController
-            .appProdukController.listSelectedProdukAsuransi
-            .firstWhere(
-                (e) => e.productCode == sppaController.sppaHeader.produkCode);
-        // to load all product data to sppaHeader
+      sppaController.customerController.value.text =
+          loginController.check.value.userData.userId;
+      sppaController.validateCustomer();
+      sppaController.initProduct = prodController.selected.value;
+      sppaController.produkController.text =
+          sppaController.initProduct!.productName!;
+      sppaController.selectProduct(sppaController.initProduct!);
+    } else {
+      // buy from dashboard
+      print(
+          'sppa main : new Sppa by ${loginController.check.value.userData.userId} no product selected');
+      sppaController.isNewSppa.value = true;
+      sppaController.customerController.value.text =
+          loginController.check.value.userData.userId;
+      sppaController.validateCustomer();
+      sppaController.produkController.text = 'Pilih  Produk';
+      // to load all product data to sppaHeader
+      if (sppaController.appProdukController.listAllProdloaded.value) {
+        sppaController.initProduct =
+            sppaController.appProdukController.listAllProdukAsuransi.first;
         sppaController.selectProduct(sppaController.initProduct!);
-        sppaController.produkController.text =
-            sppaController.initProduct!.productName!;
-
-        // load perluasanrisiko untuk produk ini
-      } else {
-        //print('product pilih dulu');
-        // sppaController.appProdukController.getProdukAsuransiAll();
-
-        if (sppaController.appProdukController.listAllProdloaded.value) {
-          sppaController.initProduct =
-              sppaController.appProdukController.listAllProdukAsuransi.first;
-          sppaController.selectProduct(sppaController.initProduct!);
-        }
+        sppaController.produkController.text = 'Pilih  Produk';
       }
     }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sppa (tahap 1 dari 3)'),
+        actions: [Text('User: ${loginController.check.value.userId}')],
       ),
       body: Form(
         key: sppaController.sppaFormKey,
@@ -143,7 +152,7 @@ class SppaMaintenance extends StatelessWidget {
                         ),
                       ),
                       initialSelection: sppaController.initProduct,
-                      hintText: 'Pilih produk',
+                      // hintText: 'Pilih produk',
                       onSelected: (ProdukAsuransi? value) {
                         // This is called when the user selects an item.
                         print('selected: ${value!.productName}');
@@ -216,5 +225,7 @@ class SppaMaintenance extends StatelessWidget {
         ),
       ),
     );
+
+    ;
   }
 }

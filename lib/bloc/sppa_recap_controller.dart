@@ -60,7 +60,6 @@ class RecapSppaController extends GetxController {
   void createRecapSppa() async {
     // select unit products from aktifSppa
     var set = Set<String>();
-    var thisSppa;
 
     List<SppaHeader> uniqueProd = dashboardController.listAktifSppa
         .where((one) => one.statusSppa == 4)
@@ -81,7 +80,7 @@ class RecapSppaController extends GetxController {
         recapHeader.value.produkAsuransiCode = uniqueProd[i].produkCode;
         recapHeader.value.produkAsuransiNama = uniqueProd[i].produkName;
         recapHeader.value.codeAsuransi = uniqueProd[i].asuransiName;
-
+        recapHeader.value.jumlahTernak = 0;
         recapHeader.value.jumlahSppa = dashboardController.listAktifSppa
             .where((p0) =>
                 p0.produkCode == uniqueProd[i].produkCode && p0.statusSppa == 4)
@@ -95,6 +94,7 @@ class RecapSppaController extends GetxController {
                 0,
                 (previousValue, element) =>
                     previousValue + element.nilaiPertanggungan!);
+
         print(
             'total pertanggungan ${recapHeader.value.totalNilaiPertanggungan}');
 
@@ -157,20 +157,32 @@ class RecapSppaController extends GetxController {
             int ctr = 1;
 
             for (var m = 0; m < dashboardController.listAktifSppa.length; m++) {
-              thisSppa = dashboardController.listAktifSppa[m];
-              if (thisSppa.produkCode == uniqueProd[i].produkCode &&
-                  thisSppa.statusSppa == 4) {
-                print('$ctr. post detail recapDetail ${thisSppa.id}');
+              sppaController.sppaHeader.value =
+                  dashboardController.listAktifSppa[m];
+              if (sppaController.sppaHeader.value.produkCode ==
+                      uniqueProd[i].produkCode &&
+                  sppaController.sppaHeader.value.statusSppa == 4) {
+                print(
+                    '$ctr. post detail recapDetail ${sppaController.sppaHeader.value.id}');
                 ctr++;
-                recapDetail.value.customerId = thisSppa.customerId;
+                recapDetail.value.customerId =
+                    sppaController.sppaHeader.value.customerId;
                 recapDetail.value.recapHeaderId = recapHeader.value.id;
-                recapDetail.value.sppaId = thisSppa.id;
-                recapDetail.value.produkAsuransiCode = thisSppa.produkCode;
-                recapDetail.value.produkAsuransiNama = thisSppa.produkName;
+                recapDetail.value.sppaId = sppaController.sppaHeader.value.id;
+                recapDetail.value.produkAsuransiCode =
+                    sppaController.sppaHeader.value.produkCode;
+                recapDetail.value.produkAsuransiNama =
+                    sppaController.sppaHeader.value.produkName;
                 // recapDetail. jumlahTernak;
                 recapDetail.value.nilaiPertanggungan =
-                    thisSppa.nilaiPertanggungan;
-                recapDetail.value.nilaiPremi = thisSppa.premiAmount;
+                    sppaController.sppaHeader.value.nilaiPertanggungan;
+                recapDetail.value.nilaiPremi =
+                    sppaController.sppaHeader.value.premiAmount;
+
+                recapHeader.value.jumlahTernak =
+                    recapHeader.value.jumlahTernak! +
+                        await sppaController.getSppaJumlahTernak(
+                            sppaController.sppaHeader.value.id!);
 
                 url = Uri.parse('$baseUrl/RecapSppaDetail');
                 body = json.encode(recapDetail.value);
@@ -187,12 +199,14 @@ class RecapSppaController extends GetxController {
 
                   // SppaHeader update too, yaitu dashboardController.listAktifSppa[j]
 
-                  thisSppa.statusSppa = 5;
+                  sppaController.sppaHeader.value.statusSppa = 5;
 
-                  url = Uri.parse('$baseUrl/SppaHeader/${thisSppa.id}');
-                  print('put sppaHeader $baseUrl/SppaHeader/${thisSppa.id}');
+                  url = Uri.parse(
+                      '$baseUrl/SppaHeader/${sppaController.sppaHeader.value.id}');
+                  print(
+                      'put sppaHeader $baseUrl/SppaHeader/${sppaController.sppaHeader.value.id}');
 
-                  body = json.encode(thisSppa);
+                  body = json.encode(sppaController.sppaHeader);
 
                   response = await client.put(url, body: body, headers: {
                     'Content-Type': 'application/json'
@@ -205,21 +219,24 @@ class RecapSppaController extends GetxController {
                   }
 
                   // sppaStatus updated too, find first
-                  var thisSppaStatus = dashboardController.listAktifSppaStatus
-                      .firstWhere((element) => element.sppaId == thisSppa.id);
+                  sppaController.getSppaStatusWithSppaId(
+                      sppaController.sppaHeader.value.id!);
 
                   print(
-                      'trying put sppaStatus id ${thisSppaStatus.id} sppaId ${thisSppaStatus.sppaId}');
-                  thisSppaStatus.statusSppa = 5;
-                  thisSppaStatus.recapSppaId = recapHeader.value.id;
-                  thisSppaStatus.tglRecapMillis =
-                      recapStatus.value.tglCreatedMillis;
-                  thisSppaStatus.tglRecap = recapStatus.value.tglCreated;
+                      'trying put sppaStatus id ${sppaController.sppaStatus.value.id} sppaId ${sppaController.sppaStatus.value.sppaId}');
+                  sppaController.sppaStatus.value.statusSppa = 5;
+                  sppaController.sppaStatus.value.recapSppaId =
+                      recapHeader.value.id!;
+                  sppaController.sppaStatus.value.tglRecapMillis =
+                      recapStatus.value.tglCreatedMillis!;
+                  sppaController.sppaStatus.value.tglRecap =
+                      recapStatus.value.tglCreated!;
 
-                  url = Uri.parse('$baseUrl/SppaStatus/${thisSppaStatus.id}');
+                  url = Uri.parse(
+                      '$baseUrl/SppaStatus/${sppaController.sppaStatus.value.id}');
                   print(
-                      'put sppaStatus $baseUrl/SppaStatus/${thisSppaStatus.id}');
-                  body = json.encode(thisSppaStatus);
+                      'put sppaStatus $baseUrl/SppaStatus/${sppaController.sppaStatus.value.id}');
+                  body = json.encode(sppaController.sppaStatus);
 
                   response = await client.put(url, body: body, headers: {
                     'Content-Type': 'application/json'
@@ -237,6 +254,21 @@ class RecapSppaController extends GetxController {
             }
           } else {
             print('post recapStatus gagal ${response.statusCode}');
+          }
+
+          // update jumlah ternak already set in the recapHeader
+          url = Uri.parse('$baseUrl/SppaRecapHeader/${recapHeader.value.id}');
+          body = json.encode(recapHeader.value);
+
+          response = await client.put(url, body: body, headers: {
+            'Content-Type': 'application/json'
+          }); // no authentication needed
+
+          if (response.statusCode == 200) {
+            print('put recap header jumlah ternak berhasil ');
+          } else {
+            print(
+                'put recap header jumlah ternak gagal ${response.statusCode}');
           }
         } else {
           print('post recapHeader gagal ${response.statusCode}');

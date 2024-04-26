@@ -98,11 +98,11 @@ double formWidth2(double _width) {
   } else if (index > 4) {
     return 0.8 * _width;
   } else if (index > 3) {
-    return 0.8 * _width;
-  } else if (index > 2) {
-    return 0.8 * _width;
-  } else if (index > 1) {
     return 0.85 * _width;
+  } else if (index > 2) {
+    return 0.85 * _width;
+  } else if (index > 1) {
+    return 0.9 * _width;
   } else {
     return 0.9 * _width;
   }

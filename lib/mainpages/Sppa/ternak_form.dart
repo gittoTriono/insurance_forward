@@ -225,7 +225,6 @@ class TernakForm extends StatelessWidget {
                       if (controller.ternakSeqNo.value <
                           int.parse(controller.jmlTernakController.text)) {
                         controller.saveATernak();
-                        Get.back();
                         // TODO else snackBar
                       }
                     },

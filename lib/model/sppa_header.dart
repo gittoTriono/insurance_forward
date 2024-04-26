@@ -84,32 +84,37 @@ class SppaHeader {
 }
 
 class SppaStatus {
-  String? id;
-  String? sppaId;
-  int? statusSppa;
-  int? initSubmitDtMillis;
-  String? initSubmitDt;
-  int? tglSubmitSalesMillis;
-  String? tglSubmitSales;
-  int? tglReviewSalesMillis;
-  String? tglReviewSales;
-  String? salesNote;
-  int? tglRecapMillis;
-  String? tglRecap;
-  String? recapSppaId;
-  // int? tglReviewBroker;
-  // String? tglReviewBrokerMillis;
-  // String? brokerNote;
-  // int? tglSubmitAsuransiMillis;
-  // String? tglSubmitAsuransi;
-  int? tglResponseAsuransiMillis;
-  String? tglResponseAsuransi;
-  int? statusResponseAsuransi;
-  String? asuransiNote;
-  String? tglCreated;
-  int? tglCreatedMillis;
-  String? tglLastUpdate;
-  int? tglLastUpdateMillis;
+  String id;
+  String sppaId;
+  int statusSppa;
+  int initSubmitDtMillis;
+  String initSubmitDt;
+  int tglReviewSalesMillis;
+  String tglReviewSales;
+  String salesNote;
+  int tglSubmitSalesMillis;
+  String tglSubmitSales;
+  String tglReviewMarketing;
+  int tglReviewMarketingMillis;
+  String marketingNote;
+  String tglSubmitMarketing;
+  int tglSubmitMarketingMillis;
+  int tglRecapMillis;
+  String tglRecap;
+  String recapSppaId;
+  String tglReviewBroker;
+  int tglReviewBrokerMillis;
+  String brokerNote;
+  int tglSubmitBrokerMillis;
+  String tglSubmitBroker;
+  int tglResponseAsuransiMillis;
+  String tglResponseAsuransi;
+  int statusResponseAsuransi;
+  String asuransiNote;
+  String tglCreated;
+  int tglCreatedMillis;
+  String tglLastUpdate;
+  int tglLastUpdateMillis;
 
   SppaStatus({
     this.id = '',
@@ -117,19 +122,24 @@ class SppaStatus {
     this.statusSppa = 0,
     this.initSubmitDtMillis = 0,
     this.initSubmitDt = '',
-    this.tglSubmitSalesMillis = 0,
-    this.tglSubmitSales = '',
     this.tglReviewSalesMillis = 0,
     this.tglReviewSales = '',
     this.salesNote = '',
+    this.tglSubmitSalesMillis = 0,
+    this.tglSubmitSales = '',
+    this.tglReviewMarketing = '',
+    this.tglReviewMarketingMillis = 0,
+    this.marketingNote = '',
+    this.tglSubmitMarketing = '',
+    this.tglSubmitMarketingMillis = 0,
     this.tglRecapMillis = 0,
     this.tglRecap = '',
     this.recapSppaId = '',
-    // this.tglReviewBroker = 0,
-    // this.tglReviewBrokerMillis = '',
-    // this.brokerNote = '',
-    // this.tglSubmitAsuransiMillis = 0,
-    // this.tglSubmitAsuransi = '',
+    this.tglReviewBroker = '',
+    this.tglReviewBrokerMillis = 0,
+    this.brokerNote = '',
+    this.tglSubmitBrokerMillis = 0,
+    this.tglSubmitBroker = '',
     this.tglResponseAsuransiMillis = 0,
     this.tglResponseAsuransi = '',
     this.statusResponseAsuransi = 0,
@@ -142,56 +152,64 @@ class SppaStatus {
 
   factory SppaStatus.fromJson(Map<String, dynamic> parsedJson) {
     return SppaStatus(
-      id: parsedJson['id'] as String?,
-      sppaId: parsedJson['sppaId'] as String?,
-      initSubmitDtMillis: parsedJson['initSubmitDtMillis']
-          as int?, // DateTime.parse(map['date']),
-      initSubmitDt: parsedJson['initSubmitDt'] as String?,
-      statusSppa: parsedJson['statusSppa'] as int?,
-      tglSubmitSalesMillis: parsedJson['tglSubmitSalesMillis'] as int?,
-      tglSubmitSales: parsedJson['tglSubmitSales'] as String?,
-      tglReviewSalesMillis: parsedJson['tglReviewSalesMillis'] as int?,
-      tglReviewSales: parsedJson['tglReviewSales'] as String?,
-      salesNote: parsedJson['salesNote'] as String?,
-      tglRecapMillis: parsedJson['tglRecapMillis'] as int?,
-      tglRecap: parsedJson['tglRecap'] as String?,
-      recapSppaId: parsedJson['recapSppaId'] as String?,
-      // tglReviewBroker: parsedJson['tglReviewBroker'] as int?,
-      // tglReviewBrokerMillis: parsedJson['tglReviewBrokerMillis'] as String?,
-      // brokerNote: parsedJson['brokerNote'] as String?,
-      // tglSubmitAsuransiMillis: parsedJson['tglSubmitAsuransiMillis'] as int?,
-      // tglSubmitAsuransi: parsedJson['tglSubmitAsuransi'] as String?,
-      tglResponseAsuransiMillis:
-          parsedJson['tglResponseAsuransiMillis'] as int?,
-      tglResponseAsuransi: parsedJson['tglResponseAsuransi'] as String?,
-      statusResponseAsuransi: parsedJson['statusResponseAsuransi'] as int?,
-      asuransiNote: parsedJson['asuransiNote'] as String?,
-      tglCreated: parsedJson['tglCreated'] as String?,
-      tglCreatedMillis: parsedJson['tglCreatedMillis'] as int?,
-      tglLastUpdate: parsedJson['tglLastUpdate'] as String?,
-      tglLastUpdateMillis: parsedJson['tglLastUpdateMillis'] as int?,
+      id: parsedJson['id'] as String,
+      sppaId: parsedJson['sppaId'] as String,
+      statusSppa: parsedJson['statusSppa'] as int,
+      initSubmitDtMillis: parsedJson['initSubmitDtMillis'] as int,
+      initSubmitDt: parsedJson['initSubmitDt'] as String,
+      tglReviewSalesMillis: parsedJson['tglReviewSalesMillis'] as int,
+      tglReviewSales: parsedJson['tglReviewSales'] as String,
+      salesNote: parsedJson['salesNote'] as String,
+      tglSubmitSalesMillis: parsedJson['tglSubmitSalesMillis'] as int,
+      tglSubmitSales: parsedJson['tglSubmitSales'] as String,
+      tglReviewMarketing: parsedJson['tglReviewMarketing'] as String,
+      tglReviewMarketingMillis: parsedJson['tglReviewMarketingMillis'] as int,
+      marketingNote: parsedJson['marketingNote'] as String,
+      tglSubmitMarketing: parsedJson['tglSubmitMarketing'] as String,
+      tglSubmitMarketingMillis: parsedJson['tglSubmitMarketingMillis'] as int,
+      tglRecapMillis: parsedJson['tglRecapMillis'] as int,
+      tglRecap: parsedJson['tglRecap'] as String,
+      recapSppaId: parsedJson['recapSppaId'] as String,
+      tglReviewBroker: parsedJson['tglReviewBroker'] as String,
+      tglReviewBrokerMillis: parsedJson['tglReviewBrokerMillis'] as int,
+      brokerNote: parsedJson['brokerNote'] as String,
+      tglSubmitBrokerMillis: parsedJson['tglSubmitBrokerMillis'] as int,
+      tglSubmitBroker: parsedJson['tglSubmitBroker'] as String,
+      tglResponseAsuransiMillis: parsedJson['tglResponseAsuransiMillis'] as int,
+      tglResponseAsuransi: parsedJson['tglResponseAsuransi'] as String,
+      statusResponseAsuransi: parsedJson['statusResponseAsuransi'] as int,
+      asuransiNote: parsedJson['asuransiNote'] as String,
+      tglCreated: parsedJson['tglCreated'] as String,
+      tglCreatedMillis: parsedJson['tglCreatedMillis'] as int,
+      tglLastUpdate: parsedJson['tglLastUpdate'] as String,
+      tglLastUpdateMillis: parsedJson['tglLastUpdateMillis'] as int,
     );
   }
 
   Map<String, dynamic> toJson() => {
-//        'id': id,    // to autocreate id
+        // 'id': id,  json-server trick
         'sppaId': sppaId,
+        'statusSppa': statusSppa,
         'initSubmitDtMillis': initSubmitDtMillis,
         'initSubmitDt': initSubmitDt,
-        'statusSppa': statusSppa,
-        'tglSubmitSalesMillis': tglSubmitSalesMillis,
-        'tglSubmitSales': tglSubmitSales,
         'tglReviewSalesMillis': tglReviewSalesMillis,
         'tglReviewSales': tglReviewSales,
         'salesNote': salesNote,
+        'tglSubmitSalesMillis': tglSubmitSalesMillis,
+        'tglSubmitSales': tglSubmitSales,
+        'tglReviewMarketing': tglReviewMarketing,
+        'tglReviewMarketingMillis': tglReviewMarketingMillis,
+        'marketingNote': marketingNote,
+        'tglSubmitMarketing': tglSubmitMarketing,
+        'tglSubmitMarketingMillis': tglSubmitMarketingMillis,
         'tglRecapMillis': tglRecapMillis,
         'tglRecap': tglRecap,
         'recapSppaId': recapSppaId,
-        // 'tglReviewBroker': tglReviewBroker,
-        // 'tglReviewBrokerMillis': tglReviewBrokerMillis,
-        // 'brokerNote': brokerNote,
-        // 'tglSubmitAsuransiMillis': tglSubmitAsuransiMillis,
-        // 'tglSubmitAsuransi': tglSubmitAsuransi,
+        'tglReviewBroker': tglReviewBroker,
+        'tglReviewBrokerMillis': tglReviewBrokerMillis,
+        'brokerNote': brokerNote,
+        'tglSubmitBrokerMillis': tglSubmitBrokerMillis,
+        'tglSubmitBroker': tglSubmitBroker,
         'tglResponseAsuransiMillis': tglResponseAsuransiMillis,
         'tglResponseAsuransi': tglResponseAsuransi,
         'statusResponseAsuransi': statusResponseAsuransi,

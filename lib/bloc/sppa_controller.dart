@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:http/http.dart' as http;
 import 'package:insurance/bloc/dashboard_controller.dart';
 import 'package:insurance/bloc/login_controller.dart';
@@ -30,25 +31,28 @@ class SppaHeaderController extends GetxController {
   late TextEditingController produkController;
   late TextEditingController tolakNoteController;
 
+  RxList<SppaHeader> listHelperSppa = <SppaHeader>[].obs;
+
   ProdukAsuransi selected = ProdukAsuransi();
 
-  var sppaHeader = SppaHeader();
-  RxInt sppaHeaderStatusObs = 0.obs; // manage display
-
-  var sppaStatus = SppaStatus();
+  Rx<SppaHeader> sppaHeader = SppaHeader().obs;
+  Rx<SppaStatus> sppaStatus = SppaStatus().obs;
+  RxInt sppaStatusDisp = 0.obs;
+  RxBool sppaLoaded = false.obs;
 
   RxList<SppaPerluasanRisiko> listPerluasanRisikoSppa =
       <SppaPerluasanRisiko>[].obs;
   RxBool listPerluasanRisikoSppaLoaded = false.obs;
 
-  RxString customerName = ''.obs; // just use theCustomer
   String baseUrl = constant.baseUrl;
+
   var client = http.Client();
   var custOk = false.obs;
   var prodOk = false.obs;
   var nextButOk = true.obs;
   var theCustomer = Customer().obs;
   var isNewSppa = true.obs;
+
   ProdukAsuransi? initProduct;
   RxDouble totalRate = 0.0.obs;
 
@@ -74,6 +78,8 @@ class SppaHeaderController extends GetxController {
 
   // final sppaController = Get.find<SppaHeaderController>();
   Rx<InfoAtsJasTan> infoAts = InfoAtsJasTan().obs;
+  RxBool infoAtsLoaded = false.obs;
+
   String initKriteriaPemeliharaan = '';
   String initSistemPakan = '';
 
@@ -120,7 +126,7 @@ class SppaHeaderController extends GetxController {
 
     tolakNoteController = TextEditingController();
 
-    print('done init sppa controller');
+    //print('done init sppa controller');
   }
 
   @override
@@ -137,56 +143,127 @@ class SppaHeaderController extends GetxController {
   }
 
   cekBtnVisible() {
+    print(
+        'in check button ${loginController.check.value.roles} ${sppaHeader.value.statusSppa}');
     if (loginController.check.value.roles == 'ROLE_CUSTOMER') {
-      if (sppaHeader.statusSppa == 1 || sppaHeader.statusSppa == 3) {
-        batalBtnVis.value = true;
-      } else {
-        batalBtnVis.value = false;
-      }
-    } else {
-      batalBtnVis.value = false;
-    }
-
-    if (loginController.check.value.roles == 'ROLE_CUSTOMER') {
-      if (sppaHeader.statusSppa == 1 || sppaHeader.statusSppa == 3) {
-        editBtnVis.value = true;
-      } else {
-        editBtnVis.value = false;
-      }
-    } else {
-      editBtnVis.value = false;
-    }
-
-    if (loginController.check.value.roles == 'ROLE_CUSTOMER') {
-      if (sppaHeader.statusSppa == 1 || sppaHeader.statusSppa == 3) {
-        submitBtnVis.value = true;
-      } else {
-        submitBtnVis.value = false;
-      }
-    } else {
-      if (loginController.check.value.roles == 'ROLE_ADMIN') {
-        if (sppaHeader.statusSppa == 2) {
+      switch (sppaHeader.value.statusSppa) {
+        case 1:
+          batalBtnVis.value = true;
+          editBtnVis.value = true;
           submitBtnVis.value = true;
-        } else {
+        case 2:
+          batalBtnVis.value = false;
+          editBtnVis.value = false;
           submitBtnVis.value = false;
-        }
-      } else {
-        submitBtnVis.value = false;
+          break;
+        case 3:
+          batalBtnVis.value = true;
+          editBtnVis.value = true;
+          submitBtnVis.value = true;
+          break;
+        default:
+          batalBtnVis.value = false;
+          editBtnVis.value = false;
+          submitBtnVis.value = false;
+          break;
       }
-
-      if (loginController.check.value.roles == 'ROLE_ADMIN') {
-        if (sppaHeader.statusSppa == 2) {
-          tolakBtnVis.value = true;
-        } else {
-          tolakBtnVis.value = false;
-        }
-      }
-
-      print('btn batal jadi ${batalBtnVis.value}');
-      print('btn edit jadi ${editBtnVis.value}');
-      print('btn submit jadi ${submitBtnVis.value}');
-      print('btn tolak jadi ${tolakBtnVis.value}');
     }
+
+    if (loginController.check.value.roles == 'ROLE_SALES') {
+      batalBtnVis.value = false;
+      editBtnVis.value = false;
+
+      switch (sppaHeader.value.statusSppa) {
+        case 1:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
+        case 2:
+          submitBtnVis.value = true;
+          tolakBtnVis.value = true;
+          break;
+        case 3:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
+        case 5:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = true;
+          break;
+
+        default:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
+      }
+    }
+
+    if (loginController.check.value.roles == 'ROLE_MARKETING') {
+      batalBtnVis.value = false;
+      editBtnVis.value = false;
+      switch (sppaHeader.value.statusSppa) {
+        case 1:
+        case 2:
+        case 3:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
+        case 4:
+          submitBtnVis.value = true;
+          tolakBtnVis.value = true;
+          break;
+        case 5:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
+        case 7:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = true;
+          break;
+
+        default:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
+      }
+    }
+
+    if (loginController.check.value.roles == 'ROLE_BROKER') {
+      batalBtnVis.value = false;
+      editBtnVis.value = false;
+      switch (sppaHeader.value.statusSppa) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
+        case 6:
+          submitBtnVis.value = true;
+          tolakBtnVis.value = true;
+          break;
+        case 7:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
+        case 9:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = true;
+          break;
+
+        default:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
+      }
+    }
+
+    print('btn batal jadi ${batalBtnVis.value}');
+    print('btn edit jadi ${editBtnVis.value}');
+    print('btn submit jadi ${submitBtnVis.value}');
+    print('btn tolak jadi ${tolakBtnVis.value}');
   }
 
   String sppaStatusDesc(int status) {
@@ -194,22 +271,24 @@ class SppaHeaderController extends GetxController {
       case 1:
         return 'Baru';
       case 2:
-        return 'Submit 1';
+        return 'Proses Sales';
       case 3:
-        return 'Tidak Lengkap';
+        return 'Kembali Dari Sales';
       case 4:
-        return 'Submit 2';
+        return 'Proses Marketing';
       case 5:
-        return 'Tidak Lengkap';
+        return 'Kembali dari Marketing';
       case 6:
-        return 'Submit 3';
+        return 'Proses Broker';
       case 7:
-        return 'Proses Asuransi';
+        return 'Kembali Dari Broker';
       case 8:
-        return 'Polis';
+        return 'Proses Asuransi';
       case 9:
-        return 'Tolak';
+        return 'Tolak Dari Asuransi';
       case 10:
+        return 'Terima Oleh Asuransi';
+      case 20:
         return 'Batal';
       default:
         return 'Tidak Dikenal';
@@ -239,10 +318,10 @@ class SppaHeaderController extends GetxController {
         theCustomer.value = Customer.fromJson(responseBody[0]);
         if (theCustomer.value.customerId == customerController.value.text) {
           custOk.value = true;
-          sppaHeader.customerId = customerController.value.text;
-          sppaHeader.salesId = theCustomer.value.salesId;
-          sppaHeader.marketingId = theCustomer.value.marketingId;
-          sppaHeader.brokerId = theCustomer.value.brokerId;
+          sppaHeader.value.customerId = customerController.value.text;
+          sppaHeader.value.salesId = theCustomer.value.salesId;
+          sppaHeader.value.marketingId = theCustomer.value.marketingId;
+          sppaHeader.value.brokerId = theCustomer.value.brokerId;
           customerController.value.text =
               '${customerController.value.text} - ${theCustomer.value.fullName!}';
 //          print(
@@ -262,7 +341,8 @@ class SppaHeaderController extends GetxController {
   void selectProduct(ProdukAsuransi aProd) {
     // TODO reconcile selected only from productController
     if (isNewSppa.value ||
-        (!isNewSppa.value && aProd.productCode != sppaHeader.produkCode)) {
+        (!isNewSppa.value &&
+            aProd.productCode != sppaHeader.value.produkCode)) {
       selected = aProd; // selected of SppaController
 
       appProdukController.selected.value =
@@ -270,22 +350,21 @@ class SppaHeaderController extends GetxController {
       // print('in selectProduk selected in sppa is: ${selected.productName}');
       // print('in selectProduk selected in produk is: ${selected.productName}');
       // get customer detail to display later
-      sppaHeader.produkCode = aProd.productCode;
-      sppaHeader.produkName = aProd.productName;
-      sppaHeader.asuransiName = aProd.codeAsuransi;
-      sppaHeader.kategori = aProd.productKategori;
-      sppaHeader.subKategori = aProd.productSubKategori;
-      sppaHeader.premiRate = aProd.ratePremi;
-      sppaHeader.tenor = aProd.tenor;
-      sppaHeader.statusSppa = 1;
+      sppaHeader.value.produkCode = aProd.productCode;
+      sppaHeader.value.produkName = aProd.productName;
+      sppaHeader.value.asuransiName = aProd.codeAsuransi;
+      sppaHeader.value.kategori = aProd.productKategori;
+      sppaHeader.value.subKategori = aProd.productSubKategori;
+      sppaHeader.value.premiRate = aProd.ratePremi;
+      sppaHeader.value.tenor = aProd.tenor;
+      sppaHeader.value.statusSppa = 1;
       prodOk.value = true;
-      sppaHeaderStatusObs.value = 1;
       // prepare perluasanRisiko nya
       getPerluasanRisikoSppa();
     }
   }
 
-  validateNextButton() {
+  void validateNextButton() {
     if (custOk.value && prodOk.value) {
       nextButOk.value = true;
     }
@@ -304,16 +383,16 @@ class SppaHeaderController extends GetxController {
     if (response.statusCode == 201) {
       print('post header berhasil');
       var responseBody = jsonDecode(response.body);
-      sppaHeader.id = responseBody["id"];
+      sppaHeader.value.id = responseBody["id"];
 
       // SppaStatus second
 
       // SppaStatus
       final saatIni = DateTime.now();
-      sppaStatus.sppaId = sppaHeader.id;
-      sppaStatus.statusSppa = 1;
-      sppaStatus.tglCreated = DateFormat("dd-MMM-yyyy").format(saatIni);
-      sppaStatus.tglCreatedMillis = saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.sppaId = sppaHeader.value.id!;
+      sppaStatus.value.statusSppa = 1;
+      sppaStatus.value.tglCreated = DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglCreatedMillis = saatIni.millisecondsSinceEpoch;
 
       url = Uri.parse('$baseUrl/SppaStatus');
       body = json.encode(sppaStatus);
@@ -328,7 +407,7 @@ class SppaHeaderController extends GetxController {
       if (response.statusCode == 201) {
         print('post status berhasil');
         responseBody = jsonDecode(response.body);
-        sppaStatus.id = responseBody["id"];
+        sppaStatus.value.id = responseBody["id"];
 
         // enable button to next step
         validateNextButton();
@@ -367,8 +446,8 @@ class SppaHeaderController extends GetxController {
       updateHeader = true;
     }
 
-    if (sppaHeader.produkName == produkController.text &&
-        sppaHeader.customerId == customerController.value.text) {
+    if (sppaHeader.value.produkName == produkController.text &&
+        sppaHeader.value.customerId == customerController.value.text) {
       print('header no change');
     } else {
       print('header changed');
@@ -377,10 +456,10 @@ class SppaHeaderController extends GetxController {
 
     if (updateHeader) {
       // recalculate premi amount just incase perluasan changed, ternak tidak.
-      sppaHeader.premiAmount =
-          sppaHeader.nilaiPertanggungan! * sppaHeader.premiRate!;
+      sppaHeader.value.premiAmount =
+          sppaHeader.value.nilaiPertanggungan! * sppaHeader.value.premiRate!;
 
-      url = Uri.parse('$baseUrl/SppaHeader/${sppaHeader.id}');
+      url = Uri.parse('$baseUrl/SppaHeader/${sppaHeader.value.id}');
       body = json.encode(sppaHeader);
 
 //    print('body : $body');
@@ -395,12 +474,13 @@ class SppaHeaderController extends GetxController {
 
         // SppaStatus
         final saatIni = DateTime.now();
-        sppaStatus.tglLastUpdate = DateFormat("dd-MMM-yyyy").format(saatIni);
-        sppaStatus.tglLastUpdateMillis = saatIni.millisecondsSinceEpoch;
-
-        url = Uri.parse('$baseUrl/SppaStatus/${sppaStatus.id}');
-        body = json.encode(sppaStatus);
-        // print('body : $body');
+        sppaStatus.value.tglLastUpdate =
+            DateFormat("dd-MMM-yyyy").format(saatIni);
+        sppaStatus.value.tglLastUpdateMillis = saatIni.millisecondsSinceEpoch;
+        print('$baseUrl/SppaStatus/${sppaStatus.value.id}');
+        url = Uri.parse('$baseUrl/SppaStatus/${sppaStatus.value.id}');
+        body = json.encode(sppaStatus.value);
+        print('body : $body');
         response = await client.put(url, body: body, headers: {
           'Content-Type': 'application/json'
         }); // no authentication needed
@@ -434,14 +514,14 @@ class SppaHeaderController extends GetxController {
     // SppaStatus
     final saatIni = DateTime.now();
     if (newStatus == 5) {
-      sppaStatus.statusSppa = newStatus;
-      sppaStatus.recapSppaId = recapId;
-      sppaStatus.tglRecap = DateFormat("dd-MMM-yyyy").format(saatIni);
-      sppaStatus.tglRecapMillis = saatIni.millisecondsSinceEpoch;
-      sppaStatus.tglLastUpdate = sppaStatus.tglRecap;
-      sppaStatus.tglLastUpdateMillis = sppaStatus.tglRecapMillis;
+      sppaStatus.value.statusSppa = newStatus;
+      sppaStatus.value.recapSppaId = recapId;
+      sppaStatus.value.tglRecap = DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglRecapMillis = saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.tglLastUpdate = sppaStatus.value.tglRecap;
+      sppaStatus.value.tglLastUpdateMillis = sppaStatus.value.tglRecapMillis;
 
-      url = Uri.parse('$baseUrl/SppaStatus/${sppaStatus.id}');
+      url = Uri.parse('$baseUrl/SppaStatus/${sppaStatus.value.id}');
       body = json.encode(sppaStatus);
       // print('body : $body');
       response = await client.put(url, body: body, headers: {
@@ -452,8 +532,8 @@ class SppaHeaderController extends GetxController {
         print('put status recap berhasil');
 
         // update header
-        sppaHeader.statusSppa = newStatus;
-        url = Uri.parse('$baseUrl/SppaHeader/${sppaHeader.id}');
+        sppaHeader.value.statusSppa = newStatus;
+        url = Uri.parse('$baseUrl/SppaHeader/${sppaHeader.value.id}');
         body = json.encode(sppaHeader);
 
         // print('body : $body');
@@ -481,7 +561,7 @@ class SppaHeaderController extends GetxController {
       // clear list to ensure no duplicate
       listPerluasanRisikoSppa.clear();
 
-      param1 = '?sppaId=${sppaHeader.id}';
+      param1 = '?sppaId=${sppaHeader.value.id}';
 
       //print(baseUrl + '/SppaPerluasanRisiko' + param1);
       var url = Uri.parse(baseUrl + '/SppaPerluasanRisiko' + param1);
@@ -554,7 +634,7 @@ class SppaHeaderController extends GetxController {
 
     for (var i = 0; i < appProdukController.listPerluasanRisiko.length; i++) {
       if (appProdukController.listPerluasanRisiko[i].selected!) {
-        newPerluasan.sppaId = sppaHeader.id;
+        newPerluasan.sppaId = sppaHeader.value.id;
         newPerluasan.namaPerluasanRisiko =
             appProdukController.listPerluasanRisiko[i].namaPerluasanRisiko;
         newPerluasan.rate = appProdukController.listPerluasanRisiko[i].rate;
@@ -654,7 +734,7 @@ class SppaHeaderController extends GetxController {
       }
     }
     // update in header
-    sppaHeader.premiRate = totalRate.value;
+    sppaHeader.value.premiRate = totalRate.value;
 
     print('total rate: ${totalRate.value}');
   }
@@ -663,7 +743,10 @@ class SppaHeaderController extends GetxController {
     // load additional infoAtsJasTan
     final param1 = '?sppaId=${sppaId}';
     final url = Uri.parse(baseUrl + '/InfoAtsJasTan' + param1);
+    infoAtsLoaded.value = false;
+
     print(baseUrl + '/InfoAtsJasTan' + param1);
+
     http.Response response = await client.get(url);
     if (response.statusCode == 200) {
       var responseBodyStatus = jsonDecode(response.body);
@@ -672,13 +755,14 @@ class SppaHeaderController extends GetxController {
         // TODO  ini harusnya cuma 1
         infoAts.value = InfoAtsJasTan.fromJson(responseBodyStatus[i]);
       }
+      infoAtsLoaded.value = true;
     } else {
       print('Load add info jastan error ${response.statusCode}');
     }
   }
 
   void saveInfoData() async {
-    infoAts.value.sppaId = sppaHeader.id;
+    infoAts.value.sppaId = sppaHeader.value.id;
 
     infoAts.value.lokasiKandang = kandangController.text;
     infoAts.value.infoMgmtKandang = mgmtKandangController.text;
@@ -724,7 +808,7 @@ class SppaHeaderController extends GetxController {
     infoAts.value.sistemPakanTernak = sisPakanController.text;
     // infoAts.value.infoMgmtPakan = mgmtPakanController.text;
     // infoAts.value.infoMgmtKesehatan = mgmtKesehatanController.text;
-    // infoAts.value.sppaId = sppaController.sppaHeader.id;
+    // infoAts.value.sppaId = sppaController.sppaHeader.value.id;
 
     var url = Uri.parse('$baseUrl/InfoAtsJasTan/${infoAts.value.id}');
     var body = json.encode(infoAts.value);
@@ -751,26 +835,55 @@ class SppaHeaderController extends GetxController {
     String body;
 
     final saatIni = DateTime.now();
-    if (status == 1) {
-      sppaHeader.statusSppa = 2;
-      sppaHeaderStatusObs.value = 2;
 
-      sppaStatus.statusSppa = 2;
-      sppaStatus.initSubmitDt = DateFormat("dd-MMM-yyyy").format(saatIni);
-      sppaStatus.initSubmitDtMillis = saatIni.millisecondsSinceEpoch;
-      sppaStatus.tglLastUpdate = sppaStatus.initSubmitDt;
-      sppaStatus.tglLastUpdateMillis = sppaStatus.initSubmitDtMillis;
-    } else {
-      sppaHeader.statusSppa = 4;
-      sppaHeaderStatusObs.value = 4;
+    sppaStatus.value.tglLastUpdate = sppaStatus.value.initSubmitDt;
+    sppaStatus.value.tglLastUpdateMillis = sppaStatus.value.initSubmitDtMillis;
 
-      sppaStatus.statusSppa = 4;
-      sppaStatus.tglSubmitSales = DateFormat("dd-MMM-yyyy").format(saatIni);
-      sppaStatus.tglSubmitSalesMillis = saatIni.millisecondsSinceEpoch;
-      sppaStatus.tglLastUpdate = sppaStatus.tglSubmitSales;
-      sppaStatus.tglLastUpdateMillis = sppaStatus.tglSubmitSalesMillis;
+    if (status == 1 || status == 3) {
+      sppaHeader.value.statusSppa = 2;
+      sppaStatusDisp.value = 2;
+
+      sppaStatus.value.statusSppa = 2;
+      sppaStatus.value.initSubmitDt = DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.initSubmitDtMillis = saatIni.millisecondsSinceEpoch;
+      // clear all notes
+      sppaStatus.value.salesNote = '';
+      sppaStatus.value.marketingNote = '';
+      sppaStatus.value.brokerNote = '';
+      sppaStatus.value.tglSubmitSalesMillis = 0;
+      sppaStatus.value.tglSubmitSales = '';
+      sppaStatus.value.tglSubmitMarketingMillis = 0;
+      sppaStatus.value.tglSubmitMarketing = '';
+      sppaStatus.value.tglSubmitBrokerMillis = 0;
+      sppaStatus.value.tglSubmitBroker = '';
+    } else if (status == 2) {
+      sppaHeader.value.statusSppa = 4;
+      sppaStatusDisp.value = 4;
+
+      sppaStatus.value.statusSppa = 4;
+      sppaStatus.value.tglSubmitSales =
+          DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglSubmitSalesMillis = saatIni.millisecondsSinceEpoch;
+    } else if (status == 4) {
+      sppaHeader.value.statusSppa = 6;
+      sppaStatusDisp.value = 6;
+
+      sppaStatus.value.statusSppa = 6;
+      sppaStatus.value.tglSubmitMarketing =
+          DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglSubmitMarketingMillis =
+          saatIni.millisecondsSinceEpoch;
+    } else if (status == 6) {
+      sppaHeader.value.statusSppa = 8;
+      sppaStatusDisp.value = 8;
+
+      sppaStatus.value.statusSppa = 8;
+      sppaStatus.value.tglSubmitBroker =
+          DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglSubmitBrokerMillis = saatIni.millisecondsSinceEpoch;
     }
-    url = Uri.parse('$baseUrl/SppaHeader/${sppaHeader.id}');
+
+    url = Uri.parse('$baseUrl/SppaHeader/${sppaHeader.value.id}');
     body = json.encode(sppaHeader);
 
     http.Response response = await client.put(url, body: body, headers: {
@@ -783,7 +896,7 @@ class SppaHeaderController extends GetxController {
       print('submit header berhasil');
 
       // updates status
-      url = Uri.parse('$baseUrl/SppaStatus/${sppaStatus.id}');
+      url = Uri.parse('$baseUrl/SppaStatus/${sppaStatus.value.id}');
       body = json.encode(sppaStatus);
       // print('body : $body');
 
@@ -796,14 +909,51 @@ class SppaHeaderController extends GetxController {
       if (response.statusCode == 200) {
         print('submit status berhasil');
 
-        // remove from aktif list
-        //   if (!isNewSppa.value) {
-        //     print('remove sppa from aktif list');
-        //     final dashboardController = Get.find<DashboardController>();
-        //     dashboardController.listAktifSppa
-        //         .removeWhere((el) => el.id == sppaHeader.id);
-        //   }
-        // } else {
+        // update status sppa in listAktifSppa
+        // print('update sppa from aktif list');
+        final dashboardController = Get.find<DashboardController>();
+        var idx = dashboardController.listAktifSppa
+            .indexWhere((el) => el.id == sppaHeader.value.id);
+
+        switch (status) {
+          case 1:
+          case 3:
+            dashboardController.listAktifSppa[idx].statusSppa = 2;
+            break;
+          case 2:
+            dashboardController.listAktifSppa[idx].statusSppa = 4;
+            break;
+          case 4:
+            dashboardController.listAktifSppa[idx].statusSppa = 6;
+            break;
+          case 6:
+            dashboardController.listAktifSppa[idx].statusSppa = 8;
+            break;
+          default:
+            break;
+        }
+
+        idx = listHelperSppa.indexWhere((el) => el.id == sppaHeader.value.id);
+        switch (status) {
+          case 1:
+            listHelperSppa[idx].statusSppa = 2;
+            break;
+          case 2:
+            listHelperSppa[idx].statusSppa = 4;
+            break;
+          case 4:
+            listHelperSppa[idx].statusSppa = 6;
+            break;
+          case 6:
+            listHelperSppa[idx].statusSppa = 8;
+            break;
+          default:
+            break;
+        }
+
+        dashboardController.listAktifSppa.refresh();
+        listHelperSppa.refresh();
+      } else {
         print('submit status gagal ${response.statusCode}');
       }
     } else {
@@ -815,22 +965,25 @@ class SppaHeaderController extends GetxController {
     Get.dialog(
       AlertDialog(
         title: const Text('Konfirmasi'),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextTitleMedium('Sppa akan di submit'),
-            SizedBox(height: 10),
-            TextBodyMedium(sppaHeader.produkName!),
-            SizedBox(height: 10),
-            TextBodyMedium(
-                'Pertanggungan : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.nilaiPertanggungan!)}'),
-            TextBodyMedium(
-                'Total Rate : ${(sppaHeader.premiRate! * 100).toStringAsFixed(3)} %'),
-            TextBodyMedium(
-                'Premi : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.premiAmount!)}'),
-            SizedBox(height: 30),
-          ],
+        content: Container(
+          // width: formWidth(Get.width),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextTitleMedium('Sppa akan di submit'),
+              SizedBox(height: 10),
+              TextBodyMedium(sppaHeader.value.produkName!),
+              SizedBox(height: 10),
+              TextBodyMedium(
+                  'Pertanggungan : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.value.nilaiPertanggungan!)}'),
+              TextBodyMedium(
+                  'Total Rate : ${(sppaHeader.value.premiRate! * 100).toStringAsFixed(3)} %'),
+              TextBodyMedium(
+                  'Premi : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.value.premiAmount!)}'),
+              SizedBox(height: 30),
+            ],
+          ),
         ),
         actions: [
           OutlinedButton(
@@ -866,26 +1019,26 @@ class SppaHeaderController extends GetxController {
     String body;
 
     final saatIni = DateTime.now();
+
     if (status == 1 || status == 3) {
       // dari baru belum apa apa sudah batal -> delete
       // dari tolakan sales dulu,
-      sppaHeader.statusSppa = 10;
-      sppaHeaderStatusObs.value = 10;
+      sppaHeader.value.statusSppa = 20;
 
-      sppaStatus.statusSppa = 10;
-      sppaStatus.tglLastUpdate = DateFormat("dd-MMM-yyyy").format(saatIni);
-      sppaStatus.tglLastUpdateMillis = saatIni.millisecondsSinceEpoch;
-    } else // (status==5 dan lain lain )
+      sppaStatus.value.statusSppa = 20;
+      sppaStatus.value.tglLastUpdate =
+          DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglLastUpdateMillis = saatIni.millisecondsSinceEpoch;
+    } else if (status == 9) // batal oleh tolakan asuransi
     {
-      // TODO dari tolakan asuransi ?
-      sppaHeader.statusSppa = 9;
-      sppaHeaderStatusObs.value = 9;
+      sppaHeader.value.statusSppa = 20;
 
-      sppaStatus.statusSppa = 9;
-      sppaStatus.tglLastUpdate = DateFormat("dd-MMM-yyyy").format(saatIni);
-      sppaStatus.tglLastUpdateMillis = saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.statusSppa = 20;
+      sppaStatus.value.tglLastUpdate =
+          DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglLastUpdateMillis = saatIni.millisecondsSinceEpoch;
     }
-    url = Uri.parse('$baseUrl/SppaHeader/${sppaHeader.id}');
+    url = Uri.parse('$baseUrl/SppaHeader/${sppaHeader.value.id}');
     body = json.encode(sppaHeader);
 
     http.Response response = await client.put(url, body: body, headers: {
@@ -896,24 +1049,31 @@ class SppaHeaderController extends GetxController {
     if (response.statusCode == 200) {
       print('batal header berhasil');
       // updates status
-      url = Uri.parse('$baseUrl/SppaStatus/${sppaStatus.id}');
+      url = Uri.parse('$baseUrl/SppaStatus/${sppaStatus.value.id}');
       body = json.encode(sppaStatus);
       // print('body : $body');
       response = await client.put(url, body: body, headers: {
         'Content-Type': 'application/json'
       }); // no authentication needed
-      // print('status: ${response.statusCode}');
       // print('body: ${response.body}');
       if (response.statusCode == 200) {
         print('batal status berhasil');
 
-        // remove from aktifSppaList
-        if (!isNewSppa.value) {
-          print('remove sppa from aktif list');
-          final dashboardController = Get.find<DashboardController>();
-          dashboardController.listAktifSppa
-              .removeWhere((el) => el.id == sppaHeader.id);
-        }
+        // update status sppa in listAktifSppa
+        // print('update sppa from aktif list');
+        final dashboardController = Get.find<DashboardController>();
+
+        var idx = dashboardController.listAktifSppa
+            .indexWhere((el) => el.id == sppaHeader.value.id);
+        dashboardController.listAktifSppa[idx].statusSppa = 20;
+
+        idx = listHelperSppa.indexWhere((el) => el.id == sppaHeader.value.id);
+        listHelperSppa[idx].statusSppa = 20;
+
+        dashboardController.listAktifSppa.refresh();
+        listHelperSppa.refresh();
+
+        sppaStatusDisp.value = 20;
       } else {
         print('batal status gagal ${response.statusCode}');
       }
@@ -933,14 +1093,14 @@ class SppaHeaderController extends GetxController {
           children: [
             TextTitleMedium('Sppa akan di batalkan'),
             SizedBox(height: 10),
-            TextBodyMedium(sppaHeader.produkName!),
+            TextBodyMedium(sppaHeader.value.produkName!),
             SizedBox(height: 10),
             TextBodyMedium(
-                'Pertanggungan : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.nilaiPertanggungan!)}'),
+                'Pertanggungan : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.value.nilaiPertanggungan!)}'),
             TextBodyMedium(
-                'Total Rate : ${(sppaHeader.premiRate! * 100).toStringAsFixed(3)} %'),
+                'Total Rate : ${(sppaHeader.value.premiRate! * 100).toStringAsFixed(3)} %'),
             TextBodyMedium(
-                'Premi : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.premiAmount!)}'),
+                'Premi : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.value.premiAmount!)}'),
             SizedBox(height: 30),
           ],
         ),
@@ -976,39 +1136,43 @@ class SppaHeaderController extends GetxController {
         title: const Text('Konfirmasi'),
         content: Form(
           key: tolakFormKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextTitleMedium('Sppa akan di tolak'),
-              SizedBox(height: 10),
-              TextBodyMedium(sppaHeader.produkName!),
-              SizedBox(height: 10),
-              TextBodyMedium(
-                  'Pertanggungan : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.nilaiPertanggungan!)}'),
-              TextBodyMedium(
-                  'Total Rate : ${(sppaHeader.premiRate! * 100).toStringAsFixed(3)} %'),
-              TextBodyMedium(
-                  'Premi : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.premiAmount!)}'),
-              SizedBox(height: 25),
-              TextFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Catatan Penolakan',
-                  hintText: 'Jelaskan alasan penolakan.',
-                  counterStyle: TextStyle(fontSize: 9),
+          child: Container(
+            width: formWidth(Get.width),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextTitleMedium('Sppa akan di tolak'),
+                SizedBox(height: 10),
+                TextBodyMedium(sppaHeader.value.produkName!),
+                SizedBox(height: 10),
+                TextBodyMedium(
+                    'Pertanggungan : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.value.nilaiPertanggungan!)}'),
+                TextBodyMedium(
+                    'Total Rate : ${(sppaHeader.value.premiRate! * 100).toStringAsFixed(3)} %'),
+                TextBodyMedium(
+                    'Premi : Rp ${NumberFormat("#,###,###,###", "en_US").format(sppaHeader.value.premiAmount!)}'),
+                SizedBox(height: 25),
+                TextFormField(
+                  controller: tolakNoteController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Catatan Penolakan',
+                    hintText: 'Jelaskan alasan penolakan.',
+                    counterStyle: TextStyle(fontSize: 9),
+                  ),
+                  maxLines: 3,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "*Wajib diisi.";
+                    } else {
+                      tolakNoteController.text = value;
+                      return null;
+                    }
+                  },
                 ),
-                maxLines: 3,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "*Wajib diisi.";
-                  } else {
-                    tolakNoteController.text = value;
-                    return null;
-                  }
-                },
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         actions: [
@@ -1028,7 +1192,7 @@ class SppaHeaderController extends GetxController {
                   )),
               onPressed: () {
                 if (tolakFormKey.currentState!.validate()) {
-                  tolakSppa(status, '');
+                  tolakSppa(status, tolakNoteController.text);
                   cekBtnVisible();
                   Get.back(result: true);
                 }
@@ -1047,33 +1211,59 @@ class SppaHeaderController extends GetxController {
     String body;
 
     final saatIni = DateTime.now();
+    // oleh sales
+    if (status == 2 || status == 5) {
+      sppaHeader.value.statusSppa = 3;
+      sppaStatusDisp.value = 3;
 
-    if (status == 2) {
-      sppaHeader.statusSppa = 3;
-      sppaHeaderStatusObs.value = 3;
-
-      sppaStatus.statusSppa = 3;
-      sppaStatus.salesNote = tolakNoteController.text;
-      sppaStatus.tglReviewSales = DateFormat("dd-MMM-yyyy").format(saatIni);
-      sppaStatus.tglReviewSalesMillis = saatIni.millisecondsSinceEpoch;
-      sppaStatus.tglLastUpdate = DateFormat("dd-MMM-yyyy").format(saatIni);
-      sppaStatus.tglLastUpdateMillis = saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.statusSppa = 3;
+      sppaStatus.value.salesNote = tolakNoteController.text;
+      sppaStatus.value.tglReviewSales =
+          DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglReviewSalesMillis = saatIni.millisecondsSinceEpoch;
     }
-    if (status == 5) {
-      sppaHeader.statusSppa = 9;
-      sppaHeaderStatusObs.value = 2;
+    // oleh marketing
+    if (status == 4 || status == 7) {
+      sppaHeader.value.statusSppa = 5;
+      sppaStatusDisp.value = 5;
 
-      sppaStatus.statusSppa = 9;
-      sppaStatus.tglResponseAsuransi = DateFormat("dd-MMM-yyyy")
+      sppaStatus.value.statusSppa = 5;
+      sppaStatus.value.tglReviewMarketing = DateFormat("dd-MMM-yyyy")
           .format(saatIni); // for note from asuransi in SppaRecap
-      sppaStatus.tglResponseAsuransiMillis = saatIni.millisecondsSinceEpoch;
-      sppaStatus.statusResponseAsuransi = 0; // penolakan
-      sppaStatus.asuransiNote = message;
-      sppaStatus.tglLastUpdate = DateFormat("dd-MMM-yyyy").format(saatIni);
-      sppaStatus.tglLastUpdateMillis = saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.tglReviewMarketingMillis =
+          saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.marketingNote = message;
     }
 
-    url = Uri.parse('$baseUrl/SppaHeader/${sppaHeader.id}');
+    // oleh broker
+    if (status == 6 || status == 9) {
+      sppaHeader.value.statusSppa = 7;
+      sppaStatusDisp.value = 7;
+
+      sppaStatus.value.statusSppa = 7;
+      sppaStatus.value.tglReviewBroker = DateFormat("dd-MMM-yyyy")
+          .format(saatIni); // for note from asuransi in SppaRecap
+      sppaStatus.value.tglReviewBrokerMillis = saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.brokerNote = message;
+    }
+
+    // oleh asuransi
+    if (status == 8) {
+      sppaHeader.value.statusSppa = 9;
+      sppaStatusDisp.value = 9;
+
+      sppaStatus.value.statusSppa = 9;
+      sppaStatus.value.tglResponseAsuransi = DateFormat("dd-MMM-yyyy")
+          .format(saatIni); // for note from asuransi in SppaRecap
+      sppaStatus.value.tglResponseAsuransiMillis =
+          saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.asuransiNote = message;
+    }
+
+    sppaStatus.value.tglLastUpdate = DateFormat("dd-MMM-yyyy").format(saatIni);
+    sppaStatus.value.tglLastUpdateMillis = saatIni.millisecondsSinceEpoch;
+
+    url = Uri.parse('$baseUrl/SppaHeader/${sppaHeader.value.id}');
     body = json.encode(sppaHeader);
 
     http.Response response = await client.put(url, body: body, headers: {
@@ -1084,7 +1274,7 @@ class SppaHeaderController extends GetxController {
     if (response.statusCode == 200) {
       print('tolak header berhasil');
       // updates status
-      url = Uri.parse('$baseUrl/SppaStatus/${sppaStatus.id}');
+      url = Uri.parse('$baseUrl/SppaStatus/${sppaStatus.value.id}');
       body = json.encode(sppaStatus);
       // print('body : $body');
       response = await client.put(url, body: body, headers: {
@@ -1096,10 +1286,52 @@ class SppaHeaderController extends GetxController {
         print('tolak status berhasil');
         // remove from aktif list
         if (!isNewSppa.value) {
-          print('remove sppa from aktif list');
+          print('update sppa from aktif list and helper');
+          // update status sppa in listAktifSppa
+          // print('update sppa from aktif list');
           final dashboardController = Get.find<DashboardController>();
-          dashboardController.listAktifSppa
-              .removeWhere((el) => el.id == sppaHeader.id);
+          var idx = dashboardController.listAktifSppa
+              .indexWhere((el) => el.id == sppaHeader.value.id);
+
+          switch (status) {
+            case 2:
+              dashboardController.listAktifSppa[idx].statusSppa = 3;
+              break;
+            case 4:
+              dashboardController.listAktifSppa[idx].statusSppa = 5;
+              break;
+            case 6:
+              dashboardController.listAktifSppa[idx].statusSppa = 7;
+              break;
+            case 8:
+              dashboardController.listAktifSppa[idx].statusSppa = 9;
+              break;
+            default:
+              break;
+          }
+
+          idx = listHelperSppa.indexWhere((el) => el.id == sppaHeader.value.id);
+          switch (status) {
+            case 1:
+              break;
+            case 2:
+              listHelperSppa[idx].statusSppa = 3;
+              break;
+            case 4:
+              listHelperSppa[idx].statusSppa = 5;
+              break;
+            case 6:
+              listHelperSppa[idx].statusSppa = 7;
+              break;
+            case 8:
+              listHelperSppa[idx].statusSppa = 9;
+              break;
+            default:
+              break;
+          }
+
+          dashboardController.listAktifSppa.refresh();
+          listHelperSppa.refresh();
         }
       } else {
         print('tolak status gagal ${response.statusCode}');
@@ -1113,11 +1345,14 @@ class SppaHeaderController extends GetxController {
     await Get.dialog(
       AlertDialog(
         title: const Text('Riwayat Sppa'),
+        scrollable: true,
+        buttonPadding: EdgeInsets.all(5),
         content: Container(
           width: formWidth(Get.width),
+          height: 400,
           child: Wrap(
               spacing: 20,
-              runSpacing: 20,
+              runSpacing: 10,
               // crossAxisAlignment: CrossAxisAlignment.start,
               // mainAxisSize: MainAxisSize.min,
               children: [
@@ -1128,10 +1363,10 @@ class SppaHeaderController extends GetxController {
                         flex: 1, child: TextTitleMedium('Tanggal dibuat ')),
                     Expanded(
                         flex: 1,
-                        child: TextTitleMedium(sppaStatus.tglCreated!)),
+                        child: TextTitleMedium(sppaStatus.value.tglCreated)),
                   ],
                 ),
-                sppaStatus.tglLastUpdate != ''
+                sppaStatus.value.tglLastUpdate != ''
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -1141,41 +1376,57 @@ class SppaHeaderController extends GetxController {
                                   TextTitleMedium('Tanggal diubah terakhir ')),
                           Expanded(
                               flex: 1,
-                              child:
-                                  TextTitleMedium(sppaStatus.tglLastUpdate!)),
+                              child: TextTitleMedium(
+                                  sppaStatus.value.tglLastUpdate)),
                         ],
                       )
                     : Container(),
-                sppaStatus.initSubmitDt != ''
+                sppaStatus.value.statusSppa == 20
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium('Sppa telah dibatalkan ')),
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium(
+                                  sppaStatus.value.tglLastUpdate)),
+                        ],
+                      )
+                    : Container(),
+                sppaStatus.value.initSubmitDt != ''
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                               flex: 1,
                               child: TextTitleMedium(
-                                  'Tanggal disubmit ke ${sppaHeader.salesId} ')),
+                                  'Tanggal disubmit ke ${sppaHeader.value.salesId} ')),
                           Expanded(
                               flex: 1,
-                              child: TextTitleMedium(sppaStatus.initSubmitDt!)),
+                              child: TextTitleMedium(
+                                  sppaStatus.value.initSubmitDt)),
                         ],
                       )
                     : Container(),
-                sppaStatus.tglReviewSales != ''
+                // Riawayat Sales
+                sppaStatus.value.tglReviewSales != ''
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                               flex: 1,
                               child: TextTitleMedium(
-                                  'Tanggal direview oleh ${sppaHeader.salesId} ')),
+                                  'Tanggal direview oleh ${sppaHeader.value.salesId} ')),
                           Expanded(
                               flex: 1,
-                              child:
-                                  TextTitleMedium(sppaStatus.tglReviewSales!)),
+                              child: TextTitleMedium(
+                                  sppaStatus.value.tglReviewSales)),
                         ],
                       )
                     : Container(),
-                sppaStatus.salesNote != ''
+                sppaStatus.value.salesNote != ''
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -1183,24 +1434,143 @@ class SppaHeaderController extends GetxController {
                               flex: 1, child: TextTitleMedium('Review note ')),
                           Expanded(
                               flex: 1,
-                              child: TextTitleMedium(sppaStatus.salesNote!)),
+                              child:
+                                  TextTitleMedium(sppaStatus.value.salesNote)),
                         ],
                       )
                     : Container(),
-                sppaStatus.tglSubmitSales != ''
+                sppaStatus.value.tglSubmitSales != ''
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                             Expanded(
                                 flex: 1,
                                 child: TextTitleMedium(
-                                    'Tanggal disubmit oleh ${sppaHeader.salesId}  ')),
+                                    'Tanggal disubmit oleh ${sppaHeader.value.salesId}  ')),
                             Expanded(
                                 flex: 1,
                                 child: TextTitleMedium(
-                                    sppaStatus.tglSubmitSales!)),
+                                    sppaStatus.value.tglSubmitSales)),
                           ])
                     : Container(),
+                // Riwayat Marketing
+                sppaStatus.value.tglReviewMarketing != ''
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium(
+                                  'Tanggal direview oleh ${sppaHeader.value.marketingId} ')),
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium(
+                                  sppaStatus.value.tglReviewMarketing)),
+                        ],
+                      )
+                    : Container(),
+                sppaStatus.value.marketingNote != ''
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              flex: 1, child: TextTitleMedium('Review note ')),
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium(
+                                  sppaStatus.value.marketingNote)),
+                        ],
+                      )
+                    : Container(),
+                sppaStatus.value.tglSubmitBroker != ''
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                            Expanded(
+                                flex: 1,
+                                child: TextTitleMedium(
+                                    'Tanggal disubmit oleh ${sppaHeader.value.marketingId}  ')),
+                            Expanded(
+                                flex: 1,
+                                child: TextTitleMedium(
+                                    sppaStatus.value.tglSubmitMarketing)),
+                          ])
+                    : Container(),
+                // Riwayat Broker
+                sppaStatus.value.tglReviewBroker != ''
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium(
+                                  'Tanggal direview oleh ${sppaHeader.value.brokerId} ')),
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium(
+                                  sppaStatus.value.tglReviewBroker)),
+                        ],
+                      )
+                    : Container(),
+                sppaStatus.value.salesNote != ''
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              flex: 1, child: TextTitleMedium('Review note ')),
+                          Expanded(
+                              flex: 1,
+                              child:
+                                  TextTitleMedium(sppaStatus.value.brokerNote)),
+                        ],
+                      )
+                    : Container(),
+                sppaStatus.value.tglSubmitBroker != ''
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                            Expanded(
+                                flex: 1,
+                                child: TextTitleMedium(
+                                    'Tanggal disubmit oleh ${sppaHeader.value.brokerId}  ')),
+                            Expanded(
+                                flex: 1,
+                                child: TextTitleMedium(
+                                    sppaStatus.value.tglSubmitBroker)),
+                          ])
+                    : Container(),
+                // Riwayat Asuransi
+                sppaStatus.value.tglResponseAsuransi != ''
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium(
+                                  'Tanggal diresponse oleh ${sppaHeader.value.asuransiName} ')),
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium(
+                                  sppaStatus.value.tglResponseAsuransi)),
+                        ],
+                      )
+                    : Container(),
+                sppaStatus.value.asuransiNote != ''
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium('Response note ')),
+                          Expanded(
+                              flex: 1,
+                              child: TextTitleMedium(
+                                  sppaStatus.value.asuransiNote)),
+                        ],
+                      )
+                    : Container(),
+                SizedBox(height: 30),
+                Divider(thickness: 2)
               ]),
         ),
         actions: [
@@ -1216,5 +1586,77 @@ class SppaHeaderController extends GetxController {
         ],
       ),
     );
+  }
+
+  void getSppaStatusWithSppaId(String sppaId) async {
+    String param1;
+    http.Response response;
+
+    param1 = '?sppaId=$sppaId';
+
+    var url = Uri.parse(baseUrl + '/SppaStatus' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print(responseBody);
+      for (var i = 0; i < responseBody.length; i++) {
+        sppaStatus.value = SppaStatus.fromJson(responseBody[i]);
+        print('get sppaStatus from sppaId $sppaId berhasil ');
+        sppaLoaded.value = true;
+      }
+    } else {
+      print(
+          'get sppaStatus from sppaId $sppaId gagal : ${response.statusCode}');
+    }
+  }
+
+  void getSppaHeaderWithSppaId(String sppaId) async {
+    http.Response response;
+
+    var url = Uri.parse(baseUrl + '/SppaHeader/$sppaId');
+    print(baseUrl + '/SppaHeader/$sppaId');
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      // print('responseBody ${responseBody}');
+//      print('responseBody length : ${responseBody.length}');
+//      for (var i = 0; i < responseBody.length; i++) {
+      sppaHeader.value = SppaHeader.fromJson(responseBody);
+      sppaStatusDisp.value = sppaHeader.value.statusSppa!;
+
+      print('get sppaHeader from sppaId $sppaId berhasil  ');
+//      }
+    } else {
+      print(
+          'get sppaHeader from sppaId $sppaId gagal : ${response.statusCode}');
+    }
+  }
+
+  Future<int> getSppaJumlahTernak(String sppaId) async {
+    String param1;
+    int ternakCounter = 0;
+    http.Response response;
+
+    param1 = '?sppaId=$sppaId';
+
+    var url = Uri.parse(baseUrl + '/TernakSapi' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print(responseBody);
+      for (var i = 0; i < responseBody.length; i++) {
+        ternakCounter++;
+      }
+    } else {
+      print('get ternak from sppaId $sppaId gagal : ${response.statusCode}');
+    }
+
+    return ternakCounter;
   }
 }

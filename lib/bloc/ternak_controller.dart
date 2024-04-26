@@ -95,7 +95,7 @@ class TernakController extends GetxController {
     newTernak.kelamin = kelaminController.value.text;
     newTernak.hargaPerolehan = double.parse(perolehanController.text);
     newTernak.nilaiPertanggungan = double.parse(pertanggunganController.text);
-    newTernak.sppaId = sppaController.sppaHeader.id;
+    newTernak.sppaId = sppaController.sppaHeader.value.id;
     newTernak.nama = '${newTernak.jenis} - ${newTernak.earTag}';
     newTernak.seqNo =
         ternakSeqNo.value + 1; // new value, but counter is not changed,
@@ -125,14 +125,15 @@ class TernakController extends GetxController {
         nextButOk.value = true;
       }
       // update header on values
-      url = Uri.parse('$baseUrl/SppaHeader/${sppaController.sppaHeader.id}');
+      url = Uri.parse(
+          '$baseUrl/SppaHeader/${sppaController.sppaHeader.value.id}');
 
-      sppaController.sppaHeader.nilaiPertanggungan =
+      sppaController.sppaHeader.value.nilaiPertanggungan =
           double.parse(pertanggunganController.text) +
-              sppaController.sppaHeader.nilaiPertanggungan!;
-      sppaController.sppaHeader.premiAmount =
-          sppaController.sppaHeader.nilaiPertanggungan! *
-              sppaController.sppaHeader.premiRate!;
+              sppaController.sppaHeader.value.nilaiPertanggungan!;
+      sppaController.sppaHeader.value.premiAmount =
+          sppaController.sppaHeader.value.nilaiPertanggungan! *
+              sppaController.sppaHeader.value.premiRate!;
 
       body = json.encode(sppaController.sppaHeader);
       // print('mau update sppa Header, body: $body');
@@ -143,14 +144,15 @@ class TernakController extends GetxController {
 
         // update status
         final saatIni = DateTime.now();
-        sppaController.sppaStatus.tglLastUpdate =
+        sppaController.sppaStatus.value.tglLastUpdate =
             DateFormat("dd-MMM-yyyy").format(saatIni);
-        sppaController.sppaStatus.tglLastUpdateMillis =
+        sppaController.sppaStatus.value.tglLastUpdateMillis =
             saatIni.millisecondsSinceEpoch;
 
-        url = Uri.parse('$baseUrl/SppaStatus/${sppaController.sppaStatus.id}');
+        url = Uri.parse(
+            '$baseUrl/SppaStatus/${sppaController.sppaStatus.value.id}');
         body = json.encode(sppaController.sppaStatus);
-        print('$baseUrl/SppaStatus/${sppaController.sppaStatus.id}');
+        print('$baseUrl/SppaStatus/${sppaController.sppaStatus.value.id}');
         response = await client.put(url, body: body, headers: {
           'Content-Type': 'application/json'
         }); // no authentication needed
@@ -168,6 +170,8 @@ class TernakController extends GetxController {
     } else {
       print(response.statusCode.toString());
     }
+    Get.until((route) => Get.currentRoute == '/sppa/main');
+    Get.back();
   }
 
   void removeFromList(TernakSapi aTernak) async {
@@ -195,15 +199,16 @@ class TernakController extends GetxController {
       ternakSeqNo.value--;
 
       // update header
-      url = Uri.parse('$baseUrl/SppaHeader/${sppaController.sppaHeader.id}');
+      url = Uri.parse(
+          '$baseUrl/SppaHeader/${sppaController.sppaHeader.value.id}');
       // print(
-      //     'pertanggungan awal ${sppaController.sppaHeader.nilaiPertanggungan}');
-      sppaController.sppaHeader.nilaiPertanggungan =
-          sppaController.sppaHeader.nilaiPertanggungan! -
+      //     'pertanggungan awal ${sppaController.sppaHeader.value.nilaiPertanggungan}');
+      sppaController.sppaHeader.value.nilaiPertanggungan =
+          sppaController.sppaHeader.value.nilaiPertanggungan! -
               aTernak.nilaiPertanggungan!;
-      sppaController.sppaHeader.premiAmount =
-          sppaController.sppaHeader.nilaiPertanggungan! *
-              sppaController.sppaHeader.premiRate!;
+      sppaController.sppaHeader.value.premiAmount =
+          sppaController.sppaHeader.value.nilaiPertanggungan! *
+              sppaController.sppaHeader.value.premiRate!;
       // print(
       //     'pertanggungan akhir ${sppaController.sppaHeader.nilaiPertanggungan}');
 
@@ -215,12 +220,13 @@ class TernakController extends GetxController {
         print('put update header berhasil');
         // update status
         final saatIni = DateTime.now();
-        sppaController.sppaStatus.tglLastUpdate =
+        sppaController.sppaStatus.value.tglLastUpdate =
             DateFormat("dd-MMM-yyyy").format(saatIni);
-        sppaController.sppaStatus.tglLastUpdateMillis =
+        sppaController.sppaStatus.value.tglLastUpdateMillis =
             saatIni.millisecondsSinceEpoch;
 
-        url = Uri.parse('$baseUrl/SppaStatus/${sppaController.sppaStatus.id}');
+        url = Uri.parse(
+            '$baseUrl/SppaStatus/${sppaController.sppaStatus.value.id}');
         body = json.encode(sppaController.sppaStatus);
         // print('body : $body');
         response = await client.put(url, body: body, headers: {

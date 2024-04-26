@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:insurance/bloc/dashboard_controller.dart';
 // import 'package:insurance/bloc/dashboard_controller.dart';
 import 'package:insurance/bloc/sppa_controller.dart';
-// import 'package:insurance/mainpages/Sppa/sppa_main.dart';
-// import 'package:insurance/model/sppa_header.dart';
-// import 'package:insurance/widgets/custom_main_page_text_button.dart';
 import 'package:insurance/widgets/custom_textfield.dart';
 import 'binding/home_binding.dart';
 import 'package:insurance/util/app_routes.dart';
@@ -497,6 +495,7 @@ class InsuranceMart extends StatelessWidget {
                                                                   .value = true;
                                                               sppaController
                                                                       .sppaHeader
+                                                                      .value
                                                                       .customerId =
                                                                   _loginController
                                                                       .check
@@ -505,11 +504,13 @@ class InsuranceMart extends StatelessWidget {
                                                                       .name;
                                                               sppaController
                                                                       .sppaHeader
+                                                                      .value
                                                                       .produkCode =
                                                                   e.value
                                                                       .productCode;
                                                               sppaController
                                                                       .sppaHeader
+                                                                      .value
                                                                       .produkName =
                                                                   e.value
                                                                       .productName;
@@ -544,12 +545,12 @@ class InsuranceMart extends StatelessWidget {
                     visible: !_loginController.login.value.isTrue,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Get.put(DashboardController());
-                        // print('Put DashboardController di depan');
+                        Get.put(DashboardController());
+                        print('Put DashboardController di depan');
 
                         _loginController.check.value.roles = 'ROLE_CUSTOMER';
                         _loginController.check.value.userData.name =
-                            'SASPRI12-10';
+                            'SASPRI12-05';
                         Get.toNamed('/dashboard');
                       },
                       child: Text('Dashboard Customer',
@@ -564,11 +565,46 @@ class InsuranceMart extends StatelessWidget {
                       onPressed: () {
                         // Get.put(DashboardController());
                         // print('Put DashboardController di depan');
-                        _loginController.check.value.roles = 'ROLE_ADMIN';
+                        _loginController.check.value.roles = 'ROLE_SALES';
                         _loginController.check.value.userData.name = 'SASPRI12';
                         Get.toNamed('/dashboard');
                       },
                       child: Text('Dashboard SASPRI',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  Visibility(
+                    visible: !_loginController.login.value.isTrue,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Get.put(DashboardController());
+                        // print('Put DashboardController di depan');
+                        _loginController.check.value.roles = 'ROLE_MARKETING';
+                        _loginController.check.value.userData.name =
+                            'SASPRINAS';
+                        Get.toNamed('/dashboard');
+                      },
+                      child: Text('Dashboard SASPRINAS',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  Visibility(
+                    visible: !_loginController.login.value.isTrue,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Get.put(DashboardController());
+                        // print('Put DashboardController di depan');
+                        _loginController.check.value.roles = 'ROLE_BROKER';
+                        _loginController.check.value.userData.name = '1';
+                        Get.toNamed('/dashboard');
+                      },
+                      child: Text('Dashboard ISTPRO',
                           style: TextStyle(color: Colors.white)),
                     ),
                   ),

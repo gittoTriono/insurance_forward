@@ -159,7 +159,7 @@ class SppaPerluasan extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      sppaController.sppaHeader.premiRate =
+                      sppaController.sppaHeader.value.premiRate =
                           sppaController.totalRate.value;
                       Get.toNamed('/sppa/addInfo');
                     },
