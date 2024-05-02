@@ -545,8 +545,8 @@ class InsuranceMart extends StatelessWidget {
                     visible: !_loginController.login.value.isTrue,
                     child: ElevatedButton(
                       onPressed: () {
-                        Get.put(DashboardController());
-                        print('Put DashboardController di depan');
+                        // Get.put(DashboardController());
+                        //print('Put DashboardController di depan');
 
                         _loginController.check.value.roles = 'ROLE_CUSTOMER';
                         _loginController.check.value.userData.name =

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:insurance/bloc/customer_controller.dart';
 import 'package:insurance/bloc/dashboard_controller.dart';
 import 'package:insurance/bloc/login_controller.dart';
+import 'package:insurance/bloc/polis_controller.dart';
 import 'package:insurance/bloc/produk_controller.dart';
 import 'package:insurance/bloc/sppa_controller.dart';
 import 'package:insurance/bloc/ternak_controller.dart';
@@ -463,10 +464,11 @@ class SppaDetail extends StatelessWidget {
               SizedBox(height: 20),
               Obx(
                 () {
-                  sppaController.cekBtnVisible();
+                  sppaController.cekSppaBtnVisible();
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
+                      // Tolak
                       Visibility(
                         visible: sppaController.tolakBtnVis.value,
                         child: ElevatedButton(
@@ -493,6 +495,7 @@ class SppaDetail extends StatelessWidget {
                             )),
                       ),
                       Visibility(
+                        // Batal
                         visible: sppaController.batalBtnVis.value,
                         child: ElevatedButton(
                             onPressed: () async {
@@ -510,6 +513,7 @@ class SppaDetail extends StatelessWidget {
                             )),
                       ),
                       Visibility(
+                        // Edit
                         visible: sppaController.editBtnVis.value,
                         child: ElevatedButton(
                           onPressed: () {
@@ -521,6 +525,7 @@ class SppaDetail extends StatelessWidget {
                         ),
                       ),
                       Visibility(
+                        // Submit
                         visible: sppaController.submitBtnVis.value,
                         child: ElevatedButton(
                           onPressed: () {
@@ -529,6 +534,21 @@ class SppaDetail extends StatelessWidget {
                           },
                           child: Text('Submit',
                               style: TextStyle(color: Colors.yellow)),
+                        ),
+                      ),
+                      Visibility(
+                        // Accept
+                        visible: sppaController.acceptBtnVis.value,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Get.put(PolisController());
+                            Get.toNamed('/polis/main', arguments: {
+                              'type': 'new',
+                              'sppaId': sppaController.sppaHeader.value.id
+                            });
+                          },
+                          child: Text('Accept',
+                              style: TextStyle(color: Colors.white)),
                         ),
                       )
                     ],

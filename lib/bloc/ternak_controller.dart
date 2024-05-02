@@ -58,8 +58,12 @@ class TernakController extends GetxController {
     // //load ternak
     var param1 = '?sppaId=${sppaId}';
     var url = Uri.parse(baseUrl + '/TernakSapi' + param1);
+    listTernak.clear();
+
     print(baseUrl + '/TernakSapi' + param1);
+
     http.Response response = await client.get(url);
+
     if (response.statusCode == 200) {
       var responseBodyStatus = jsonDecode(response.body);
       //print(responseBodyStatus);
@@ -247,6 +251,28 @@ class TernakController extends GetxController {
       }
     } else {
       print(response.statusCode.toString());
+    }
+  }
+
+  void getTernakWithPolisId(String polisId) async {
+    // //load ternak
+    var param1 = '?polisId=${polisId}';
+    var url = Uri.parse(baseUrl + '/TernakSapi' + param1);
+    listTernak.clear();
+
+    print(baseUrl + '/TernakSapi' + param1);
+
+    http.Response response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      var responseBodyStatus = jsonDecode(response.body);
+      //print(responseBodyStatus);
+      for (var i = 0; i < responseBodyStatus.length; i++) {
+        listTernak.add(TernakSapi.fromJson(responseBodyStatus[i]));
+      }
+    } else {
+      print(
+          'Load ternak error for polis $polisId gagal ${response.statusCode}');
     }
   }
 }

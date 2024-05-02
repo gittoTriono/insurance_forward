@@ -132,7 +132,7 @@ class TernakSppa extends StatelessWidget {
                 child: InkWell(
                   onTap: () {
                     if (sppaController.isNewSppa.value) {
-                      Get.until((route) => route.settings.name == '/dashboard');
+                      Get.until((route) => route.settings.name == '/sppa');
                     } else {
                       Get.until(
                         (route) => route.settings.name == '/sppa/sppaDetail',

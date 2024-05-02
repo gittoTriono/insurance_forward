@@ -1,82 +1,103 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:insurance/adminpages/admin_dashboard.dart';
 import 'package:insurance/bloc/dashboard_controller.dart';
-import 'package:insurance/bloc/sppa_controller.dart';
-import 'package:insurance/model/sppa_header.dart';
+import 'package:insurance/bloc/polis_controller.dart';
+import 'package:insurance/model/polis.dart';
 import 'package:insurance/util/screen_size.dart';
 import 'package:insurance/widgets/custom_textfield.dart';
 import 'package:intl/intl.dart';
-import '../../bloc/login_controller.dart';
-import '../../bloc/session_controller.dart';
-import '../../bloc/theme_controller.dart';
-import '../../util/theme.dart';
 
-class SppaView extends StatelessWidget {
-  const SppaView({super.key});
+class PolisView extends StatelessWidget {
+  PolisView({super.key});
 
   @override
   Widget build(BuildContext context) {
     DashboardController controller = Get.find<DashboardController>();
-    SppaHeaderController sppaController = Get.find<SppaHeaderController>();
+    PolisController polisController = Get.find<PolisController>();
 
     final displayStatus = Get.arguments['status'];
-    sppaController.listHelperSppa.clear();
+    polisController.listHelperPolis.clear();
 
-    // print('display status $displayStatus');
-    // print('helper length ${sppaController.listHelperSppa.length}');
-    // helper list to assits displayin part of listAktifSppa
     if (displayStatus == 'ToDo') {
       if (controller.loginController.check.value.roles == 'ROLE_SALES') {
         // print(controller.loginController.check.value.roles);
-        sppaController.listHelperSppa.addAll(controller.listAktifSppa
-            .where((p0) => controller.salesTodo.contains(p0.statusSppa))
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where((p0) => controller.salesPolisTodo.contains(p0.statusPolis))
             .toList());
-        // print('helper length ${sppaController.listHelperSppa.length}');
+        // print('helper length ${polisController.listHelperPolis.length}');
       } else if (controller.loginController.check.value.roles ==
           'ROLE_CUSTOMER') {
-        print(controller.loginController.check.value.roles);
-        sppaController.listHelperSppa.addAll(controller.listAktifSppa
-            .where((p0) => controller.custTodo.contains(p0.statusSppa))
+        // print(controller.loginController.check.value.roles);
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where((p0) => controller.custPolisTodo.contains(p0.statusPolis))
             .toList());
-        // print('helper length ${sppaController.listHelperSppa.length}');
+        // print('helper length ${polisController.listHelperPolis.length}');
       } else if (controller.loginController.check.value.roles ==
           'ROLE_MARKETING') {
         print(controller.loginController.check.value.roles);
-        sppaController.listHelperSppa.addAll(controller.listAktifSppa
-            .where((p0) => controller.marketingTodo.contains(p0.statusSppa))
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where(
+                (p0) => controller.marketingPolisTodo.contains(p0.statusPolis))
             .toList());
-        // print('helper length ${sppaController.listHelperSppa.length}');
+        // print('helper length ${polisController.listHelperPolis.length}');
       } else if (controller.loginController.check.value.roles ==
           'ROLE_BROKER') {
-        print(controller.loginController.check.value.roles);
-        sppaController.listHelperSppa.addAll(controller.listAktifSppa
-            .where((p0) => controller.brokerTodo.contains(p0.statusSppa))
+        //print(controller.loginController.check.value.roles);
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where((p0) => controller.brokerPolisTodo.contains(p0.statusPolis))
             .toList());
-        // print('helper length ${sppaController.listHelperSppa.length}');
+        // print('helper length ${polisController.listHelperPolis.length}');
       }
     } else if (displayStatus == 'Submit') {
       if (controller.loginController.check.value.roles == 'ROLE_ADMIN') {
-        sppaController.listHelperSppa.addAll(controller.listAktifSppa
-            .where((p0) => controller.salesSubmit.contains(p0.statusSppa))
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where((p0) => controller.salesPolisSubmit.contains(p0.statusPolis))
             .toList());
-        // print('helper length ${sppaController.listHelperSppa.length}');
+        // print('helper length ${polisController.listHelperPolis.length}');
       } else if (controller.loginController.check.value.roles ==
           'ROLE_CUSTOMER') {
-        sppaController.listHelperSppa.addAll(controller.listAktifSppa
-            .where((p0) => controller.custSubmit.contains(p0.statusSppa))
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where((p0) => controller.custPolisSubmit.contains(p0.statusPolis))
             .toList());
-        // print('helper length ${sppaController.listHelperSppa.length}');
+        // print('helper length ${polisController.listHelperPolis.length}');
       } else if (controller.loginController.check.value.roles ==
           'ROLE_MARKETING') {
-        sppaController.listHelperSppa.addAll(controller.listAktifSppa
-            .where((p0) => controller.marketingSubmit.contains(p0.statusSppa))
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where((p0) =>
+                controller.marketingPolisSubmit.contains(p0.statusPolis))
             .toList());
-        // print('helper length ${sppaController.listHelperSppa.length}');
+        // print('helper length ${polisController.listHelperPolis.length}');
       } else if (controller.loginController.check.value.roles ==
           'ROLE_BROKER') {
-        sppaController.listHelperSppa.addAll(controller.listAktifSppa
-            .where((p0) => controller.brokerSubmit.contains(p0.statusSppa))
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where(
+                (p0) => controller.brokerPolisSubmit.contains(p0.statusPolis))
+            .toList());
+        // print('helper length ${sppaController.listHelperSppa.length}');
+      }
+    } else if (displayStatus == 'Aktif') {
+      if (controller.loginController.check.value.roles == 'ROLE_ADMIN') {
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where((p0) => controller.salesPolisAktif.contains(p0.statusPolis))
+            .toList());
+        // print('helper length ${polisController.listHelperPolis.length}');
+      } else if (controller.loginController.check.value.roles ==
+          'ROLE_CUSTOMER') {
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where((p0) => controller.custPolisAktif.contains(p0.statusPolis))
+            .toList());
+        // print('helper length ${polisController.listHelperPolis.length}');
+      } else if (controller.loginController.check.value.roles ==
+          'ROLE_MARKETING') {
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where(
+                (p0) => controller.marketingPolisAktif.contains(p0.statusPolis))
+            .toList());
+        // print('helper length ${polisController.listHelperPolis.length}');
+      } else if (controller.loginController.check.value.roles ==
+          'ROLE_BROKER') {
+        polisController.listHelperPolis.addAll(controller.listAktifPolis
+            .where((p0) => controller.brokerPolisAktif.contains(p0.statusPolis))
             .toList());
         // print('helper length ${sppaController.listHelperSppa.length}');
       }
@@ -118,11 +139,11 @@ class SppaView extends StatelessWidget {
                   spacing: 20, runSpacing: 20,
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Obx(() => (sppaController.listHelperSppa.isEmpty)
-                        ? Text('Tidak ada aktif Sppa ')
+                    Obx(() => (polisController.listHelperPolis.isEmpty)
+                        ? Text('Tidak ada aktif Polis ')
                         : Wrap(
                             spacing: 20,
-                            children: sppaController.listHelperSppa
+                            children: polisController.listHelperPolis
                                 .map((e) => Column(
                                       children: [
                                         Container(
@@ -151,9 +172,10 @@ class SppaView extends StatelessWidget {
                                                             // print(
                                                             //     'on pressed go get ${e.id}');
                                                             Get.toNamed(
-                                                                '/sppa/sppaDetail',
+                                                                '/polis/polisDetail',
                                                                 arguments: {
-                                                                  'sppaId': e.id
+                                                                  'polisId':
+                                                                      e.id
                                                                 });
                                                           },
                                                           icon: Icon(
@@ -173,11 +195,11 @@ class SppaView extends StatelessWidget {
                                                     children: [
                                                       e.sppaId == ''
                                                           ? TextBodyMedium(
-                                                              'Id ${e.id!}')
+                                                              'Id ${e.id}')
                                                           : TextBodyMedium(
-                                                              'Customer Id ${e.sppaId!}'),
+                                                              'Tertanggung ${e.namaTertanggung}'),
                                                       Text(
-                                                          '${sppaController.sppaStatusDesc(e.statusSppa!)}',
+                                                          '${polisController.polisStatusDesc(e.statusPolis)}',
                                                           style: Get
                                                               .theme
                                                               .textTheme
@@ -188,9 +210,7 @@ class SppaView extends StatelessWidget {
                                                                       .colorScheme
                                                                       .secondary)),
                                                       TextBodyMedium(
-                                                          e.customerId!),
-                                                      TextBodyMedium(
-                                                          e.produkName!),
+                                                          e.produkName),
                                                     ],
                                                   ),
                                                   Column(
@@ -206,7 +226,7 @@ class SppaView extends StatelessWidget {
                                                           height: 5,
                                                         ),
                                                         TextBodySmall(
-                                                            '${e.tenor} bulan'),
+                                                            '${e.tenorSppa} bulan'),
                                                       ]),
                                                 ])),
                                         SizedBox(height: 10)

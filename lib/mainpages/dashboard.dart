@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:insurance/adminpages/admin_dashboard.dart';
 import 'package:insurance/bloc/dashboard_controller.dart';
 import 'package:insurance/bloc/login_controller.dart';
@@ -14,32 +15,44 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    DashboardController controller = Get.put(DashboardController());
-    DashboardController controller = Get.find();
+    DashboardController controller = Get.put(DashboardController());
+//    DashboardController controller = Get.find();
 
     return Scaffold(
         backgroundColor: Get.theme.scaffoldBackgroundColor,
-        appBar: AppBar(title: Text('Dashboard'), actions: [
-          Container(
-            height: 80,
-            margin: EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('${controller.loginController.check.value.userData.name}',
-                    style: Get.textTheme.labelSmall!
-                        .copyWith(color: Colors.white)),
-                // Text(
-                //     '${controller.loginController.check.value.userData.userId}',
-                //     style: Get.textTheme.labelSmall),
-                Text(' - ${controller.loginController.check.value.roles}',
-                    style:
-                        Get.textTheme.labelSmall!.copyWith(color: Colors.white))
-              ],
-            ),
-          ),
-        ]),
+        appBar: AppBar(
+            title: Text('Dashboard'),
+            leading: IconButton(
+                onPressed: () {
+                  // controller.dispose();
+                  Get.back();
+                },
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: 25,
+                )),
+            actions: [
+              Container(
+                height: 80,
+                margin: EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        '${controller.loginController.check.value.userData.name}',
+                        style: Get.textTheme.labelSmall!
+                            .copyWith(color: Colors.white)),
+                    // Text(
+                    //     '${controller.loginController.check.value.userData.userId}',
+                    //     style: Get.textTheme.labelSmall),
+                    Text(' - ${controller.loginController.check.value.roles}',
+                        style: Get.textTheme.labelSmall!
+                            .copyWith(color: Colors.white))
+                  ],
+                ),
+              ),
+            ]),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Center(
@@ -63,7 +76,7 @@ class Dashboard extends StatelessWidget {
                                             Get.theme.colorScheme.secondary)),
                           )),
                       Expanded(
-                          flex: 2,
+                          flex: 3,
                           child: Center(
                             child: Text('Jumlah',
                                 style: Get.theme.textTheme.titleMedium!
@@ -109,7 +122,7 @@ class Dashboard extends StatelessWidget {
                                             color: Get
                                                 .theme.colorScheme.secondary))),
                             Expanded(
-                                flex: 1,
+                                flex: 3,
                                 child: TextButton(
                                     onPressed: () {
                                       Get.toNamed('/profile');
@@ -123,8 +136,8 @@ class Dashboard extends StatelessWidget {
                                                   .theme.colorScheme.secondary),
                                       textAlign: TextAlign.start,
                                     ))),
-                            TextBodyMedium(
-                                controller.loginController.check.value.roles),
+                            // TextBodyMedium(
+                            //     controller.loginController.check.value.roles),
                           ]),
                         )
                       : Container(),
@@ -167,7 +180,7 @@ class Dashboard extends StatelessWidget {
                                           color: Get
                                               .theme.colorScheme.secondary))),
                           Expanded(
-                              flex: 2,
+                              flex: 3,
                               child: Wrap(
                                   direction: Axis.horizontal,
                                   runSpacing: 20,
@@ -278,24 +291,24 @@ class Dashboard extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    controller.loginController.check.value
-                                                .roles ==
-                                            'ROLE_SALES'
-                                        ? Container(
-                                            width: 100,
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                // controller.recapController
-                                                //     .createRecapSppa();
-                                              },
-                                              child: Text('Proses Recap',
-                                                  style: Get.theme.textTheme
-                                                      .bodyMedium!
-                                                      .copyWith(
-                                                          color: Colors.white)),
-                                            ),
-                                          )
-                                        : Container()
+                                    // controller.loginController.check.value
+                                    //             .roles ==
+                                    //         'ROLE_SALES'
+                                    //     ? Container(
+                                    //         width: 100,
+                                    //         child: ElevatedButton(
+                                    //           onPressed: () {
+                                    //             // controller.recapController
+                                    //             //     .createRecapSppa();
+                                    //           },
+                                    //           child: Text('Proses Recap',
+                                    //               style: Get.theme.textTheme
+                                    //                   .bodyMedium!
+                                    //                   .copyWith(
+                                    //                       color: Colors.white)),
+                                    //         ),
+                                    //       )
+                                    //     : Container()
                                   ]))
                         ]),
                       );
@@ -466,6 +479,209 @@ class Dashboard extends StatelessWidget {
                   //   Expanded(
                   //       flex: 3, child: Center(child: TextBodyMedium('0')))
                   // ]),
+                  SizedBox(height: 20),
+                  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                  Obx(() {
+                    if (controller.listAktifPolis.isNotEmpty) {
+                      return Container(
+                        width: formWidth(Get.width),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                                color: const Color.fromARGB(255, 206, 203, 203)
+                                    .withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: const Offset(
+                                    0, 3) // changes position of shadow
+                                ),
+                          ],
+                        ),
+                        child: Row(children: [
+                          Expanded(
+                              flex: 1,
+                              child: Text('Polis',
+                                  style: Get.theme.textTheme.titleMedium!
+                                      .copyWith(
+                                          color: Get
+                                              .theme.colorScheme.secondary))),
+                          Expanded(
+                              flex: 3,
+                              child: Wrap(
+                                  direction: Axis.horizontal,
+                                  runSpacing: 20,
+                                  children: [
+                                    Container(
+                                      width: 100,
+                                      child: Column(
+                                        children: [
+                                          Text('To Do'),
+                                          TextButton(
+                                            onPressed: () {
+                                              Get.toNamed('/polis', arguments: {
+                                                'status': 'ToDo'
+                                              });
+                                            },
+                                            child: Center(
+                                                child: Text(
+                                                    controller
+                                                                .loginController
+                                                                .check
+                                                                .value
+                                                                .roles ==
+                                                            'ROLE_CUSTOMER'
+                                                        ? '${controller.listAktifPolis.where((p0) => controller.custPolisTodo.contains(p0.statusPolis)).length}'
+                                                        : controller
+                                                                    .loginController
+                                                                    .check
+                                                                    .value
+                                                                    .roles ==
+                                                                'ROLE_SALES'
+                                                            ? '${controller.listAktifPolis.where((p0) => controller.salesPolisTodo.contains(p0.statusPolis)).length}'
+                                                            : controller
+                                                                        .loginController
+                                                                        .check
+                                                                        .value
+                                                                        .roles ==
+                                                                    'ROLE_MARKETING'
+                                                                ? '${controller.listAktifPolis.where((p0) => controller.marketingPolisTodo.contains(p0.statusPolis)).length}'
+                                                                : controller
+                                                                            .loginController
+                                                                            .check
+                                                                            .value
+                                                                            .roles ==
+                                                                        'ROLE_BROKER'
+                                                                    ? '${controller.listAktifPolis.where((p0) => controller.brokerPolisTodo.contains(p0.statusPolis)).length}'
+                                                                    : 'undef',
+                                                    style: Get.theme.textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                            color: Get
+                                                                .theme
+                                                                .colorScheme
+                                                                .secondary))),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 100,
+                                      child: Column(
+                                        children: [
+                                          Text('Submit'),
+                                          TextButton(
+                                            onPressed: () {
+                                              Get.toNamed('/polis', arguments: {
+                                                'status': 'Submit'
+                                              });
+                                            },
+                                            child: Center(
+                                                child: Text(
+                                                    controller
+                                                                .loginController
+                                                                .check
+                                                                .value
+                                                                .roles ==
+                                                            'ROLE_CUSTOMER'
+                                                        ? '${controller.listAktifPolis.where((p0) => controller.custPolisSubmit.contains(p0.statusPolis)).length}'
+                                                        : controller
+                                                                    .loginController
+                                                                    .check
+                                                                    .value
+                                                                    .roles ==
+                                                                'ROLE_SALES'
+                                                            ? '${controller.listAktifPolis.where((p0) => controller.salesPolisSubmit.contains(p0.statusPolis)).length}'
+                                                            : controller
+                                                                        .loginController
+                                                                        .check
+                                                                        .value
+                                                                        .roles ==
+                                                                    'ROLE_MARKETING'
+                                                                ? '${controller.listAktifPolis.where((p0) => controller.marketingPolisSubmit.contains(p0.statusPolis)).length}'
+                                                                : controller
+                                                                            .loginController
+                                                                            .check
+                                                                            .value
+                                                                            .roles ==
+                                                                        'ROLE_BROKER'
+                                                                    ? '${controller.listAktifPolis.where((p0) => controller.brokerPolisSubmit.contains(p0.statusPolis)).length}'
+                                                                    : 'undef',
+                                                    style: Get.theme.textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                            color: Get
+                                                                .theme
+                                                                .colorScheme
+                                                                .secondary))),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 100,
+                                      child: Column(
+                                        children: [
+                                          Text('Aktif'),
+                                          TextButton(
+                                            onPressed: () {
+                                              Get.toNamed('/polis', arguments: {
+                                                'status': 'Aktif'
+                                              });
+                                            },
+                                            child: Center(
+                                                child: Text(
+                                                    controller
+                                                                .loginController
+                                                                .check
+                                                                .value
+                                                                .roles ==
+                                                            'ROLE_CUSTOMER'
+                                                        ? '${controller.listAktifPolis.where((p0) => controller.custPolisAktif.contains(p0.statusPolis)).length}'
+                                                        : controller
+                                                                    .loginController
+                                                                    .check
+                                                                    .value
+                                                                    .roles ==
+                                                                'ROLE_SALES'
+                                                            ? '${controller.listAktifPolis.where((p0) => controller.salesPolisAktif.contains(p0.statusPolis)).length}'
+                                                            : controller
+                                                                        .loginController
+                                                                        .check
+                                                                        .value
+                                                                        .roles ==
+                                                                    'ROLE_MARKETING'
+                                                                ? '${controller.listAktifPolis.where((p0) => controller.marketingPolisAktif.contains(p0.statusPolis)).length}'
+                                                                : controller
+                                                                            .loginController
+                                                                            .check
+                                                                            .value
+                                                                            .roles ==
+                                                                        'ROLE_BROKER'
+                                                                    ? '${controller.listAktifPolis.where((p0) => controller.brokerPolisAktif.contains(p0.statusPolis)).length}'
+                                                                    : 'undef',
+                                                    style: Get.theme.textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                            color: Get
+                                                                .theme
+                                                                .colorScheme
+                                                                .secondary))),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ]))
+                        ]),
+                      );
+                    } else
+                      return Row();
+                  }),
+
+                  // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                   SizedBox(height: 40),
                   Visibility(
                     visible: controller.loginController.check.value.roles ==

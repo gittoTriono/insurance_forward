@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:http/http.dart' as http;
 import 'package:insurance/bloc/dashboard_controller.dart';
 import 'package:insurance/bloc/login_controller.dart';
@@ -26,6 +25,8 @@ class SppaHeaderController extends GetxController {
 
   final appProdukController = Get.find<ProdukController>();
   final loginController = Get.find<LoginController>();
+
+  //final dashboardController = Get.find<DashboardController>();
 
   Rx<TextEditingController> customerController = TextEditingController().obs;
   late TextEditingController produkController;
@@ -61,6 +62,7 @@ class SppaHeaderController extends GetxController {
   RxBool editBtnVis = true.obs;
   RxBool submitBtnVis = true.obs;
   RxBool tolakBtnVis = false.obs;
+  RxBool acceptBtnVis = false.obs;
 
   // action flag
   RxBool jadiBatal = false.obs;
@@ -76,7 +78,6 @@ class SppaHeaderController extends GetxController {
       mgmtPakanController,
       mgmtKesehatanController;
 
-  // final sppaController = Get.find<SppaHeaderController>();
   Rx<InfoAtsJasTan> infoAts = InfoAtsJasTan().obs;
   RxBool infoAtsLoaded = false.obs;
 
@@ -142,11 +143,11 @@ class SppaHeaderController extends GetxController {
     mgmtKesehatanController.dispose();
   }
 
-  cekBtnVisible() {
-    print(
-        'in check button ${loginController.check.value.roles} ${sppaHeader.value.statusSppa}');
+  cekSppaBtnVisible() {
+    // print(
+    //    'in check button ${loginController.check.value.roles} ${sppaHeader.value.statusSppa}');
     if (loginController.check.value.roles == 'ROLE_CUSTOMER') {
-      switch (sppaHeader.value.statusSppa) {
+      switch (sppaStatusDisp.value) {
         case 1:
           batalBtnVis.value = true;
           editBtnVis.value = true;
@@ -190,6 +191,15 @@ class SppaHeaderController extends GetxController {
           submitBtnVis.value = false;
           tolakBtnVis.value = true;
           break;
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+        case 20:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
 
         default:
           submitBtnVis.value = false;
@@ -220,6 +230,13 @@ class SppaHeaderController extends GetxController {
           submitBtnVis.value = false;
           tolakBtnVis.value = true;
           break;
+        case 8:
+        case 9:
+        case 10:
+        case 20:
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+          break;
 
         default:
           submitBtnVis.value = false;
@@ -231,7 +248,7 @@ class SppaHeaderController extends GetxController {
     if (loginController.check.value.roles == 'ROLE_BROKER') {
       batalBtnVis.value = false;
       editBtnVis.value = false;
-      switch (sppaHeader.value.statusSppa) {
+      switch (sppaStatusDisp.value) {
         case 1:
         case 2:
         case 3:
@@ -248,9 +265,19 @@ class SppaHeaderController extends GetxController {
           submitBtnVis.value = false;
           tolakBtnVis.value = false;
           break;
-        case 9:
-          submitBtnVis.value = false;
+        case 8:
+          acceptBtnVis.value = true;
           tolakBtnVis.value = true;
+          submitBtnVis.value = false;
+        case 9:
+          acceptBtnVis.value = true;
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
+        case 10:
+        case 20:
+          acceptBtnVis.value = false;
+          submitBtnVis.value = false;
+          tolakBtnVis.value = false;
           break;
 
         default:
@@ -260,10 +287,11 @@ class SppaHeaderController extends GetxController {
       }
     }
 
-    print('btn batal jadi ${batalBtnVis.value}');
-    print('btn edit jadi ${editBtnVis.value}');
-    print('btn submit jadi ${submitBtnVis.value}');
-    print('btn tolak jadi ${tolakBtnVis.value}');
+    // print('btn batal jadi ${batalBtnVis.value}');
+    // print('btn edit jadi ${editBtnVis.value}');
+    // print('btn submit jadi ${submitBtnVis.value}');
+    // print('btn tolak jadi ${tolakBtnVis.value}');
+    // print('btn accept jadi ${acceptBtnVis.value}');
   }
 
   String sppaStatusDesc(int status) {
@@ -384,6 +412,13 @@ class SppaHeaderController extends GetxController {
       print('post header berhasil');
       var responseBody = jsonDecode(response.body);
       sppaHeader.value.id = responseBody["id"];
+
+      // add to listAktifSppa
+      // final dashboardController = Get.find<DashboardController>();
+      // dashboardController.listAktifSppa.add(sppaHeader.value);
+      // dashboardController.listAktifSppa.refresh();
+      listHelperSppa.add(sppaHeader.value);
+      listHelperSppa.refresh();
 
       // SppaStatus second
 
@@ -1002,7 +1037,7 @@ class SppaHeaderController extends GetxController {
                   )),
               onPressed: () {
                 submitSppa(status);
-                cekBtnVisible();
+                cekSppaBtnVisible();
                 Get.back();
                 //Get.until((route) => Get.currentRoute == '/sppa');
               })
@@ -1121,7 +1156,7 @@ class SppaHeaderController extends GetxController {
                   )),
               onPressed: () {
                 batalSppa(status);
-                cekBtnVisible();
+                cekSppaBtnVisible();
                 Get.back(result: true);
               })
         ],
@@ -1193,7 +1228,7 @@ class SppaHeaderController extends GetxController {
               onPressed: () {
                 if (tolakFormKey.currentState!.validate()) {
                   tolakSppa(status, tolakNoteController.text);
-                  cekBtnVisible();
+                  cekSppaBtnVisible();
                   Get.back(result: true);
                 }
               })
@@ -1591,6 +1626,7 @@ class SppaHeaderController extends GetxController {
   void getSppaStatusWithSppaId(String sppaId) async {
     String param1;
     http.Response response;
+    sppaLoaded.value = false;
 
     param1 = '?sppaId=$sppaId';
 
@@ -1604,8 +1640,8 @@ class SppaHeaderController extends GetxController {
       for (var i = 0; i < responseBody.length; i++) {
         sppaStatus.value = SppaStatus.fromJson(responseBody[i]);
         print('get sppaStatus from sppaId $sppaId berhasil ');
-        sppaLoaded.value = true;
       }
+      sppaLoaded.value = true;
     } else {
       print(
           'get sppaStatus from sppaId $sppaId gagal : ${response.statusCode}');

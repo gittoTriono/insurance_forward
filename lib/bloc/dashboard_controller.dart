@@ -1,11 +1,14 @@
 import "dart:convert";
 import "package:get/get.dart";
+import "package:insurance/bloc/customer_controller.dart";
 import "package:insurance/bloc/login_controller.dart";
+import "package:insurance/bloc/polis_controller.dart";
 import "package:insurance/bloc/session_controller.dart";
 import "package:insurance/bloc/sppa_controller.dart";
 //import "package:insurance/bloc/sppa_recap_controller.dart";
 import "package:insurance/bloc/theme_controller.dart";
 import "package:insurance/model/info_jastan.dart";
+import "package:insurance/model/polis.dart";
 import "package:insurance/model/sppa_header.dart";
 import "package:insurance/model/sppa_recap.dart";
 import "package:insurance/model/ternak_sapi.dart";
@@ -16,6 +19,8 @@ import 'package:http/http.dart' as http;
 
 class DashboardController extends GetxController {
   RxList<SppaHeader> listAktifSppa = <SppaHeader>[].obs;
+  RxList<Polis> listAktifPolis = <Polis>[].obs;
+
   // RxList<SppaStatus> listAktifSppaStatus = <SppaStatus>[].obs;
   // RxList<TernakSapi> listAktifSppaTernak = <TernakSapi>[].obs;
   // RxList<InfoAtsJasTan> listAktifSppaInfo = <InfoAtsJasTan>[].obs;
@@ -29,7 +34,9 @@ class DashboardController extends GetxController {
   ThemeController themeController = Get.find();
 
   SppaHeaderController sppaController = Get.put(SppaHeaderController());
+  CustomerController custController = Get.put(CustomerController());
 //  RecapSppaController recapController = Get.put(RecapSppaController());
+  PolisController polisController = Get.put(PolisController());
 
   // Sppa Status
   final List<int> custTodo = [1, 3];
@@ -38,8 +45,21 @@ class DashboardController extends GetxController {
   final List<int> salesSubmit = [4, 6, 8];
   final List<int> marketingTodo = [4, 7];
   final List<int> marketingSubmit = [6, 8];
-  final List<int> brokerTodo = [6, 9, 10];
+  final List<int> brokerTodo = [6, 9];
   final List<int> brokerSubmit = [8];
+
+  final List<int> custPolisTodo = [2, 4];
+  final List<int> custPolisSubmit = [3];
+  final List<int> custPolisAktif = [5];
+  final List<int> salesPolisTodo = [2, 4];
+  final List<int> salesPolisSubmit = [3];
+  final List<int> salesPolisAktif = [5];
+  final List<int> marketingPolisTodo = [2, 4];
+  final List<int> marketingPolisSubmit = [3];
+  final List<int> marketingPolisAktif = [5];
+  final List<int> brokerPolisTodo = [1, 3];
+  final List<int> brokerPolisSubmit = [2, 4];
+  final List<int> brokerPolisAktif = [5];
 
   // RecapSppa Status
   final List<int> salesRecapTodo = [1, 3];
@@ -56,16 +76,20 @@ class DashboardController extends GetxController {
   void onInit() {
     super.onInit();
     print(
-        'dashboardController on init ${loginController.check.value.roles} ${loginController.check.value.userData.userId}');
+        'dashboardController on init ${loginController.check.value.roles} - ${loginController.check.value.userData.userId}');
     sessionController.registerActivity();
     if (loginController.check.value.roles.contains("ROLE_SALES")) {
       getAktifSppaSales();
+      getAktifPolisSales();
     } else if (loginController.check.value.roles.contains("ROLE_MARKETING")) {
       getAktifSppaMarketing();
+      getAktifPolisMarketing();
     } else if (loginController.check.value.roles.contains("ROLE_BROKER")) {
       getAktifSppaBroker();
+      getAktifPolisBroker();
     } else {
       getAktifSppaCustomer();
+      getAktifPolisCustomer();
     }
   }
 
@@ -794,6 +818,337 @@ class DashboardController extends GetxController {
       } else {
         print('Load status error ${response.statusCode}');
       }
+    }
+  }
+
+  void getAktifPolisCustomer() async {
+    // print('userRole: $userRole & userName: $userName');
+    final userName = loginController.check.value.userData.name;
+
+//  status 2
+    var param1 = '?customerId=${userName}&statusPolis=2';
+
+    print(baseUrl + '/Polis' + param1);
+    var url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    http.Response response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // *********************************************************************
+    // 3
+    param1 = '?customerId=${userName}&statusPolis=3';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifSppa[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // 4
+    param1 = '?customerId=${userName}&statusPolis=4';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifSppa[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+  }
+
+  void getAktifPolisBroker() async {
+    // print('userRole: $userRole & userName: $userName');
+    final userName = loginController.check.value.userData.name;
+
+    // status 1
+    var param1 = '?brokerId=${userName}&statusPolis=1';
+
+    print(baseUrl + '/Polis' + param1);
+    var url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    http.Response response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBody||');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // *********************************************************************
+    // 2
+    param1 = '?brokerId=${userName}&statusPolis=2';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // *********************************************************************
+    // 3
+    param1 = '?brokerId=${userName}&statusPolis=3';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // 4
+    param1 = '?brokerId=${userName}&statusPolis=4';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // 5
+    param1 = '?brokerId=${userName}&statusPolis=5';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+  }
+
+  void getAktifPolisSales() async {
+    // print('userRole: $userRole & userName: $userName');
+    final userName = loginController.check.value.userData.name;
+
+    // status 2
+    var param1 = '?salesId=${userName}&statusPolis=2';
+
+    print(baseUrl + '/Polis' + param1);
+    var url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    http.Response response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // *********************************************************************
+    // 3
+    param1 = '?salesId=${userName}&statusPolis=3';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // *********************************************************************
+    // 4
+    param1 = '?salesId=${userName}&statusPolis=4';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // 5
+    param1 = '?salesId=${userName}&statusPolis=5';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+  }
+
+  void getAktifPolisMarketing() async {
+    // print('userRole: $userRole & userName: $userName');
+    final userName = loginController.check.value.userData.name;
+
+    // status 2
+    var param1 = '?marketingId=${userName}&statusPolis=2';
+
+    print(baseUrl + '/Polis' + param1);
+    var url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    http.Response response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // *********************************************************************
+    // 3
+    param1 = '?marketingId=${userName}&statusPolis=3';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // *********************************************************************
+    // 4
+    param1 = '?marketingId=${userName}&statusPolis=4';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
+    }
+
+    // 5
+    param1 = '?marketingId=${userName}&statusPolis=5';
+
+    print(baseUrl + '/Polis' + param1);
+    url = Uri.parse(baseUrl + '/Polis' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBody = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+      for (var i = 0; i < responseBody.length; i++) {
+        listAktifPolis.add(Polis.fromJson(responseBody[i]));
+        print('${i + 1} polis : ${listAktifPolis[i].id}');
+      }
+    } else {
+      print(' get Polis for $userName gagal ${response.statusCode}');
     }
   }
 }

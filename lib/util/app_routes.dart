@@ -12,6 +12,9 @@ import 'package:insurance/mainpages/Sppa/sppa_submit.dart';
 import 'package:insurance/mainpages/Sppa/ternak_form.dart';
 import 'package:insurance/mainpages/Sppa/ternak_foto.dart';
 import 'package:insurance/mainpages/dashboard.dart';
+import 'package:insurance/mainpages/polis/polis_detail.dart';
+import 'package:insurance/mainpages/polis/polis_main.dart';
+import 'package:insurance/mainpages/polis/polis_view.dart';
 import 'package:insurance/mainpages/product/produk_detail.dart';
 import 'package:insurance/mainpages/profile/kandang_form.dart';
 import 'package:insurance/mainpages/profile/profile_customer.dart';
@@ -57,13 +60,9 @@ class AppPages {
     GetPage(
         name: '/recapSppa/recapSppaDetail',
         page: () => const RecapSppaDetailView()),
-    // GetPage(
-    //     name: '/dashboard/sppaDetail/edit/ternak/form',
-    //     page: () => const SppaEditTernakForm()),
-    // GetPage(
-    //     name: '/dashboard/sppaDetail/edit/ternak/foto',
-    //     page: () => const SppaEditTernakFoto()),
-    // GetPage(name: '/dashboard/sppaDetail/batal', page: () => const SppaBatal()),
+    GetPage(name: '/polis/main', page: () => const PolisMaintenance()),
+    GetPage(name: '/polis', page: () => PolisView()),
+    GetPage(name: '/polis/polisDetail', page: () => const PolisDetail()),
     // GetPage(
     //     name: '/dashboard/sppaDetail/submit', page: () => const SppaSubmit()),
   ];
