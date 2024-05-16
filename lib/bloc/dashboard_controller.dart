@@ -48,12 +48,12 @@ class DashboardController extends GetxController {
   final List<int> brokerTodo = [6, 9];
   final List<int> brokerSubmit = [8];
 
-  final List<int> custPolisTodo = [2, 4];
-  final List<int> custPolisSubmit = [3];
-  final List<int> custPolisAktif = [5];
-  final List<int> salesPolisTodo = [2, 4];
-  final List<int> salesPolisSubmit = [3];
-  final List<int> salesPolisAktif = [5];
+  final List<int> custPolisTodo = [];
+  final List<int> custPolisSubmit = [];
+  final List<int> custPolisAktif = [2, 3, 4, 5];
+  final List<int> salesPolisTodo = [];
+  final List<int> salesPolisSubmit = [];
+  final List<int> salesPolisAktif = [2, 3, 4, 5];
   final List<int> marketingPolisTodo = [2, 4];
   final List<int> marketingPolisSubmit = [3];
   final List<int> marketingPolisAktif = [5];
@@ -96,6 +96,7 @@ class DashboardController extends GetxController {
   void getAktifSppaSales() async {
     //print('userRole: $userRole & userName: $userName');
     // get for status 2 and 4
+    // 2 4 5 6 8
     var responseBodySppa;
     http.Response response;
 
@@ -160,13 +161,59 @@ class DashboardController extends GetxController {
     } else {
       print(response.statusCode.toString());
     }
+
+    // 6
+    param1 =
+        '?salesId=${loginController.check.value.userData.name}&statusSppa=6';
+
+    print(baseUrl + '/SppaHeader' + param1);
+    url = Uri.parse(baseUrl + '/SppaHeader' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBodySppa = jsonDecode(response.body);
+      //print(responseBodySppa);
+      for (var i = 0; i < responseBodySppa.length; i++) {
+        listAktifSppa.add(SppaHeader.fromJson(responseBodySppa[i]));
+        // print('add 1 sppa and details: ${listAktifSppa[i].id}');
+        print('load ${i} items');
+      }
+    } else {
+      print(response.statusCode.toString());
+    }
+
+    // 8
+    param1 =
+        '?salesId=${loginController.check.value.userData.name}&statusSppa=8';
+
+    print(baseUrl + '/SppaHeader' + param1);
+    url = Uri.parse(baseUrl + '/SppaHeader' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBodySppa = jsonDecode(response.body);
+      //print(responseBodySppa);
+      for (var i = 0; i < responseBodySppa.length; i++) {
+        listAktifSppa.add(SppaHeader.fromJson(responseBodySppa[i]));
+        // print('add 1 sppa and details: ${listAktifSppa[i].id}');
+        print('load ${i} items');
+      }
+    } else {
+      print(response.statusCode.toString());
+    }
   }
 
   void getAktifSppaMarketing() async {
     //print('userRole: $userRole & userName: $userName');
     // 4
+    // final List<int> marketingTodo = [4, 7];
+    // final List<int> marketingSubmit = [6, 8];
+
+    // 4
     var param1 =
-        '?marketingId=${loginController.check.value.userData.userId}&statusSppa=4';
+        '?marketingId=${loginController.check.value.userData.name}&statusSppa=4';
 
     print(baseUrl + '/SppaHeader' + param1);
     var url = Uri.parse(baseUrl + '/SppaHeader' + param1);
@@ -188,7 +235,7 @@ class DashboardController extends GetxController {
 
     // 6
     param1 =
-        '?marketingId=${loginController.check.value.userData.userId}&statusSppa=6';
+        '?marketingId=${loginController.check.value.userData.name}&statusSppa=6';
 
     print(baseUrl + '/SppaHeader' + param1);
     url = Uri.parse(baseUrl + '/SppaHeader' + param1);
@@ -210,7 +257,29 @@ class DashboardController extends GetxController {
 
     // 7
     param1 =
-        '?marketingId=${loginController.check.value.userData.userId}&statusSppa=7';
+        '?marketingId=${loginController.check.value.userData.name}&statusSppa=7';
+
+    print(baseUrl + '/SppaHeader' + param1);
+    url = Uri.parse(baseUrl + '/SppaHeader' + param1);
+
+    response = await client.get(url); // no authentication needed
+    if (response.statusCode == 200) {
+      var responseBodySppa = jsonDecode(response.body);
+
+      //print(responseBodySppa);
+      for (var i = 0; i < responseBodySppa.length; i++) {
+        listAktifSppa.add(SppaHeader.fromJson(responseBodySppa[i]));
+        // print('add 1 sppa and details: ${listAktifSppa[i].id}');
+
+        print('load ${i} items');
+      }
+    } else {
+      print(response.statusCode.toString());
+    }
+
+    // 8
+    param1 =
+        '?marketingId=${loginController.check.value.userData.name}&statusSppa=8';
 
     print(baseUrl + '/SppaHeader' + param1);
     url = Uri.parse(baseUrl + '/SppaHeader' + param1);
@@ -235,8 +304,11 @@ class DashboardController extends GetxController {
 
   void getAktifSppaBroker() async {
     //print('userRole: $userRole & userName: $userName');
+    // final List<int> brokerTodo = [6, 9];
+    // final List<int> brokerSubmit = [8];
+
     // 6
-    var param1 = '?brokerId=1&statusSppa=6';
+    var param1 = '?brokerId=ISTPRO&statusSppa=6';
 
     print(baseUrl + '/SppaHeader' + param1);
     var url = Uri.parse(baseUrl + '/SppaHeader' + param1);
@@ -257,7 +329,7 @@ class DashboardController extends GetxController {
     }
 
     // 8
-    param1 = '?brokerId=1&statusSppa=8';
+    param1 = '?brokerId=ISTPRO&statusSppa=8';
 
     print(baseUrl + '/SppaHeader' + param1);
     url = Uri.parse(baseUrl + '/SppaHeader' + param1);
@@ -278,7 +350,7 @@ class DashboardController extends GetxController {
     }
 
     // 9
-    param1 = '?brokerId=1&statusSppa=9';
+    param1 = '?brokerId=ISTPRO&statusSppa=9';
 
     print(baseUrl + '/SppaHeader' + param1);
     url = Uri.parse(baseUrl + '/SppaHeader' + param1);
@@ -299,7 +371,7 @@ class DashboardController extends GetxController {
     }
 
     // 10
-    param1 = '?brokerId=1&statusSppa=10';
+    param1 = '?brokerId=ISTPRO&statusSppa=10';
 
     print(baseUrl + '/SppaHeader' + param1);
     url = Uri.parse(baseUrl + '/SppaHeader' + param1);
@@ -324,10 +396,14 @@ class DashboardController extends GetxController {
 
   void getAktifSppaCustomer() async {
     // must get 2 times: status 1 and status 3 = maybe more later
+    //     final List<int> custTodo = [1, 3];
+    // final List<int> custSubmit = [2, 4, 6, 8];
+
     final userRole = loginController.check.value.roles;
     final userName = loginController.check.value.userData.name;
 
     // print('userRole: $userRole & userName: $userName');
+    // 1
     var param1 = '?customerId=${userName}&statusSppa=1';
 
     print(baseUrl + '/SppaHeader' + param1);
@@ -348,6 +424,7 @@ class DashboardController extends GetxController {
 
     // *********************************************************************
     // print('userRole: $userRole & userName: $userName');
+    // 3
     param1 = '?customerId=${userName}&statusSppa=3';
 
     print(baseUrl + '/SppaHeader' + param1);
@@ -371,6 +448,7 @@ class DashboardController extends GetxController {
 
     // *********************************************************************
     // print('userRole: $userRole & userName: $userName');
+    // 2
     param1 = '?customerId=${userName}&statusSppa=2';
 
     print(baseUrl + '/SppaHeader' + param1);
@@ -393,7 +471,7 @@ class DashboardController extends GetxController {
     }
 
     // *********************************************************************
-
+    // 4
     param1 = '?customerId=${userName}&statusSppa=4';
 
     print(baseUrl + '/SppaHeader' + param1);
@@ -421,19 +499,53 @@ class DashboardController extends GetxController {
     //   param1 = '?sppaId=${listAktifSppa[i].id}';
     //   url = Uri.parse(baseUrl + '/SppaStatus' + param1);
 
-    //   response = await client.get(url);
+    // 6
+    param1 = '?customerId=${userName}&statusSppa=6';
 
-    //   if (response.statusCode == 200) {
-    //     var responseBodyStatus = jsonDecode(response.body);
-    //     //print(responseBodyStatus);
-    //     for (var j = 0; j < responseBodyStatus.length; j++) {
-    //       listAktifSppaStatus.add(SppaStatus.fromJson(responseBodyStatus[j]));
-    //       print('${j + 1} add sppaStatus utk sppa ${listAktifSppa[i].sppaId}');
-    //     }
-    //   } else {
-    //     print('Load status error ${response.statusCode}');
-    //   }
-    // }
+    print(baseUrl + '/SppaHeader' + param1);
+    url = Uri.parse(baseUrl + '/SppaHeader' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBodySppa = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+
+      for (var i = 0; i < responseBodySppa.length; i++) {
+        listAktifSppa.add(SppaHeader.fromJson(responseBodySppa[i]));
+        print('${i + 1} sppa : ${listAktifSppa[i].id}');
+
+        print('load ${i} items');
+      }
+    } else {
+      print(response.statusCode.toString());
+    }
+
+// ****************************************************************************
+
+    // 8
+    param1 = '?customerId=${userName}&statusSppa=8';
+
+    print(baseUrl + '/SppaHeader' + param1);
+    url = Uri.parse(baseUrl + '/SppaHeader' + param1);
+
+    response = await client.get(url); // no authentication needed
+
+    if (response.statusCode == 200) {
+      var responseBodySppa = jsonDecode(response.body);
+      //print('response body :$responseBodySppa');
+
+      for (var i = 0; i < responseBodySppa.length; i++) {
+        listAktifSppa.add(SppaHeader.fromJson(responseBodySppa[i]));
+        print('${i + 1} sppa : ${listAktifSppa[i].id}');
+
+        print('load ${i} items');
+      }
+    } else {
+      print(response.statusCode.toString());
+    }
+
+// ****************************************************************************
   }
 
   void getAktifRecapSales() async {

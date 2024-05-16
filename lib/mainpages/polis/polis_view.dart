@@ -49,7 +49,7 @@ class PolisView extends StatelessWidget {
         // print('helper length ${polisController.listHelperPolis.length}');
       }
     } else if (displayStatus == 'Submit') {
-      if (controller.loginController.check.value.roles == 'ROLE_ADMIN') {
+      if (controller.loginController.check.value.roles == 'ROLE_SALES') {
         polisController.listHelperPolis.addAll(controller.listAktifPolis
             .where((p0) => controller.salesPolisSubmit.contains(p0.statusPolis))
             .toList());
@@ -76,7 +76,7 @@ class PolisView extends StatelessWidget {
         // print('helper length ${sppaController.listHelperSppa.length}');
       }
     } else if (displayStatus == 'Aktif') {
-      if (controller.loginController.check.value.roles == 'ROLE_ADMIN') {
+      if (controller.loginController.check.value.roles == 'ROLE_SALES') {
         polisController.listHelperPolis.addAll(controller.listAktifPolis
             .where((p0) => controller.salesPolisAktif.contains(p0.statusPolis))
             .toList());
@@ -107,7 +107,7 @@ class PolisView extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Daftar Sppa Aktif'.tr),
+          title: Text('Daftar Certificate Aktif'.tr),
           actions: [
             Container(
               height: 90,
@@ -140,95 +140,113 @@ class PolisView extends StatelessWidget {
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() => (polisController.listHelperPolis.isEmpty)
-                        ? Text('Tidak ada aktif Polis ')
+                        ? Text('Tidak ada aktif Setifikat ')
                         : Wrap(
                             spacing: 20,
                             children: polisController.listHelperPolis
                                 .map((e) => Column(
                                       children: [
-                                        Container(
-                                            margin: EdgeInsets.only(left: 20),
-                                            padding: EdgeInsets.all(10),
-                                            width: formWidth(Get.width),
-                                            decoration: BoxDecoration(
-                                                // color: Get
-                                                //     .theme.colorScheme.surface,
-                                                border: Border.all(
-                                                  width: 0.25,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                // spacing: 10,
-                                                // runSpacing: 10,
-                                                children: [
-                                                  Column(
-                                                    children: [
-                                                      IconButton(
-                                                          onPressed: () {
-                                                            // print(
-                                                            //     'on pressed go get ${e.id}');
-                                                            Get.toNamed(
-                                                                '/polis/polisDetail',
-                                                                arguments: {
-                                                                  'polisId':
-                                                                      e.id
-                                                                });
-                                                          },
-                                                          icon: Icon(
-                                                              Icons
-                                                                  .document_scanner,
-                                                              size: 50,
-                                                              color: Get
+                                        InkWell(
+                                          onTap: () {
+                                            // print(
+                                            //     'on pressed go get ${e.id}');
+                                            Get.toNamed('/polis/polisDetail',
+                                                arguments: {'polisId': e.id});
+                                          },
+                                          child: Container(
+                                              margin: EdgeInsets.only(left: 20),
+                                              padding: EdgeInsets.all(10),
+                                              width: formWidth(Get.width),
+                                              decoration: BoxDecoration(
+                                                  // color: Get
+                                                  //     .theme.colorScheme.surface,
+                                                  border: Border.all(
+                                                    width: 0.25,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  // spacing: 10,
+                                                  // runSpacing: 10,
+                                                  children: [
+                                                    Container(
+                                                      padding:
+                                                          EdgeInsets.all(5),
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .secondary,
+                                                      child: Column(
+                                                        children: [
+                                                          Text('Sertifikat',
+                                                              style: Get
                                                                   .theme
-                                                                  .colorScheme
-                                                                  .secondary)),
-                                                    ],
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      e.sppaId == ''
-                                                          ? TextBodyMedium(
-                                                              'Id ${e.id}')
-                                                          : TextBodyMedium(
-                                                              'Tertanggung ${e.namaTertanggung}'),
-                                                      Text(
-                                                          '${polisController.polisStatusDesc(e.statusPolis)}',
-                                                          style: Get
-                                                              .theme
-                                                              .textTheme
-                                                              .bodySmall!
-                                                              .copyWith(
-                                                                  color: Get
-                                                                      .theme
-                                                                      .colorScheme
-                                                                      .secondary)),
-                                                      TextBodyMedium(
-                                                          e.produkName),
-                                                    ],
-                                                  ),
-                                                  Column(
+                                                                  .textTheme
+                                                                  .headlineSmall!
+                                                                  .copyWith(
+                                                                      color: Colors
+                                                                          .white)),
+                                                          Text(e.id,
+                                                              style: Get
+                                                                  .theme
+                                                                  .textTheme
+                                                                  .displaySmall!
+                                                                  .copyWith(
+                                                                      color: Colors
+                                                                          .white))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        TextBodySmall('Premi'),
-                                                        TextBodySmall(
-                                                            'Rp. ${NumberFormat("#,###,###,###", "en_US").format(e.premiAmount)}'),
-                                                        TextBodySmall('Tenor'),
-                                                        SizedBox(
-                                                          height: 5,
-                                                        ),
-                                                        TextBodySmall(
-                                                            '${e.tenorSppa} bulan'),
-                                                      ]),
-                                                ])),
+                                                        // e.sppaId == ''
+                                                        //     ? TextBodyMedium(
+                                                        //         'Id ${e.id}')
+                                                        //     : TextBodyMedium(
+                                                        //         'Tertanggung ${e.namaTertanggung}'),
+                                                        Text(
+                                                            '${polisController.polisStatusDesc(e.statusPolis)}',
+                                                            style: Get
+                                                                .theme
+                                                                .textTheme
+                                                                .bodyLarge!
+                                                                .copyWith(
+                                                                    color: Get
+                                                                        .theme
+                                                                        .colorScheme
+                                                                        .secondary)),
+                                                        Text(
+                                                            'Sppa ${e.sppaId}'),
+                                                        Text(e.namaTertanggung),
+                                                        TextBodyMedium(
+                                                            e.produkName),
+                                                      ],
+                                                    ),
+                                                    Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          TextBodySmall(
+                                                              'Premi'),
+                                                          TextBodySmall(
+                                                              'Rp. ${NumberFormat("#,###,###,###", "en_US").format(e.premiAmount)}'),
+                                                          TextBodySmall(
+                                                              'Tenor'),
+                                                          SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          TextBodySmall(
+                                                              '${e.tenorSppa} bulan'),
+                                                        ]),
+                                                  ])),
+                                        ),
                                         SizedBox(height: 10)
                                       ],
                                     ))

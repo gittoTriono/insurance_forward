@@ -35,31 +35,31 @@ class TernakSppa extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              Container(
-                width: formWidth(Get.width),
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value == null ||
-                        value.isEmpty ||
-                        !value.isNumericOnly) {
-                      return "*Wajib diisi oleh angka.";
-                    } else {
-                      return null;
-                    }
-                  },
-                  controller: controller.jmlTernakController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(gapPadding: 10),
-                    focusColor: Colors.blueAccent,
-                    label: Text('Jumlah Ternak'),
-                    hintText: 'Masukkan Jumlah Ternak Yang Akan Diasuransikan',
-                    contentPadding: EdgeInsets.all(15),
-                    prefixIcon: Icon(Icons.check_box),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
+              // Container(
+              //   width: formWidth(Get.width),
+              //   padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              //   child: TextFormField(
+              //     validator: (value) {
+              //       if (value == null ||
+              //           value.isEmpty ||
+              //           !value.isNumericOnly) {
+              //         return "*Wajib diisi oleh angka.";
+              //       } else {
+              //         return null;
+              //       }
+              //     },
+              //     controller: controller.jmlTernakController,
+              //     decoration: const InputDecoration(
+              //       border: OutlineInputBorder(gapPadding: 10),
+              //       focusColor: Colors.blueAccent,
+              //       label: Text('Jumlah Ternak'),
+              //       hintText: 'Masukkan Jumlah Ternak Yang Akan Diasuransikan',
+              //       contentPadding: EdgeInsets.all(15),
+              //       prefixIcon: Icon(Icons.check_box),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(height: 20),
               TextBodyMedium('Klik untuk menambah ternak '),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 IconButton(
@@ -88,7 +88,7 @@ class TernakSppa extends StatelessWidget {
                                 ),
                                 tileColor: Colors.blue[100],
                                 title: Text(
-                                    '${item.earTag!} - ${item.jenis}/${item.kelamin}'),
+                                    'Jenis / Kelamin -  ${item.jenis} / ${item.kelamin}'),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -102,14 +102,14 @@ class TernakSppa extends StatelessWidget {
                                 leading: Container(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10),
-                                  width: 40,
+                                  width: 120,
                                   height: 40,
                                   decoration: BoxDecoration(
                                       border: Border.all(),
                                       borderRadius: BorderRadius.circular(5),
                                       color: Colors.black),
                                   child: Center(
-                                    child: Text(item.seqNo.toString(),
+                                    child: Text(item.earTag.toString(),
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white)),
@@ -119,7 +119,7 @@ class TernakSppa extends StatelessWidget {
                                   icon: const Icon(Icons.delete,
                                       color: Colors.red, size: 30),
                                   onPressed: () {
-                                    controller.removeFromList(item);
+                                    controller.deleteATernak(item);
                                   },
                                 ),
                               ),

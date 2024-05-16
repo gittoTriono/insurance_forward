@@ -47,6 +47,10 @@ class PolisController extends GetxController {
   final TextEditingController beaMeteraiController = TextEditingController();
   final TextEditingController kantorCabangController = TextEditingController();
   final TextEditingController totalBiayaController = TextEditingController();
+  final TextEditingController invoiceNoController = TextEditingController();
+  final TextEditingController invoiceAmountController = TextEditingController();
+  final TextEditingController tglInvoiceController = TextEditingController();
+  final TextEditingController tglPaymentDueController = TextEditingController();
 
   RxBool makeEdit = false.obs;
   var pickedDate = DateTime.now().obs;
@@ -77,20 +81,57 @@ class PolisController extends GetxController {
       case 3:
         return 'Dibayar';
       case 4:
-        return 'Kurang/Lebih Bayar';
+        return 'Masalah Bayar';
       case 5:
         return 'Aktif';
+      case 6:
+        return 'Tertunggak';
+      case 7:
+        return 'Batal';
       default:
         return 'undef';
     }
   }
 
   void copyFromSppa() {
+    DateTime endDate;
+
+    thePolis.value.namaTertanggung =
+        '${custController.theCustomer.value.salesId} qq ' +
+            ' ${custController.theCustomer.value.name!}';
     print('copy from sppa dulu');
-    tglPolisController.text =
-        DateFormat("dd-MMM-yyyy").format(pickedDate.value);
-    thePolis.value.tglPolis = tglPolisController.text;
-    thePolis.value.tglPolisMillis = pickedDate.value.millisecondsSinceEpoch;
+    thePolis.value.sppaId = sppaController.sppaHeader.value.id!;
+    thePolis.value.customerId = sppaController.sppaHeader.value.customerId!;
+    thePolis.value.salesId = sppaController.sppaHeader.value.salesId!;
+    thePolis.value.marketingId = sppaController.sppaHeader.value.marketingId!;
+    thePolis.value.brokerId = sppaController.sppaHeader.value.brokerId!;
+    thePolis.value.namaAsuransi = sppaController.sppaHeader.value.asuransiName!;
+    thePolis.value.produkName = sppaController.sppaHeader.value.produkName!;
+    thePolis.value.produkCode = sppaController.sppaHeader.value.produkCode!;
+    thePolis.value.kategori = sppaController.sppaHeader.value.kategori!;
+    thePolis.value.subKategori = sppaController.sppaHeader.value.subKategori!;
+    thePolis.value.nilaiPertanggunganSppa =
+        sppaController.sppaHeader.value.nilaiPertanggungan!;
+    thePolis.value.tenorSppa = sppaController.sppaHeader.value.tenor!;
+    // thePolis.value. tglPayment;
+    // thePolis.value. tglPaymentMillis;
+    // thePolis.value. paymentTotalAmount;
+    // thePolis.value. buktiPembayaranUrl;
+    // thePolis.value. paymentStatus;
+    // thePolis.value. incomeDistributionStatus;
+    // thePolis.value. tglIncomeDistributionProcess;
+    // thePolis.value. incomeDistributionProcessNo;
+    // thePolis.value. warrantyDays;
+    thePolis.value.statusPolis = 2;
+    // thePolis.value. statusProses;
+
+    thePolis.value.hargaPertanggungan =
+        sppaController.sppaHeader.value.nilaiPertanggungan!;
+    thePolis.value.premiRate = sppaController.sppaHeader.value.premiRate!;
+    tglPolisController.text = sppaController.sppaStatus.value.initSubmitDt;
+    thePolis.value.tglPolis = sppaController.sppaStatus.value.initSubmitDt;
+    thePolis.value.tglPolisMillis =
+        sppaController.sppaStatus.value.initSubmitDtMillis;
     namaPolisNoController.text =
         '${custController.theCustomer.value.chain} qq ${custController.theCustomer.value.name}';
     alamatCustController.text =
@@ -100,17 +141,49 @@ class PolisController extends GetxController {
     tglAwalController.text = tglPolisController.text;
     thePolis.value.tglAwalPolis = tglPolisController.text;
     thePolis.value.tglAwalPolisMillis = thePolis.value.tglPolisMillis;
-    tglAkhirController.text = DateFormat("dd-MMM-yyyy")
-        .format(pickedDate.value.add(Duration(days: 365)));
+    int endMonth = 0;
+    if ((pickedDate.value.month + sppaController.sppaHeader.value.tenor!) >
+        12) {
+      endMonth =
+          pickedDate.value.month + sppaController.sppaHeader.value.tenor! - 12;
+      endDate = DateTime(DateTime.now().year + 1, endMonth, DateTime.now().day);
+    } else {
+      endMonth =
+          pickedDate.value.month + sppaController.sppaHeader.value.tenor!;
+      endDate = DateTime(DateTime.now().year, endMonth, DateTime.now().day);
+    }
+
+    tglAkhirController.text = DateFormat("dd-MMM-yyyy").format(endDate);
     thePolis.value.tglAkhirPolis = tglAkhirController.text;
-    thePolis.value.tglAkhirPolisMillis =
-        pickedDate.value.add(Duration(days: 365)).millisecondsSinceEpoch;
-    nilaiPremiController.text =
-        sppaController.sppaHeader.value.premiAmount.toString();
-    biayaAdminController.text = '50000';
-    beaMeteraiController.text = '12000';
+    thePolis.value.tglAkhirPolisMillis = endDate.millisecondsSinceEpoch;
+
+    nilaiPremiController.text = (sppaController.premiAnakan +
+            sppaController.sppaHeader.value.premiAmount!)
+        .toString();
+    print(
+        ' anakan: ${sppaController.premiAnakan} + premi amount: ${sppaController.sppaHeader.value.premiAmount!}');
+    biayaAdminController.text = '10000';
+    beaMeteraiController.text = '0';
     kantorCabangController.text = 'Kantor Pusat';
-    totalBiaya.value = sppaController.sppaHeader.value.premiAmount! + 62000;
+    totalBiaya.value = sppaController.sppaHeader.value.premiAmount! +
+        10000 +
+        sppaController.premiAnakan;
+
+    // and assume some
+    thePolis.value.tglInvoice = tglPolisController.text;
+    thePolis.value.tglInvoiceMillis = thePolis.value.tglPolisMillis;
+    thePolis.value.invoiceAmount = totalBiaya.value;
+    if ((pickedDate.value.month + 1) > 12) {
+      endMonth = 1;
+      endDate = DateTime(DateTime.now().year + 1, endMonth, DateTime.now().day);
+    } else {
+      endMonth = pickedDate.value.month + 1;
+      endDate = DateTime(DateTime.now().year, endMonth, DateTime.now().day);
+    }
+    thePolis.value.tglPaymentDue = DateFormat("dd-MMM-yyyy").format(endDate);
+    tglPaymentDueController.text = thePolis.value.tglPaymentDue;
+    thePolis.value.tglPaymentDueMillis = endDate.millisecondsSinceEpoch;
+    print('exit copy from sppa');
   }
 
   void cekPolisBtnVisible() {
@@ -249,7 +322,9 @@ class PolisController extends GetxController {
         beaMeteraiController.text.isNum) {
       totalBiaya.value = double.parse(nilaiPremiController.text) +
           double.parse(biayaAdminController.text) +
-          double.parse(beaMeteraiController.text);
+          double.parse(beaMeteraiController.text) +
+          sppaController.premiAnakan;
+      invoiceAmountController.text = totalBiaya.value.toString();
     }
   }
 
@@ -274,6 +349,7 @@ class PolisController extends GetxController {
           thePolis.value.biayaAdministrasi +
           thePolis.value.beaMaterei;
       print('get polis from id $polisId berhasil  ');
+      // print('pertanggungan: ${thePolis.value.hargaPertanggungan}');
     } else {
       print('get polis from id $polisId gagal : ${response.statusCode}');
     }

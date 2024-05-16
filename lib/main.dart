@@ -328,7 +328,7 @@ class InsuranceMart extends StatelessWidget {
                                               fontWeight: FontWeight.bold),
                                           children: <TextSpan>[
                                             TextSpan(
-                                              text: 'Saspri Pro.',
+                                              text: 'GRINSPRO+',
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
@@ -553,7 +553,7 @@ class InsuranceMart extends StatelessWidget {
                             'SASPRI12-05';
                         Get.toNamed('/dashboard');
                       },
-                      child: Text('Dashboard Customer',
+                      child: Text('Dashboard Peternak',
                           style: TextStyle(color: Colors.white)),
                     ),
                   ),
@@ -601,7 +601,7 @@ class InsuranceMart extends StatelessWidget {
                         // Get.put(DashboardController());
                         // print('Put DashboardController di depan');
                         _loginController.check.value.roles = 'ROLE_BROKER';
-                        _loginController.check.value.userData.name = '1';
+                        _loginController.check.value.userData.name = 'ISTPRO';
                         Get.toNamed('/dashboard');
                       },
                       child: Text('Dashboard ISTPRO',

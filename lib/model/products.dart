@@ -133,6 +133,8 @@ class ProdukAsuransi {
 class PerluasanRisiko {
   String? id;
 //  String? perluasanRisikoId;
+// String codePerluasanRisiko;
+// Strint tipe; // add main rate or add in separate line
   String? namaPerluasanRisiko;
   String? codeAsuransi;
   String? kategori;

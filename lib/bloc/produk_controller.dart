@@ -40,7 +40,6 @@ class ProdukController extends GetxController {
     super.onClose();
   }
 
-// http://localhost:3000/produkAsuransi?productPertanggunganSubCtgry=SP
   void getProdukAsuransiSelectedKategori() async {
     final ProdukKategoriController katCtrl = Get.find();
     final String param1 = '?productKategori=${katCtrl.kategoriSelected.value}';
@@ -116,12 +115,12 @@ class ProdukController extends GetxController {
     // listPilihan.clear();
 
     listPerluasanJaminanLoaded.value = false;
-    print('di getPerluasanJaminan selected: ${selected.value.productName}');
+    //print('di getPerluasanJaminan selected: ${selected.value.productName}');
     final String param1 = '?kategori=${selected.value.productKategori}';
     final String param2 = '&subKategori=${selected.value.productSubKategori}';
     final String param3 = '&codeAsuransi=${selected.value.codeAsuransi}';
 
-    print(baseUrl + '/PerluasanRisiko' + param1 + param2 + param3);
+    //print(baseUrl + '/PerluasanRisiko' + param1 + param2 + param3);
     var url =
         Uri.parse(baseUrl + '/PerluasanRisiko' + param1 + param2 + param3);
 

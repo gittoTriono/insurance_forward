@@ -137,31 +137,30 @@ class TernakForm extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Container(
-                  width: formWidth(Get.width),
-                  padding: const EdgeInsets.only(top: 5),
-                  child: TextFormField(
-                    // focusNode: fn2,
-                    style: TextStyle(fontSize: 12),
-
-                    controller: controller.perolehanController,
-                    decoration: const InputDecoration(
-                      hintText: 'Nilai pembelian',
-                      hintStyle: TextStyle(fontSize: 12),
-                      border: OutlineInputBorder(),
-                      labelText: 'Nilai Pembelian',
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "*Wajib disini.";
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                ),
-                const SizedBox(height: 10),
+                // Container(
+                //   width: formWidth(Get.width),
+                //   padding: const EdgeInsets.only(top: 5),
+                //   child: TextFormField(
+                //     // focusNode: fn2,
+                //     style: TextStyle(fontSize: 12),
+                //     controller: controller.perolehanController,
+                //     decoration: const InputDecoration(
+                //       hintText: 'Nilai pembelian',
+                //       hintStyle: TextStyle(fontSize: 12),
+                //       border: OutlineInputBorder(),
+                //       labelText: 'Nilai Pembelian',
+                //     ),
+                //     keyboardType: const TextInputType.numberWithOptions(),
+                //     validator: (value) {
+                //       if (value == null || value.isEmpty) {
+                //         return "*Wajib disini.";
+                //       } else {
+                //         return null;
+                //       }
+                //     },
+                //   ),
+                // ),
+                // const SizedBox(height: 10),
                 Container(
                   width: formWidth(Get.width),
                   padding: const EdgeInsets.only(top: 5),
@@ -172,18 +171,16 @@ class TernakForm extends StatelessWidget {
                     controller: controller.pertanggunganController,
                     decoration: const InputDecoration(
                       isDense: true,
-                      hintText: 'Nilai yang akan diasuransikan',
+                      hintText: 'Nilai pembelian',
                       hintStyle: TextStyle(fontSize: 12),
                       border: OutlineInputBorder(),
-                      labelText: 'Nilai Pertanggungan',
+                      labelText: 'Harga Pertanggungan',
                     ),
                     keyboardType: const TextInputType.numberWithOptions(),
                     validator: (value) {
                       final nilai = double.parse(value!);
                       if (value == null || value.isEmpty) {
                         return "*Wajib disini.";
-                      } else if (nilai > 10000000) {
-                        return 'Nilai tidak boleh melebihi Rp. 10,000,000';
                       } else {
                         return null;
                       }
@@ -193,7 +190,7 @@ class TernakForm extends StatelessWidget {
                 const SizedBox(height: 15),
                 Row(
                   children: [
-                    TextBodyMedium('Upload foto disini '),
+                    TextBodyMedium('Foto'),
                     SizedBox(
                       width: 10,
                     ),
@@ -210,11 +207,7 @@ class TernakForm extends StatelessWidget {
                   ],
                 ),
                 const Divider(
-                  height: 30,
-                  thickness: 1,
-                  indent: 40,
-                  endIndent: 40,
-                ),
+                    height: 30, thickness: 1, indent: 40, endIndent: 40),
                 Center(
                   child: IconButton(
                     style: IconButton.styleFrom(
@@ -222,11 +215,11 @@ class TernakForm extends StatelessWidget {
                         elevation: 10,
                         foregroundColor: Colors.white),
                     onPressed: () {
-                      if (controller.ternakSeqNo.value <
-                          int.parse(controller.jmlTernakController.text)) {
-                        controller.saveATernak();
-                        // TODO else snackBar
-                      }
+                      // if (controller.ternakSeqNo.value <
+                      //     int.parse(controller.jmlTernakController.text)) {
+                      controller.saveATernak();
+                      // TODO else snackBar
+                      // }
                     },
                     icon: const Icon(Icons.done, size: 35),
                   ),

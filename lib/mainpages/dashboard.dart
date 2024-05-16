@@ -91,7 +91,7 @@ class Dashboard extends StatelessWidget {
                       thickness: 0.5,
                       color: Get.theme.colorScheme.secondary,
                       indent: 60,
-                      endIndent: 100),
+                      endIndent: 60),
                   controller.loginController.check.value.roles ==
                           'ROLE_CUSTOMER'
                       ? Container(
@@ -148,7 +148,7 @@ class Dashboard extends StatelessWidget {
                           thickness: 0.25,
                           color: Get.theme.colorScheme.secondary,
                           indent: 60,
-                          endIndent: 100,
+                          endIndent: 60,
                         )
                       : Container(),
                   Obx(() {
@@ -504,7 +504,7 @@ class Dashboard extends StatelessWidget {
                         child: Row(children: [
                           Expanded(
                               flex: 1,
-                              child: Text('Polis',
+                              child: Text('Certificate',
                                   style: Get.theme.textTheme.titleMedium!
                                       .copyWith(
                                           color: Get

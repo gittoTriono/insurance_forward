@@ -41,6 +41,12 @@ class SppaHeaderController extends GetxController {
   RxInt sppaStatusDisp = 0.obs;
   RxBool sppaLoaded = false.obs;
 
+  RxDouble nilaiAnakan = 0.0.obs;
+  double rateAnakan = 0.0;
+  double premiAnakan = 0.0;
+
+  RxDouble totPertanggungan = 0.0.obs;
+
   RxList<SppaPerluasanRisiko> listPerluasanRisikoSppa =
       <SppaPerluasanRisiko>[].obs;
   RxBool listPerluasanRisikoSppaLoaded = false.obs;
@@ -299,17 +305,17 @@ class SppaHeaderController extends GetxController {
       case 1:
         return 'Baru';
       case 2:
-        return 'Proses Sales';
+        return 'Proses SASPRI-K';
       case 3:
-        return 'Kembali Dari Sales';
+        return 'Balik Peternak';
       case 4:
-        return 'Proses Marketing';
+        return 'Proses SASPRINAS';
       case 5:
-        return 'Kembali dari Marketing';
+        return 'Balik SASPRI-K';
       case 6:
         return 'Proses Broker';
       case 7:
-        return 'Kembali Dari Broker';
+        return 'Balik SASPRINAS';
       case 8:
         return 'Proses Asuransi';
       case 9:
@@ -591,6 +597,7 @@ class SppaHeaderController extends GetxController {
     // this is for existing sppa, so set up the prodController.listPerluasanRisiko too !
     String param1, param2, param3;
     http.Response response;
+    SppaPerluasanRisiko thePerluasan;
 
     if (!isNewSppa.value) {
       // clear list to ensure no duplicate
@@ -601,13 +608,23 @@ class SppaHeaderController extends GetxController {
       //print(baseUrl + '/SppaPerluasanRisiko' + param1);
       var url = Uri.parse(baseUrl + '/SppaPerluasanRisiko' + param1);
       listPerluasanRisikoSppaLoaded.value = false;
+
       response = await client.get(url); // no authentication needed
+
       if (response.statusCode == 200) {
         var responseBodySppa = jsonDecode(response.body);
         //print(responseBodySppa);
         for (var i = 0; i < responseBodySppa.length; i++) {
-          listPerluasanRisikoSppa
-              .add(SppaPerluasanRisiko.fromJson(responseBodySppa[i]));
+          thePerluasan = SppaPerluasanRisiko.fromJson(responseBodySppa[i]);
+
+          if (thePerluasan.namaPerluasanRisiko == 'Anakan') {
+            nilaiAnakan.value = thePerluasan.nilaiPerlindungan!;
+            rateAnakan = thePerluasan.rate!;
+            premiAnakan = thePerluasan.tambahanPremi!;
+          }
+
+          listPerluasanRisikoSppa.add(thePerluasan);
+
           // print(
           //     'add ${i + 1}  perluasan : ${listPerluasanRisikoSppa[i].namaPerluasanRisiko}');
         }
@@ -627,7 +644,8 @@ class SppaHeaderController extends GetxController {
     var url =
         Uri.parse(baseUrl + '/PerluasanRisiko' + param1 + param2 + param3);
 
-    response = await client.get(url); // no authentication needed
+    response = await client.get(url);
+    // no authentication needed
     if (response.statusCode == 200) {
       var responseBody = jsonDecode(response.body);
       for (var i = 0; i < responseBody.length; i++) {
@@ -670,11 +688,17 @@ class SppaHeaderController extends GetxController {
     for (var i = 0; i < appProdukController.listPerluasanRisiko.length; i++) {
       if (appProdukController.listPerluasanRisiko[i].selected!) {
         newPerluasan.sppaId = sppaHeader.value.id;
+
         newPerluasan.namaPerluasanRisiko =
             appProdukController.listPerluasanRisiko[i].namaPerluasanRisiko;
+        if (newPerluasan.namaPerluasanRisiko == 'Anakan') {
+          // manajing tampilan di sppaDetail
+          rateAnakan = newPerluasan.rate!;
+        }
         newPerluasan.rate = appProdukController.listPerluasanRisiko[i].rate;
 
         var body = json.encode(newPerluasan);
+
         http.Response response = await client.post(url, body: body, headers: {
           'Content-Type': 'application/json'
         }); // no authentication needed
@@ -762,9 +786,11 @@ class SppaHeaderController extends GetxController {
     totalRate.value = appProdukController.selected.value.ratePremi!;
 
     for (var i = 0; i < appProdukController.listPerluasanRisiko.length; i++) {
-      if (appProdukController.listPerluasanRisiko[i].selected!) {
-        print(
-            'tambah rate ${appProdukController.listPerluasanRisiko[i].namaPerluasanRisiko} ${appProdukController.listPerluasanRisiko[i].rate}');
+      if (appProdukController.listPerluasanRisiko[i].selected! &&
+          appProdukController.listPerluasanRisiko[i].namaPerluasanRisiko! !=
+              'Anakan') {
+        // print(
+        //     'tambah rate ${appProdukController.listPerluasanRisiko[i].namaPerluasanRisiko} ${appProdukController.listPerluasanRisiko[i].rate}');
         totalRate.value += appProdukController.listPerluasanRisiko[i].rate!;
       }
     }
@@ -843,7 +869,7 @@ class SppaHeaderController extends GetxController {
     infoAts.value.sistemPakanTernak = sisPakanController.text;
     // infoAts.value.infoMgmtPakan = mgmtPakanController.text;
     // infoAts.value.infoMgmtKesehatan = mgmtKesehatanController.text;
-    // infoAts.value.sppaId = sppaController.sppaHeader.value.id;
+    // infoAts.value.sppaId = sppaHeader.value.id;
 
     var url = Uri.parse('$baseUrl/InfoAtsJasTan/${infoAts.value.id}');
     var body = json.encode(infoAts.value);
@@ -871,9 +897,6 @@ class SppaHeaderController extends GetxController {
 
     final saatIni = DateTime.now();
 
-    sppaStatus.value.tglLastUpdate = sppaStatus.value.initSubmitDt;
-    sppaStatus.value.tglLastUpdateMillis = sppaStatus.value.initSubmitDtMillis;
-
     if (status == 1 || status == 3) {
       sppaHeader.value.statusSppa = 2;
       sppaStatusDisp.value = 2;
@@ -881,6 +904,9 @@ class SppaHeaderController extends GetxController {
       sppaStatus.value.statusSppa = 2;
       sppaStatus.value.initSubmitDt = DateFormat("dd-MMM-yyyy").format(saatIni);
       sppaStatus.value.initSubmitDtMillis = saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.tglLastUpdate = sppaStatus.value.initSubmitDt;
+      sppaStatus.value.tglLastUpdateMillis =
+          sppaStatus.value.initSubmitDtMillis;
       // clear all notes
       sppaStatus.value.salesNote = '';
       sppaStatus.value.marketingNote = '';
@@ -898,7 +924,10 @@ class SppaHeaderController extends GetxController {
       sppaStatus.value.statusSppa = 4;
       sppaStatus.value.tglSubmitSales =
           DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglReviewSales = sppaStatus.value.tglSubmitSales;
       sppaStatus.value.tglSubmitSalesMillis = saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.tglReviewSalesMillis =
+          sppaStatus.value.tglSubmitSalesMillis;
     } else if (status == 4) {
       sppaHeader.value.statusSppa = 6;
       sppaStatusDisp.value = 6;
@@ -906,13 +935,20 @@ class SppaHeaderController extends GetxController {
       sppaStatus.value.statusSppa = 6;
       sppaStatus.value.tglSubmitMarketing =
           DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglReviewMarketing = sppaStatus.value.tglSubmitMarketing;
       sppaStatus.value.tglSubmitMarketingMillis =
           saatIni.millisecondsSinceEpoch;
+      sppaStatus.value.tglReviewMarketingMillis =
+          sppaStatus.value.tglSubmitMarketingMillis;
     } else if (status == 6) {
       sppaHeader.value.statusSppa = 8;
       sppaStatusDisp.value = 8;
 
       sppaStatus.value.statusSppa = 8;
+      sppaStatus.value.tglReviewMarketing =
+          DateFormat("dd-MMM-yyyy").format(saatIni);
+      sppaStatus.value.tglReviewMarketingMillis =
+          saatIni.millisecondsSinceEpoch;
       sppaStatus.value.tglSubmitBroker =
           DateFormat("dd-MMM-yyyy").format(saatIni);
       sppaStatus.value.tglSubmitBrokerMillis = saatIni.millisecondsSinceEpoch;
@@ -1293,6 +1329,7 @@ class SppaHeaderController extends GetxController {
       sppaStatus.value.tglResponseAsuransiMillis =
           saatIni.millisecondsSinceEpoch;
       sppaStatus.value.asuransiNote = message;
+      sppaStatus.value.statusResponseAsuransi = 2;
     }
 
     sppaStatus.value.tglLastUpdate = DateFormat("dd-MMM-yyyy").format(saatIni);
@@ -1395,9 +1432,9 @@ class SppaHeaderController extends GetxController {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                        flex: 1, child: TextTitleMedium('Tanggal dibuat ')),
+                        flex: 3, child: TextTitleMedium('Tanggal dibuat ')),
                     Expanded(
-                        flex: 1,
+                        flex: 2,
                         child: TextTitleMedium(sppaStatus.value.tglCreated)),
                   ],
                 ),
@@ -1406,11 +1443,11 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1,
+                              flex: 3,
                               child:
                                   TextTitleMedium('Tanggal diubah terakhir ')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: TextTitleMedium(
                                   sppaStatus.value.tglLastUpdate)),
                         ],
@@ -1421,10 +1458,10 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1,
+                              flex: 3,
                               child: TextTitleMedium('Sppa telah dibatalkan ')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: TextTitleMedium(
                                   sppaStatus.value.tglLastUpdate)),
                         ],
@@ -1435,11 +1472,11 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1,
+                              flex: 3,
                               child: TextTitleMedium(
-                                  'Tanggal disubmit ke ${sppaHeader.value.salesId} ')),
+                                  'Tanggal disubmit ke ${sppaHeader.value.salesId}')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: TextTitleMedium(
                                   sppaStatus.value.initSubmitDt)),
                         ],
@@ -1451,11 +1488,11 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1,
+                              flex: 3,
                               child: TextTitleMedium(
-                                  'Tanggal direview oleh ${sppaHeader.value.salesId} ')),
+                                  'Tanggal direview oleh ${sppaHeader.value.salesId}')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: TextTitleMedium(
                                   sppaStatus.value.tglReviewSales)),
                         ],
@@ -1466,9 +1503,9 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1, child: TextTitleMedium('Review note ')),
+                              flex: 3, child: TextTitleMedium('Review note')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child:
                                   TextTitleMedium(sppaStatus.value.salesNote)),
                         ],
@@ -1479,11 +1516,11 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                             Expanded(
-                                flex: 1,
+                                flex: 3,
                                 child: TextTitleMedium(
-                                    'Tanggal disubmit oleh ${sppaHeader.value.salesId}  ')),
+                                    'Tanggal disubmit ke ${sppaHeader.value.marketingId}  ')),
                             Expanded(
-                                flex: 1,
+                                flex: 2,
                                 child: TextTitleMedium(
                                     sppaStatus.value.tglSubmitSales)),
                           ])
@@ -1494,11 +1531,11 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1,
+                              flex: 3,
                               child: TextTitleMedium(
                                   'Tanggal direview oleh ${sppaHeader.value.marketingId} ')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: TextTitleMedium(
                                   sppaStatus.value.tglReviewMarketing)),
                         ],
@@ -1509,27 +1546,28 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1, child: TextTitleMedium('Review note ')),
+                              flex: 3, child: TextTitleMedium('Review note ')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: TextTitleMedium(
                                   sppaStatus.value.marketingNote)),
                         ],
                       )
                     : Container(),
-                sppaStatus.value.tglSubmitBroker != ''
+                sppaStatus.value.tglSubmitMarketing != ''
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                            Expanded(
-                                flex: 1,
-                                child: TextTitleMedium(
-                                    'Tanggal disubmit oleh ${sppaHeader.value.marketingId}  ')),
-                            Expanded(
-                                flex: 1,
-                                child: TextTitleMedium(
-                                    sppaStatus.value.tglSubmitMarketing)),
-                          ])
+                          Expanded(
+                              flex: 3,
+                              child: TextTitleMedium(
+                                  'Tanggal disubmit oleh ${sppaHeader.value.marketingId}')),
+                          Expanded(
+                              flex: 2,
+                              child: TextTitleMedium(
+                                  sppaStatus.value.tglSubmitMarketing)),
+                        ],
+                      )
                     : Container(),
                 // Riwayat Broker
                 sppaStatus.value.tglReviewBroker != ''
@@ -1537,24 +1575,24 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1,
+                              flex: 3,
                               child: TextTitleMedium(
                                   'Tanggal direview oleh ${sppaHeader.value.brokerId} ')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: TextTitleMedium(
                                   sppaStatus.value.tglReviewBroker)),
                         ],
                       )
                     : Container(),
-                sppaStatus.value.salesNote != ''
+                sppaStatus.value.brokerNote != ''
                     ? Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1, child: TextTitleMedium('Review note ')),
+                              flex: 3, child: TextTitleMedium('Review note ')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child:
                                   TextTitleMedium(sppaStatus.value.brokerNote)),
                         ],
@@ -1565,11 +1603,11 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                             Expanded(
-                                flex: 1,
+                                flex: 3,
                                 child: TextTitleMedium(
-                                    'Tanggal disubmit oleh ${sppaHeader.value.brokerId}  ')),
+                                    'Tanggal disubmit ke ${sppaHeader.value.asuransiName}  ')),
                             Expanded(
-                                flex: 1,
+                                flex: 2,
                                 child: TextTitleMedium(
                                     sppaStatus.value.tglSubmitBroker)),
                           ])
@@ -1580,11 +1618,11 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1,
+                              flex: 3,
                               child: TextTitleMedium(
                                   'Tanggal diresponse oleh ${sppaHeader.value.asuransiName} ')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: TextTitleMedium(
                                   sppaStatus.value.tglResponseAsuransi)),
                         ],
@@ -1595,15 +1633,34 @@ class SppaHeaderController extends GetxController {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                              flex: 1,
-                              child: TextTitleMedium('Response note ')),
+                              flex: 3, child: TextTitleMedium('Response note')),
                           Expanded(
-                              flex: 1,
+                              flex: 2,
                               child: TextTitleMedium(
                                   sppaStatus.value.asuransiNote)),
                         ],
                       )
                     : Container(),
+                sppaStatus.value.statusResponseAsuransi > 0
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                              flex: 3,
+                              child: TextTitleMedium('Response Asuransi')),
+                          sppaStatus.value.statusResponseAsuransi == 1
+                              ? Expanded(
+                                  flex: 2,
+                                  child: TextTitleMedium(
+                                      'Sppa ${sppaHeader.value.sppaId} disetujui.'))
+                              : sppaStatus.value.statusResponseAsuransi == 2
+                                  ? TextTitleMedium(
+                                      'Sppa ${sppaHeader.value.sppaId} ditolak.')
+                                  : Container(),
+                        ],
+                      )
+                    : Container(),
+
                 SizedBox(height: 30),
                 Divider(thickness: 2)
               ]),
@@ -1650,6 +1707,7 @@ class SppaHeaderController extends GetxController {
 
   void getSppaHeaderWithSppaId(String sppaId) async {
     http.Response response;
+    totPertanggungan.value = 0;
 
     var url = Uri.parse(baseUrl + '/SppaHeader/$sppaId');
     print(baseUrl + '/SppaHeader/$sppaId');
@@ -1663,6 +1721,7 @@ class SppaHeaderController extends GetxController {
 //      for (var i = 0; i < responseBody.length; i++) {
       sppaHeader.value = SppaHeader.fromJson(responseBody);
       sppaStatusDisp.value = sppaHeader.value.statusSppa!;
+      totPertanggungan.value = sppaHeader.value.nilaiPertanggungan!;
 
       print('get sppaHeader from sppaId $sppaId berhasil  ');
 //      }

@@ -66,9 +66,9 @@ class SppaPerluasan extends StatelessWidget {
                                     child: Checkbox(
                                         value: pr.selected,
                                         onChanged: (value) {
-                                          print('awal : ${pr.selected}');
+                                          // print('awal : ${pr.selected}');
                                           pr.selected = value!;
-                                          print('lalu : ${pr.selected}');
+                                          // print('lalu : ${pr.selected}');
 
                                           sppaController.appProdukController
                                               .listPerluasanRisiko
@@ -113,12 +113,11 @@ class SppaPerluasan extends StatelessWidget {
                 if (sppaController
                     .appProdukController.listPerluasanJaminanLoaded.value) {
                   sppaController.calculateTotalRate();
-
                   return Row(
                     children: [
                       Expanded(
                         flex: 5,
-                        child: Center(child: Text('Total Rate Premi')),
+                        child: Center(child: Text('Total Rate')),
                       ),
                       Expanded(
                         flex: 2,

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:insurance/bloc/sppa_controller.dart';
+import 'package:insurance/model/sppa_perluasan.dart';
 import 'package:insurance/model/ternak_sapi.dart';
 import 'package:http/http.dart' as http;
 import 'package:insurance/util/constants.dart';
@@ -12,7 +13,7 @@ class TernakController extends GetxController {
   final GlobalKey<FormState> ternakFormKey = GlobalKey<FormState>();
 
   var newTernak = TernakSapi();
-  late TextEditingController jmlTernakController,
+  late TextEditingController //jmlTernakController,
       earTagController,
       dobController,
       jenisController,
@@ -33,19 +34,19 @@ class TernakController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    jmlTernakController = TextEditingController();
+    //jmlTernakController = TextEditingController();
     earTagController = TextEditingController();
     dobController = TextEditingController();
     jenisController = TextEditingController();
     kelaminController = TextEditingController();
     perolehanController = TextEditingController();
     pertanggunganController = TextEditingController();
-    jmlTernakController.text = '0';
+    //jmlTernakController.text = '0';
   }
 
   @override
   void onClose() {
-    jmlTernakController.dispose();
+    //jmlTernakController.dispose();
     earTagController.dispose();
     dobController.dispose();
     jenisController.dispose();
@@ -97,8 +98,8 @@ class TernakController extends GetxController {
     newTernak.tglLahirMillis = pickedDate.value.millisecondsSinceEpoch;
     newTernak.jenis = jenisController.text;
     newTernak.kelamin = kelaminController.value.text;
-    newTernak.hargaPerolehan = double.parse(perolehanController.text);
     newTernak.nilaiPertanggungan = double.parse(pertanggunganController.text);
+    newTernak.hargaPerolehan = newTernak.nilaiPertanggungan;
     newTernak.sppaId = sppaController.sppaHeader.value.id;
     newTernak.nama = '${newTernak.jenis} - ${newTernak.earTag}';
     newTernak.seqNo =
@@ -117,24 +118,20 @@ class TernakController extends GetxController {
       print('post berhasil, update header');
       // populate listTernak
       var responseBody = jsonDecode(response.body);
-      // print('Return Response body: ${responseBody}');
       // print('sppa header id :${responseBody["id"]}');
       // newTernak.id = responseBody["id"];
-      listTernak.add(TernakSapi.fromJson(responseBody));
+      var thisTernak = TernakSapi.fromJson(responseBody);
+      listTernak.add(thisTernak);
 
-      // next ternak or done
-      ternakSeqNo.value++;
-      // print('after save ternakSeqNo: ${ternakSeqNo.value}');
-      if (ternakSeqNo.value == int.parse(jmlTernakController.text)) {
-        nextButOk.value = true;
-      }
       // update header on values
       url = Uri.parse(
           '$baseUrl/SppaHeader/${sppaController.sppaHeader.value.id}');
 
       sppaController.sppaHeader.value.nilaiPertanggungan =
-          double.parse(pertanggunganController.text) +
+          thisTernak.nilaiPertanggungan! +
               sppaController.sppaHeader.value.nilaiPertanggungan!;
+      sppaController.totPertanggungan.value =
+          sppaController.sppaHeader.value.nilaiPertanggungan!;
       sppaController.sppaHeader.value.premiAmount =
           sppaController.sppaHeader.value.nilaiPertanggungan! *
               sppaController.sppaHeader.value.premiRate!;
@@ -146,39 +143,70 @@ class TernakController extends GetxController {
       if (response.statusCode == 200) {
         print('put update header, saveternak, berhasil');
 
-        // update status
-        final saatIni = DateTime.now();
-        sppaController.sppaStatus.value.tglLastUpdate =
-            DateFormat("dd-MMM-yyyy").format(saatIni);
-        sppaController.sppaStatus.value.tglLastUpdateMillis =
-            saatIni.millisecondsSinceEpoch;
-
+        // update perluasanRisikoSppa kalau ada
         url = Uri.parse(
-            '$baseUrl/SppaStatus/${sppaController.sppaStatus.value.id}');
-        body = json.encode(sppaController.sppaStatus);
-        print('$baseUrl/SppaStatus/${sppaController.sppaStatus.value.id}');
-        response = await client.put(url, body: body, headers: {
+            '$baseUrl/SppaPerluasanRisiko?sppaId=${sppaController.sppaHeader.value.id}&namaPerluasanRisiko=Anakan');
+        print(
+            '$baseUrl/SppaPerluasanRisiko?sppaId=${sppaController.sppaHeader.value.id}&namaPerluasanRisiko=Anakan');
+
+        response = await client.get(url, headers: {
           'Content-Type': 'application/json'
         }); // no authentication needed
-        // print('status: ${response.statusCode}');
-        // print('body: ${response.body}');
+
         if (response.statusCode == 200) {
-          print('put status  saveternak, berhasil');
-        } else {
           print(
-              'put status , saveternak, gagal : ${response.statusCode.toString()}');
+              'ada anakan, update sppaPerluasanRisiko juga ${response.statusCode}');
+          // print('${response.body} ');
+
+          responseBody = json.decode(response.body);
+
+          if (responseBody.length > 0) {
+            var thisPerluasan =
+                SppaPerluasanRisiko.fromJson(responseBody[0]); // pasti cuma 1
+
+            thisPerluasan.nilaiPerlindungan = thisPerluasan.nilaiPerlindungan! +
+                thisTernak.nilaiPertanggungan! * 0.15; // TODO needs parameter
+            thisPerluasan.jumlahTertanggung =
+                thisPerluasan.jumlahTertanggung! + 1;
+            thisPerluasan.tambahanPremi =
+                thisPerluasan.nilaiPerlindungan! * thisPerluasan.rate!;
+            sppaController.nilaiAnakan.value = thisPerluasan.nilaiPerlindungan!;
+            sppaController.premiAnakan = thisPerluasan.tambahanPremi!;
+            print('nilai anakan ${sppaController.nilaiAnakan.value}');
+            print('premi anakan ${sppaController.premiAnakan}');
+
+            body = json.encode(thisPerluasan);
+            url = Uri.parse('$baseUrl/SppaPerluasanRisiko/${thisPerluasan.id}');
+            print('$baseUrl/SppaPerluasanRisiko/${thisPerluasan.id}');
+            print('to put $body');
+
+            response = await client.put(url, body: body, headers: {
+              'Content-Type': 'application/json'
+            }); // no authentication needed
+
+            // print('body: ${response.body}');
+            if (response.statusCode == 200) {
+              print('put perluasanRisiko anakan berhasil');
+            } else {
+              print(
+                  'put perluasanRisiko anakan , gagal ${response.statusCode}');
+            }
+          } else {
+            print('no anakan ');
+          }
         }
       } else {
-        print('put update header, saveternak, gagal ${response.statusCode}');
+        print(
+            'tidak ada anakan, tidak usah update sppaPerluasanRisiko ${response.statusCode}');
       }
     } else {
       print(response.statusCode.toString());
     }
-    Get.until((route) => Get.currentRoute == '/sppa/main');
+    //Get.until((route) => Get.currentRoute == '/sppa/main');
     Get.back();
   }
 
-  void removeFromList(TernakSapi aTernak) async {
+  void deleteATernak(TernakSapi aTernak) async {
     // TODO
     final ternakId = aTernak.id;
     var url = Uri.parse('$baseUrl/TernakSapi/${aTernak.id}');
@@ -199,9 +227,6 @@ class TernakController extends GetxController {
           listTernak.removeWhere((element) => element.id == aTernak.id);
       print('removed ternak from list.');
 
-      // next ternak or done
-      ternakSeqNo.value--;
-
       // update header
       url = Uri.parse(
           '$baseUrl/SppaHeader/${sppaController.sppaHeader.value.id}');
@@ -210,6 +235,8 @@ class TernakController extends GetxController {
       sppaController.sppaHeader.value.nilaiPertanggungan =
           sppaController.sppaHeader.value.nilaiPertanggungan! -
               aTernak.nilaiPertanggungan!;
+      sppaController.totPertanggungan.value =
+          sppaController.sppaHeader.value.nilaiPertanggungan!;
       sppaController.sppaHeader.value.premiAmount =
           sppaController.sppaHeader.value.nilaiPertanggungan! *
               sppaController.sppaHeader.value.premiRate!;
@@ -218,33 +245,60 @@ class TernakController extends GetxController {
 
       body = json.encode(sppaController.sppaHeader);
       // print('mau update sppa Header, body: $body');
+
       http.Response response = await client
           .put(url, body: body, headers: {'Content-Type': 'application/json'});
+
       if (response.statusCode == 200) {
         print('put update header berhasil');
-        // update status
-        final saatIni = DateTime.now();
-        sppaController.sppaStatus.value.tglLastUpdate =
-            DateFormat("dd-MMM-yyyy").format(saatIni);
-        sppaController.sppaStatus.value.tglLastUpdateMillis =
-            saatIni.millisecondsSinceEpoch;
 
+        // cek if sppaPerluasanRisiko needs to be updated too
         url = Uri.parse(
-            '$baseUrl/SppaStatus/${sppaController.sppaStatus.value.id}');
-        body = json.encode(sppaController.sppaStatus);
-        // print('body : $body');
-        response = await client.put(url, body: body, headers: {
+            '$baseUrl/SppaPerluasanRisiko?sppaId=${sppaController.sppaHeader.value.id}&namaPerluasanRisiko=Anakan');
+        print(
+            '$baseUrl/SppaPerluasanRisiko?sppaId=${sppaController.sppaHeader.value.id}&namaPerluasanRisiko=Anakan');
+
+        response = await client.get(url, headers: {
           'Content-Type': 'application/json'
         }); // no authentication needed
-        // print('status: ${response.statusCode}');
-        // print('body: ${response.body}');
+
         if (response.statusCode == 200) {
-          print('put status berhasil');
-          // var responseBody = jsonDecode(response.body);
-          // print('Return Response body: ${responseBody}');
-          // print('sppa header id :${responseBody["id"]}');
-        } else {
-          print(response.statusCode.toString());
+          print(
+              'ada anakan, update sppaPerluasanRisiko juga ${response.statusCode}');
+
+          var responseBody = json.decode(response.body);
+
+          if (responseBody.length > 0) {
+            var thisPerluasan = SppaPerluasanRisiko.fromJson(responseBody[0]);
+
+            thisPerluasan.nilaiPerlindungan = thisPerluasan.nilaiPerlindungan! -
+                aTernak.nilaiPertanggungan! *
+                    0.15; // TODO needs product parameter for this
+            thisPerluasan.jumlahTertanggung =
+                thisPerluasan.jumlahTertanggung! - 1;
+            thisPerluasan.tambahanPremi =
+                thisPerluasan.nilaiPerlindungan! * thisPerluasan.rate!;
+            sppaController.nilaiAnakan.value = thisPerluasan.nilaiPerlindungan!;
+            sppaController.premiAnakan = thisPerluasan.tambahanPremi!;
+            print('nilai anakan ${sppaController.nilaiAnakan.value}');
+            print('premi anakan ${sppaController.premiAnakan}');
+
+            body = json.encode(thisPerluasan);
+            url = Uri.parse('$baseUrl/SppaPerluasanRisiko/${thisPerluasan.id}');
+            print('$baseUrl/SppaPerluasanRisiko/${thisPerluasan.id}');
+
+            response = await client.put(url, body: body, headers: {
+              'Content-Type': 'application/json'
+            }); // no authentication needed
+
+            // print('body: ${response.body}');
+            if (response.statusCode == 200) {
+              print('put perluasanRisiko anakan berhasil');
+            } else {
+              print(
+                  'put perluasanRisiko anakan , gagal ${response.statusCode}');
+            }
+          }
         }
       } else {
         print('put update header gagal ${response.statusCode}');

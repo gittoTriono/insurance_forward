@@ -76,13 +76,13 @@ double formWidth(double _width) {
   int index = screenSizeIndex(_width);
 
   if (index > 5) {
-    return 0.25 * _width;
-  } else if (index > 4) {
-    return 0.35 * _width;
-  } else if (index > 3) {
-    return 0.5 * _width;
-  } else if (index > 2) {
     return 0.6 * _width;
+  } else if (index > 4) {
+    return 0.5 * _width;
+  } else if (index > 3) {
+    return 0.6 * _width;
+  } else if (index > 2) {
+    return 0.7 * _width;
   } else if (index > 1) {
     return 0.8 * _width;
   } else {

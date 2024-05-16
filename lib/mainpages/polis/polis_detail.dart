@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:insurance/bloc/customer_controller.dart';
 import 'package:insurance/bloc/login_controller.dart';
 import 'package:insurance/bloc/polis_controller.dart';
+import 'package:insurance/bloc/sppa_controller.dart';
 import 'package:insurance/bloc/ternak_controller.dart';
 import 'package:intl/intl.dart';
 
@@ -58,9 +59,13 @@ class PolisDetail extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                              'PolisNo : ${polisController.thePolis.value.polisDocId}',
-                              style: Get.theme.textTheme.bodyLarge),
+                          polisController.thePolis.value.polisDocId.isNotEmpty
+                              ? Text(
+                                  'Nomor Sertifikat: ${polisController.thePolis.value.polisDocId}',
+                                  style: Get.theme.textTheme.bodyLarge)
+                              : Text(
+                                  'Id Sertifikat : ${polisController.thePolis.value.id}',
+                                  style: Get.theme.textTheme.bodyLarge),
                           Text(
                               'Tanggal : ${polisController.thePolis.value.tglPolis}'),
                           // Text(
@@ -77,20 +82,70 @@ class PolisDetail extends StatelessWidget {
             ),
             SizedBox(height: 20),
             // pertanggungan
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Text(
+                  'Sppa ',
+                  style: Get.theme.textTheme.bodyLarge
+                      ?.copyWith(color: Get.theme.colorScheme.secondary),
+                )),
+            //SizedBox(height: 10),
+            // pertanggungan
             Obx(
               () => polisController.thePolisLoaded.value
                   ? Container(
                       padding: EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('No ${polisController.thePolis.value.sppaId}'),
+                          Text(
+                              'Nama ${polisController.thePolis.value.namaTertanggung}'),
+                          Text('${polisController.thePolis.value.salesId}')
+                        ],
+                      ))
+                  : Container(),
+            ),
+
+            SizedBox(height: 20),
+            // pertanggungan
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Text(
+                  'Produk',
+                  style: Get.theme.textTheme.bodyLarge
+                      ?.copyWith(color: Get.theme.colorScheme.secondary),
+                )),
+            Obx(
+              () => polisController.thePolisLoaded.value
+                  ? Container(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
                       child: Wrap(
                         spacing: 25,
                         runSpacing: 15,
                         children: [
+                          Text('${polisController.thePolis.value.produkName}'),
                           Text(
-                              'Produk:  ${polisController.thePolis.value.produkName}'),
-                          Text(
-                              'Asuransi:  ${polisController.thePolis.value.namaAsuransi}'),
+                              '${polisController.thePolis.value.namaAsuransi}'),
                           // Text(
                           //     'Pertanggungan : Rp. ${NumberFormat("#,###,###,###", "en_US").format(polisController.thePolis.value.nilaiPertanggunganSppa)}'),
+                        ],
+                      ),
+                    )
+                  : Container(),
+            ),
+            Obx(
+              () => polisController.thePolisLoaded.value
+                  ? Container(
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child: Wrap(
+                        spacing: 20,
+                        runSpacing: 20,
+                        children: [
+                          Text(
+                              'Jangka Pertanggungan:  dari ${polisController.thePolis.value.tglAwalPolis}'),
+                          Text(
+                              ' sampai ${polisController.thePolis.value.tglAkhirPolis}'),
                         ],
                       ),
                     )
@@ -107,15 +162,15 @@ class PolisDetail extends StatelessWidget {
             Obx(
               () => polisController.ternakController.listTernak.isNotEmpty
                   ? Container(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      padding: EdgeInsets.symmetric(horizontal: 25),
                       child: Column(
                         children: polisController.ternakController.listTernak
                             .map((et) => Container(
-                                padding: EdgeInsets.all(8),
-                                child: Wrap(spacing: 10, children: [
+                                padding: EdgeInsets.all(10),
+                                child: Wrap(spacing: 20, children: [
                                   Text('Ear Tag: ${et.earTag}'),
                                   Text(
-                                      'Jenis/Kelamin: ${et.jenis}/${et.kelamin}'),
+                                      'Jenis/Kelamin: ${et.jenis} / ${et.kelamin}'),
                                   Text(
                                       'Nilai Pertanggungan: Rp. ${NumberFormat("#,###,###,###", "en_US").format(et.nilaiPertanggungan)}')
                                 ])))
@@ -124,26 +179,41 @@ class PolisDetail extends StatelessWidget {
                     )
                   : Container(),
             ),
-            //TODO tambahkan info ternak atau button untuk lihat daftar ternak
+            SizedBox(height: 10),
+            Obx(
+              () => polisController.thePolisLoaded.value
+                  ? Container(
+                      padding: EdgeInsets.symmetric(horizontal: 35),
+                      child: Text(
+                          'Total Nilai Pertanggungan:  Rp. ${NumberFormat("#,###,###,###", "en_US").format(polisController.thePolis.value.hargaPertanggungan)}'),
+                    )
+                  : Container(),
+            ),
             SizedBox(height: 20),
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Text(
+                  'Biaya dan Tagihan',
+                  style: Get.theme.textTheme.bodyLarge
+                      ?.copyWith(color: Get.theme.colorScheme.secondary),
+                )),
+            //TODO tambahkan info ternak atau button untuk lihat daftar ternak
+            SizedBox(height: 10),
 
             // premi
             Obx(
               () => polisController.thePolisLoaded.value
                   ? Container(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      padding: EdgeInsets.symmetric(horizontal: 25),
                       child: Wrap(
                         spacing: 25,
                         runSpacing: 15,
                         children: [
-                          Text(
-                              'Total Nilai Pertanggungan:  Rp. ${NumberFormat("#,###,###,###", "en_US").format(polisController.thePolis.value.nilaiPertanggunganSppa)}'),
+                          // TODO  all biayas should be in separate table
                           Text(
                               'Nilai Premi:  Rp. ${NumberFormat("#,###,###,###", "en_US").format(polisController.thePolis.value.premiAmount)}'),
                           Text(
-                              'Biaya Admin:  Rp. ${NumberFormat("#,###,###,###", "en_US").format(polisController.thePolis.value.biayaAdministrasi)}'),
-                          Text(
-                              'Bea Meterai:  Rp. ${NumberFormat("#,###,###,###", "en_US").format(polisController.thePolis.value.beaMaterei)}'),
+                              'Biaya:  Rp. ${NumberFormat("#,###,###,###", "en_US").format(polisController.thePolis.value.biayaAdministrasi)}'),
                           Text(
                               'Total:  Rp. ${NumberFormat("#,###,###,###", "en_US").format(polisController.totalBiaya.value)}'),
                         ],
@@ -152,25 +222,26 @@ class PolisDetail extends StatelessWidget {
                   : Container(),
             ),
             SizedBox(height: 20),
-
-            // masa berlaku
             Obx(
               () => polisController.thePolisLoaded.value
                   ? Container(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: Wrap(
-                        spacing: 15,
-                        runSpacing: 15,
+                      padding: EdgeInsets.symmetric(horizontal: 25),
+                      child: Row(
                         children: [
+                          // TODO  all biayas should be in separate table
+                          Text('Pembayaran Sebelum tanggal '),
                           Text(
-                              'Jangka Pertanggungan:  dari ${polisController.thePolis.value.tglAwalPolis}'),
-                          Text(
-                              ' sampai ${polisController.thePolis.value.tglAkhirPolis}'),
+                              ' ${polisController.thePolis.value.tglPaymentDue}',
+                              style: TextStyle(
+                                  color: Get.theme.colorScheme.secondary)),
                         ],
                       ),
                     )
                   : Container(),
             ),
+
+            // masa berlaku
+
             SizedBox(height: 30),
             Obx(
               () {

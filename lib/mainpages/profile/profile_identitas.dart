@@ -159,7 +159,37 @@ class ProfileIdentitas extends StatelessWidget {
                                         ),
                                       )
                                     : Container(),
-                              )
+                              ),
+                              const SizedBox(height: 18),
+                              Container(
+                                width: 150,
+                                //padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: DropdownMenu<String>(
+                                  width: 150,
+                                  label: const Text('Pekerjaan'),
+                                  inputDecorationTheme:
+                                      const InputDecorationTheme(
+                                    isDense: false,
+                                    floatingLabelAlignment:
+                                        FloatingLabelAlignment.start,
+                                  ),
+                                  initialSelection:
+                                      custController.initPekerjaan,
+                                  onSelected: (String? value) {
+                                    custController.pekerjaanCtrl.text = value!;
+                                    custController.pekerjaan.value = value;
+                                  },
+                                  dropdownMenuEntries: custController
+                                      .listPerkerjaan
+                                      .map<DropdownMenuEntry<String>>(
+                                          (String value) {
+                                    return DropdownMenuEntry<String>(
+                                        value: value, label: value);
+                                  }).toList(),
+                                ),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 38),

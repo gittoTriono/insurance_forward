@@ -182,123 +182,122 @@ class ProfileCustomer extends StatelessWidget {
                               )
                             : Container(),
                       ),
-                      const SizedBox(height: 18),
-                      Obx(() {
-                        return TextFormField(
-                          onChanged: (value) {},
-                          onSaved: (value) {},
-                          validator: (value) {
-                            if (value != null && value.isNotEmpty) {
-                              if (value.length >= 6) {
-                                _passOk = true;
-                                return null;
-                              } else {
-                                _passOk = false;
-                                return "bukan password yang valid";
-                              }
-                            } else {
-                              _passOk = false;
-                              return "isi kata sandi";
-                            }
-                          },
-                          keyboardType: TextInputType.text,
-                          obscureText: regController.showButton1.value.isTrue
-                              ? true
-                              : false,
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.password),
-                            // icon: const Icon(Icons.password),
-                            label: Text('Password'.tr),
-                            //hintText: 'Sandi',
-                            //helperText: 'password/kode',
-                            //counterText: '0 characters',
-                            //border: const OutlineInputBorder(),
-                            suffixIcon: Obx(() {
-                              if (regController.showButton1.value.isTrue) {
-                                return IconButton(
-                                  icon: Icon(Icons.visibility,
-                                      color: Get.theme.colorScheme.secondary),
-                                  onPressed: () {
-                                    regController.showButton1.value =
-                                        RxBool(false);
-                                  },
-                                );
-                              } else {
-                                return IconButton(
-                                  icon: Icon(Icons.visibility_off,
-                                      color: Get.theme.colorScheme.secondary),
-                                  onPressed: () {
-                                    regController.showButton1.value =
-                                        RxBool(true);
-                                  },
-                                );
-                              }
-                            }),
-                          ),
-                        );
-                      }),
-                      const SizedBox(height: 18),
-                      Obx(() {
-                        return TextFormField(
-                          onChanged: (value) {
-                            _pass2 = value;
-                          },
-                          onSaved: (value) {
-                            _pass2 = value!;
-                          },
-                          validator: (value) {
-                            if (value != null && value.isNotEmpty) {
-                              if (value.length >= 6) {
-                                _passOk = true;
-                                return null;
-                              } else {
-                                _passOk = false;
-                                return "bukan password yang valid";
-                              }
-                            } else {
-                              _passOk = false;
-                              return "isi kata sandi";
-                            }
-                          },
-                          keyboardType: TextInputType.text,
-                          obscureText: regController.showButton2.value.isTrue
-                              ? true
-                              : false,
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.password),
-                            // icon: const Icon(Icons.password),
-                            label: Text('Password'.tr),
-                            //hintText: 'Sandi',
-                            //helperText: 'password/kode',
-                            //counterText: '0 characters',
-                            //border: const OutlineInputBorder(),
-
-                            suffixIcon: Obx(() {
-                              if (regController.showButton2.value.isTrue) {
-                                return IconButton(
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(Icons.visibility,
-                                      color: Get.theme.colorScheme.secondary),
-                                  onPressed: () {
-                                    regController.showButton2.value =
-                                        RxBool(false);
-                                  },
-                                );
-                              } else {
-                                return IconButton(
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(Icons.visibility_off,
-                                      color: Get.theme.colorScheme.secondary),
-                                  onPressed: () {
-                                    regController.showButton2.value =
-                                        RxBool(true);
-                                  },
-                                );
-                              }
-                            }),
-                          ),
-                        );
-                      }),
+                      // const SizedBox(height: 18),
+                      // Obx(() {
+                      //   return TextFormField(
+                      //     onChanged: (value) {},
+                      //     onSaved: (value) {},
+                      //     validator: (value) {
+                      //       if (value != null && value.isNotEmpty) {
+                      //         if (value.length >= 6) {
+                      //           _passOk = true;
+                      //           return null;
+                      //         } else {
+                      //           _passOk = false;
+                      //           return "bukan password yang valid";
+                      //         }
+                      //       } else {
+                      //         _passOk = false;
+                      //         return "isi kata sandi";
+                      //       }
+                      //     },
+                      //     keyboardType: TextInputType.text,
+                      //     obscureText: regController.showButton1.value.isTrue
+                      //         ? true
+                      //         : false,
+                      //     decoration: InputDecoration(
+                      //       prefixIcon: const Icon(Icons.password),
+                      //       // icon: const Icon(Icons.password),
+                      //       label: Text('Password'.tr),
+                      //       //hintText: 'Sandi',
+                      //       //helperText: 'password/kode',
+                      //       //counterText: '0 characters',
+                      //       //border: const OutlineInputBorder(),
+                      //       suffixIcon: Obx(() {
+                      //         if (regController.showButton1.value.isTrue) {
+                      //           return IconButton(
+                      //             icon: Icon(Icons.visibility,
+                      //                 color: Get.theme.colorScheme.secondary),
+                      //             onPressed: () {
+                      //               regController.showButton1.value =
+                      //                   RxBool(false);
+                      //             },
+                      //           );
+                      //         } else {
+                      //           return IconButton(
+                      //             icon: Icon(Icons.visibility_off,
+                      //                 color: Get.theme.colorScheme.secondary),
+                      //             onPressed: () {
+                      //               regController.showButton1.value =
+                      //                   RxBool(true);
+                      //             },
+                      //           );
+                      //         }
+                      //       }),
+                      //     ),
+                      //   );
+                      // }),
+                      // const SizedBox(height: 18),
+                      // Obx(() {
+                      //   return TextFormField(
+                      //     onChanged: (value) {
+                      //       _pass2 = value;
+                      //     },
+                      //     onSaved: (value) {
+                      //       _pass2 = value!;
+                      //     },
+                      //     validator: (value) {
+                      //       if (value != null && value.isNotEmpty) {
+                      //         if (value.length >= 6) {
+                      //           _passOk = true;
+                      //           return null;
+                      //         } else {
+                      //           _passOk = false;
+                      //           return "bukan password yang valid";
+                      //         }
+                      //       } else {
+                      //         _passOk = false;
+                      //         return "isi kata sandi";
+                      //       }
+                      //     },
+                      //     keyboardType: TextInputType.text,
+                      //     obscureText: regController.showButton2.value.isTrue
+                      //         ? true
+                      //         : false,
+                      //     decoration: InputDecoration(
+                      //       prefixIcon: const Icon(Icons.password),
+                      //       // icon: const Icon(Icons.password),
+                      //       label: Text('Password'.tr),
+                      //       //hintText: 'Sandi',
+                      //       //helperText: 'password/kode',
+                      //       //counterText: '0 characters',
+                      //       //border: const OutlineInputBorder(),
+                      //       suffixIcon: Obx(() {
+                      //         if (regController.showButton2.value.isTrue) {
+                      //           return IconButton(
+                      //             padding: EdgeInsets.zero,
+                      //             icon: Icon(Icons.visibility,
+                      //                 color: Get.theme.colorScheme.secondary),
+                      //             onPressed: () {
+                      //               regController.showButton2.value =
+                      //                   RxBool(false);
+                      //             },
+                      //           );
+                      //         } else {
+                      //           return IconButton(
+                      //             padding: EdgeInsets.zero,
+                      //             icon: Icon(Icons.visibility_off,
+                      //                 color: Get.theme.colorScheme.secondary),
+                      //             onPressed: () {
+                      //               regController.showButton2.value =
+                      //                   RxBool(true);
+                      //             },
+                      //           );
+                      //         }
+                      //       }),
+                      //     ),
+                      //   );
+                      // }),
                       const SizedBox(height: 18),
                       Container(
                           // width: formWidth2(Get.width),
@@ -339,88 +338,43 @@ class ProfileCustomer extends StatelessWidget {
                                     child: Icon(Icons.chevron_right, size: 30)),
                               ])),
                       const SizedBox(height: 18),
-                      Obx(
-                        () => custController.custIsLoaded.value
-                            ? Container(
-                                width: 150,
-                                //padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: DropdownMenu<String>(
-                                  width: 150,
-                                  label: const Text('Pekerjaan'),
-                                  inputDecorationTheme:
-                                      const InputDecorationTheme(
-                                    isDense: false,
-                                    floatingLabelAlignment:
-                                        FloatingLabelAlignment.start,
-                                  ),
-                                  initialSelection:
-                                      custController.initPekerjaan,
-                                  onSelected: (String? value) {
-                                    custController.pekerjaanCtrl.text = value!;
-                                    custController.pekerjaan.value = value;
-                                  },
-                                  dropdownMenuEntries: custController
-                                      .listPerkerjaan
-                                      .map<DropdownMenuEntry<String>>(
-                                          (String value) {
-                                    return DropdownMenuEntry<String>(
-                                        value: value, label: value);
-                                  }).toList(),
-                                ),
-                              )
-                            : Container(),
-                      ),
+                      Container(
+                          // width: formWidth2(Get.width),
+                          height: 35,
+                          decoration:
+                              BoxDecoration(color: Get.theme.primaryColor),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text('     Peternakan',
+                                    style: Get.theme.textTheme.titleMedium!
+                                        .copyWith(color: Colors.white)),
+                                InkWell(
+                                    onTap: () {
+                                      Get.to(ProfilePeternak());
+                                    },
+                                    child: Icon(Icons.chevron_right, size: 30)),
+                              ])),
                       const SizedBox(height: 18),
-                      Obx(() => custController.pekerjaan.value == 'Peternak'
-                          ? Container(
-                              // width: formWidth2(Get.width),
-                              height: 35,
-                              decoration:
-                                  BoxDecoration(color: Get.theme.primaryColor),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Text('     Peternakan',
-                                        style: Get.theme.textTheme.titleMedium!
-                                            .copyWith(color: Colors.white)),
-                                    InkWell(
-                                        onTap: () {
-                                          Get.to(ProfilePeternak());
-                                        },
-                                        child: Icon(Icons.chevron_right,
-                                            size: 30)),
-                                  ]))
-                          : Container()),
-                      const SizedBox(height: 18),
-                      Obx(
-                        () => custController.pekerjaan.value == 'Peternak'
-                            ? Container(
-                                // width: formWidth2(Get.width),
-                                height: 35,
-                                decoration: BoxDecoration(
-                                    color: Get.theme.primaryColor),
-                                child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Text('     Perbankan',
-                                          style: Get
-                                              .theme.textTheme.titleMedium!
-                                              .copyWith(color: Colors.white)),
-                                      InkWell(
-                                          onTap: () {
-                                            Get.to(ProfilePerbankan());
-                                          },
-                                          child: Icon(Icons.chevron_right,
-                                              size: 30)),
-                                    ]))
-                            : Container(),
-                      ),
+                      Container(
+                          // width: formWidth2(Get.width),
+                          height: 35,
+                          decoration:
+                              BoxDecoration(color: Get.theme.primaryColor),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text('     Perbankan',
+                                    style: Get.theme.textTheme.titleMedium!
+                                        .copyWith(color: Colors.white)),
+                                InkWell(
+                                    onTap: () {
+                                      Get.to(ProfilePerbankan());
+                                    },
+                                    child: Icon(Icons.chevron_right, size: 30)),
+                              ])),
                       const SizedBox(height: 38),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,

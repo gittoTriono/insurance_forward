@@ -4,7 +4,7 @@ class SppaPerluasanRisiko {
   String? namaPerluasanRisiko;
   double? rate;
   int? jumlahTertanggung;
-  int? nilaiPerlindungan;
+  double? nilaiPerlindungan;
   double? tambahanPremi;
   String? polisId;
   String? polisEndorsementId;
@@ -15,7 +15,7 @@ class SppaPerluasanRisiko {
     this.namaPerluasanRisiko = '',
     this.rate = 0,
     this.jumlahTertanggung = 0,
-    this.nilaiPerlindungan = 0,
+    this.nilaiPerlindungan = 0.0,
     this.tambahanPremi = 0,
     this.polisId = '',
     this.polisEndorsementId = '',
@@ -28,7 +28,7 @@ class SppaPerluasanRisiko {
       namaPerluasanRisiko: parsedJson['namaPerluasanRisiko'] as String?,
       rate: parsedJson['rate'].toDouble(),
       jumlahTertanggung: parsedJson['jumlahTertanggung'] as int?,
-      nilaiPerlindungan: parsedJson['nilaiPerlindungan'] as int?,
+      nilaiPerlindungan: parsedJson['nilaiPerlindungan'] as double?,
       tambahanPremi: parsedJson['tambahanPremi'].toDouble(),
       polisId: parsedJson['polisId'] as String?,
       polisEndorsementId: parsedJson['polisEndorsementId'] as String?,

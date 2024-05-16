@@ -59,19 +59,9 @@ class SppaDetail extends StatelessWidget {
         Container(
           height: 90,
           margin: EdgeInsets.all(16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text('${controller.loginController.check.value.userData.name}',
-                  style: Get.textTheme.labelSmall),
-              // Text(
-              //     '${controller.loginController.check.value.userData.userId}',
-              //     style: Get.textTheme.labelSmall),
-              Text(' - ${controller.loginController.check.value.roles}',
-                  style: Get.textTheme.labelSmall)
-            ],
-          ),
+          child: Text(
+              '${controller.loginController.check.value.userData.name} - ${controller.loginController.check.value.roles}',
+              style: Get.textTheme.labelSmall!.copyWith(color: Colors.white)),
         ),
       ]),
       body: SafeArea(
@@ -95,9 +85,22 @@ class SppaDetail extends StatelessWidget {
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                TextTitleMedium('Sppa Id ${thisSppaId}'),
-                                TextTitleMedium(
-                                    'Tanggal ${sppaController.sppaStatus.value.tglCreated}'),
+                                Row(
+                                  children: [
+                                    TextTitleMedium('Sppa ${thisSppaId}'),
+                                    sppaController
+                                            .sppaHeader.value.sppaId!.isNotEmpty
+                                        ? TextTitleMedium(
+                                            ' / No ${sppaController.sppaHeader.value.sppaId!}')
+                                        : Container(),
+                                  ],
+                                ),
+                                sppaController
+                                        .sppaStatus.value.initSubmitDt.isEmpty
+                                    ? TextTitleMedium(
+                                        'Dibuat ${sppaController.sppaStatus.value.tglCreated}')
+                                    : TextTitleMedium(
+                                        'Tanggal ${sppaController.sppaStatus.value.initSubmitDt}'),
                                 Obx(() => TextButton(
                                       onPressed: () {
                                         sppaController.dialogRiwayat();
@@ -163,13 +166,16 @@ class SppaDetail extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                          flex: 3,
+                          flex: 1,
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                    '${sppaController.sppaHeader.value.produkName} '),
+                                    '${sppaController.sppaHeader.value.produkName} ',
+                                    style: TextStyle(
+                                        color:
+                                            Get.theme.colorScheme.secondary)),
                                 Text(
                                     '${sppaController.sppaHeader.value.asuransiName} ')
                               ]),
@@ -177,7 +183,7 @@ class SppaDetail extends StatelessWidget {
                         Expanded(
                           flex: 1,
                           child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Column(
                                   children: [
@@ -189,7 +195,7 @@ class SppaDetail extends StatelessWidget {
                                 Obx(
                                   () => Column(
                                     children: [
-                                      TextBodySmall('Rate'),
+                                      TextBodySmall('Rate Dasar'),
                                       TextBodyMedium(prodController
                                               .selectedIsLoaded.value
                                           ? '${(prodController.selected.value.ratePremi! * 100).toStringAsFixed(2)} %'
@@ -210,7 +216,7 @@ class SppaDetail extends StatelessWidget {
                         child: Row(
                           children: [
                             Expanded(
-                                flex: 3,
+                                flex: 2,
                                 child: TextBodySmall('Perluasan Risiko')),
                             Expanded(flex: 1, child: TextBodySmall('Rate')),
                           ],
@@ -225,7 +231,7 @@ class SppaDetail extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 40, right: 10.0),
                         child: Wrap(
                             spacing: 20,
-                            runSpacing: 10,
+                            runSpacing: 5,
                             children: sppaController.listPerluasanRisikoSppa
                                 .map(
                                   (pr) => Row(
@@ -233,14 +239,14 @@ class SppaDetail extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Expanded(
-                                          flex: 3,
+                                          flex: 2,
                                           child: Text(pr.namaPerluasanRisiko!),
                                         ),
                                         Expanded(
                                           flex: 1,
                                           child: Text(
                                               '${(pr.rate! * 100).toStringAsFixed(3)} %',
-                                              textAlign: TextAlign.end),
+                                              textAlign: TextAlign.start),
                                         ),
                                       ]),
                                 )
@@ -250,35 +256,147 @@ class SppaDetail extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Obx(
-                () => Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                () => sppaController.totPertanggungan.value > 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            TextBodySmall('Total Pertanggungan'),
-                            TextBodyMedium(
-                                'Rp.  ${NumberFormat("#,###,###,###", "en_US").format(sppaController.sppaHeader.value.nilaiPertanggungan!).toString()}'),
-                          ]),
-                      Column(
-                        children: [
-                          TextBodySmall('Total Rate'),
-                          Text(
-                              '${(sppaController.sppaHeader.value.premiRate! * 100).toStringAsFixed(3)} %')
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          TextBodySmall('Total Premi'),
-                          TextBodyMedium(
-                              'Rp. ${NumberFormat("#,###,###,###", "en_US").format(sppaController.sppaHeader.value.premiAmount!).toString()}')
-                        ],
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Total Pertanggungan',
+                                        style: Get.theme.textTheme.bodySmall!
+                                            .copyWith(
+                                                color: Get.theme.colorScheme
+                                                    .secondary)),
+                                    Text(
+                                        'Rp.  ${NumberFormat("#,###,###,###", "en_US").format(sppaController.sppaHeader.value.nilaiPertanggungan!)}',
+                                        style: Get.theme.textTheme.bodyMedium),
+                                  ]),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Total Rate',
+                                      style: Get.theme.textTheme.bodySmall!
+                                          .copyWith(
+                                              color: Get.theme.colorScheme
+                                                  .secondary)),
+                                  Text(
+                                      '${(sppaController.sppaHeader.value.premiRate! * 100).toStringAsFixed(3)} %')
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Premi',
+                                      style: Get.theme.textTheme.bodySmall!
+                                          .copyWith(
+                                              color: Get.theme.colorScheme
+                                                  .secondary)),
+                                  TextBodyMedium(
+                                      'Rp. ${NumberFormat("#,###,###,###", "en_US").format(sppaController.sppaHeader.value.premiAmount!).toString()}')
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       )
-                    ],
-                  ),
-                ),
+                    : Container(),
+              ),
+              SizedBox(height: 10),
+              Obx(
+                () => sppaController.nilaiAnakan.value > 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Pertanggungan Anakan',
+                                        style: Get.theme.textTheme.bodySmall!
+                                            .copyWith(
+                                                color: Get.theme.colorScheme
+                                                    .secondary)),
+                                    TextBodyMedium(
+                                        'Rp.  ${NumberFormat("#,###,###,###", "en_US").format(sppaController.nilaiAnakan.value)}'),
+                                  ]),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Rate',
+                                      style: Get.theme.textTheme.bodySmall!
+                                          .copyWith(
+                                              color: Get.theme.colorScheme
+                                                  .secondary)),
+                                  Text(
+                                      '${(sppaController.rateAnakan * 100).toStringAsFixed(3)} %')
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Premi Anakan',
+                                      style: Get.theme.textTheme.bodySmall!
+                                          .copyWith(
+                                              color: Get.theme.colorScheme
+                                                  .secondary)),
+                                  TextBodyMedium(
+                                      'Rp. ${NumberFormat("#,###,###,###", "en_US").format(sppaController.premiAnakan)}')
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    : Container(),
+              ),
+              SizedBox(height: 10),
+              SizedBox(height: 10),
+              Obx(
+                () => sppaController.nilaiAnakan.value > 0
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Text(''),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Text('Total Premi'),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Text(
+                                  'Rp. ${NumberFormat("#,###,###,###", "en_US").format(sppaController.sppaHeader.value.premiAmount! + sppaController.premiAnakan)}',
+                                  style: TextStyle(
+                                      color: Get.theme.colorScheme.secondary)),
+                            )
+                          ],
+                        ),
+                      )
+                    : Container(),
               ),
               SizedBox(height: 10),
               Container(
@@ -431,16 +549,16 @@ class SppaDetail extends StatelessWidget {
                                       TextTitleMedium('Ear Tag ${e.earTag}'),
                                       TextBodyMedium(
                                           '${e.jenis} / ${e.kelamin}'),
-                                      TextBodyMedium('tgl lahir ${e.tglLahir}')
                                     ]),
                                 Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      // TextBodyMedium(
+                                      //     'Nilai Perolehan Rp. ${NumberFormat("#,###,###,###", "en_US").format(e.hargaPerolehan).toString()}'),
+                                      TextBodyMedium('tgl lahir ${e.tglLahir}'),
                                       TextBodyMedium(
-                                          'Nilai Perolehan Rp. ${NumberFormat("#,###,###,###", "en_US").format(e.hargaPerolehan).toString()}'),
-                                      TextBodyMedium(
-                                          'Nilai Pertanggungan Rp. ${NumberFormat("#,###,###,###", "en_US").format(e.nilaiPertanggungan).toString()}'),
+                                          'Harga Pertanggungan Rp. ${NumberFormat("#,###,###,###", "en_US").format(e.nilaiPertanggungan).toString()}'),
                                     ]),
                                 Icon(
                                   Icons.photo,
@@ -517,8 +635,11 @@ class SppaDetail extends StatelessWidget {
                         visible: sppaController.editBtnVis.value,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.toNamed('/sppa/main',
-                                arguments: {'sppaId': thisSppaId});
+                            Get.toNamed('/sppa/main', arguments: {
+                              'sppaId': thisSppaId,
+                              'prodId':
+                                  sppaController.sppaHeader.value.produkCode
+                            });
                           },
                           child: Text('Edit',
                               style: TextStyle(color: Colors.white)),

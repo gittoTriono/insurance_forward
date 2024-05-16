@@ -56,7 +56,7 @@ class SppaView extends StatelessWidget {
         // print('helper length ${sppaController.listHelperSppa.length}');
       }
     } else if (displayStatus == 'Submit') {
-      if (controller.loginController.check.value.roles == 'ROLE_ADMIN') {
+      if (controller.loginController.check.value.roles == 'ROLE_SALES') {
         sppaController.listHelperSppa.addAll(controller.listAktifSppa
             .where((p0) => controller.salesSubmit.contains(p0.statusSppa))
             .toList());
@@ -102,7 +102,8 @@ class SppaView extends StatelessWidget {
                   //     '${controller.loginController.check.value.userData.userId}',
                   //     style: Get.textTheme.labelSmall),
                   Text(' - ${controller.loginController.check.value.roles}',
-                      style: Get.textTheme.labelSmall)
+                      style: Get.textTheme.labelSmall!
+                          .copyWith(color: Colors.white))
                 ],
               ),
             ),
@@ -125,90 +126,116 @@ class SppaView extends StatelessWidget {
                             children: sppaController.listHelperSppa
                                 .map((e) => Column(
                                       children: [
-                                        Container(
-                                            margin: EdgeInsets.only(left: 20),
-                                            padding: EdgeInsets.all(10),
-                                            width: formWidth(Get.width),
-                                            decoration: BoxDecoration(
-                                                // color: Get
-                                                //     .theme.colorScheme.surface,
-                                                border: Border.all(
-                                                  width: 0.25,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                // spacing: 10,
-                                                // runSpacing: 10,
-                                                children: [
-                                                  Column(
-                                                    children: [
-                                                      IconButton(
-                                                          onPressed: () {
-                                                            // print(
-                                                            //     'on pressed go get ${e.id}');
-                                                            Get.toNamed(
-                                                                '/sppa/sppaDetail',
-                                                                arguments: {
-                                                                  'sppaId': e.id
-                                                                });
-                                                          },
-                                                          icon: Icon(
-                                                              Icons
-                                                                  .document_scanner,
-                                                              size: 50,
-                                                              color: Get
+                                        InkWell(
+                                          onTap: () {
+                                            // print(
+                                            //     'on pressed go get ${e.id}');
+                                            Get.toNamed('/sppa/sppaDetail',
+                                                arguments: {'sppaId': e.id});
+                                          },
+                                          child: Container(
+                                              margin: EdgeInsets.only(left: 20),
+                                              padding: EdgeInsets.all(10),
+                                              width: formWidth(Get.width),
+                                              decoration: BoxDecoration(
+                                                  // color: Get
+                                                  //     .theme.colorScheme.surface,
+                                                  border: Border.all(
+                                                    width: 0.25,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  // spacing: 10,
+                                                  // runSpacing: 10,
+                                                  children: [
+                                                    Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 5,
+                                                              horizontal: 10),
+                                                      color: Get
+                                                          .theme
+                                                          .colorScheme
+                                                          .secondary,
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text('SPPA',
+                                                              style: Get
                                                                   .theme
-                                                                  .colorScheme
-                                                                  .secondary)),
-                                                    ],
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      e.sppaId == ''
-                                                          ? TextBodyMedium(
-                                                              'Id ${e.id!}')
-                                                          : TextBodyMedium(
-                                                              'Customer Id ${e.sppaId!}'),
-                                                      Text(
-                                                          '${sppaController.sppaStatusDesc(e.statusSppa!)}',
-                                                          style: Get
-                                                              .theme
-                                                              .textTheme
-                                                              .bodySmall!
-                                                              .copyWith(
-                                                                  color: Get
-                                                                      .theme
-                                                                      .colorScheme
-                                                                      .secondary)),
-                                                      TextBodyMedium(
-                                                          e.customerId!),
-                                                      TextBodyMedium(
-                                                          e.produkName!),
-                                                    ],
-                                                  ),
-                                                  Column(
+                                                                  .textTheme
+                                                                  .headlineSmall!
+                                                                  .copyWith(
+                                                                      color: Colors
+                                                                          .white)),
+                                                          // e.sppaId == ''
+                                                          //     ? TextBodyMedium(
+                                                          //         'Id ${e.id!}')
+                                                          //     : TextBodyMedium(
+                                                          //         'Customer Id ${e.sppaId!}'),
+
+                                                          Text(e.id!,
+                                                              style: Get
+                                                                  .theme
+                                                                  .textTheme
+                                                                  .headlineSmall!
+                                                                  .copyWith(
+                                                                      color: Colors
+                                                                          .white))
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        TextBodySmall('Premi'),
-                                                        TextBodySmall(
-                                                            'Rp. ${NumberFormat("#,###,###,###", "en_US").format(e.premiAmount)}'),
-                                                        TextBodySmall('Tenor'),
-                                                        SizedBox(
-                                                          height: 5,
-                                                        ),
-                                                        TextBodySmall(
-                                                            '${e.tenor} bulan'),
-                                                      ]),
-                                                ])),
+                                                        e.sppaId!.isNotEmpty
+                                                            ? Text(
+                                                                'No ${e.sppaId}')
+                                                            : Container(),
+                                                        Text(
+                                                            '${sppaController.sppaStatusDesc(e.statusSppa!)}',
+                                                            style: Get
+                                                                .theme
+                                                                .textTheme
+                                                                .bodyLarge!
+                                                                .copyWith(
+                                                                    color: Get
+                                                                        .theme
+                                                                        .colorScheme
+                                                                        .secondary)),
+                                                        TextBodyMedium(
+                                                            e.customerId!),
+                                                        TextBodyMedium(
+                                                            e.produkName!),
+                                                      ],
+                                                    ),
+                                                    Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          TextBodySmall(
+                                                              'Premi'),
+                                                          TextBodySmall(
+                                                              'Rp. ${NumberFormat("#,###,###,###", "en_US").format(e.premiAmount)}'),
+                                                          TextBodySmall(
+                                                              'Tenor'),
+                                                          SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          TextBodySmall(
+                                                              '${e.tenor} bulan'),
+                                                        ]),
+                                                  ])),
+                                        ),
                                         SizedBox(height: 10)
                                       ],
                                     ))

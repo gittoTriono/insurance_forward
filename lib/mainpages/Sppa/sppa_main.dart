@@ -34,7 +34,7 @@ class SppaMaintenance extends StatelessWidget {
     }
 
     print(
-        'role ${loginController.check.value.roles} userId: ${loginController.check.value.userData.userId} ');
+        'role ${loginController.check.value.roles} userId: ${loginController.check.value.userData.name} ');
 
     // TODO move this section to controller initSppaMainPage ()
     if (loginController.check.value.roles == 'ROLE_SALES') {
@@ -51,14 +51,17 @@ class SppaMaintenance extends StatelessWidget {
       // load existing sppa for editing
       sppaController.customerController.value.text =
           sppaController.sppaHeader.value.customerId!;
+      // print('set name ');
       sppaController.produkController.text =
           sppaController.sppaHeader.value.produkName!;
+      // print('set product');
       sppaController.initProduct = sppaController
           .appProdukController.listAllProdukAsuransi
           .firstWhere((e) =>
               e.productName == sppaController.sppaHeader.value.produkName);
-      sppaController.produkController.text =
-          sppaController.initProduct!.productName!;
+      // print('set initProd');
+      // sppaController.produkController.text =
+      //     sppaController.initProduct!.productName!;
       //print('proof ${sppaController.initProduct!.productName}');
     } else if (theProd != '') {
       // buy from product catalog
@@ -74,8 +77,8 @@ class SppaMaintenance extends StatelessWidget {
       sppaController.selectProduct(sppaController.initProduct!);
     } else {
       // buy from dashboard
-      print(
-          'sppa main : new Sppa by ${loginController.check.value.userData.userId} no product selected');
+      // print(
+      //     'sppa main : new Sppa by ${loginController.check.value.userData.userId} no product selected');
       sppaController.isNewSppa.value = true;
       sppaController.customerController.value.text =
           loginController.check.value.userData.userId;
@@ -93,7 +96,12 @@ class SppaMaintenance extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sppa (tahap 1 dari 3)'),
-        actions: [Text('User: ${loginController.check.value.userId}')],
+        actions: [
+          Text(
+            'User: ${loginController.check.value.userData.userId}',
+            style: TextStyle(color: Colors.white),
+          )
+        ],
       ),
       body: Form(
         key: sppaController.sppaFormKey,

@@ -30,6 +30,7 @@ class Polis {
   String invoiceNo;
   String tglInvoice;
   int tglInvoiceMillis;
+  double invoiceAmount;
   String tglPaymentDue;
   int tglPaymentDueMillis;
   String tglPayment;
@@ -77,6 +78,7 @@ class Polis {
     this.nilaiPertanggunganSppa = 0,
     this.tenorSppa = 0,
     this.invoiceNo = '',
+    this.invoiceAmount = 0,
     this.tglInvoice = '',
     this.tglInvoiceMillis = 0,
     this.tglPaymentDue = '',
@@ -112,7 +114,8 @@ class Polis {
       kantorCabang: parsedJson['kantorCabang'] as String,
       jenisObject: parsedJson['jenisObject'] as String,
       alamatKandang: parsedJson['alamatKandang'] as String,
-      hargaPertanggungan: parsedJson['hargaPertanggungan'] as double,
+      hargaPertanggungan:
+          parsedJson['hargaPertanggungan'].toDouble(), // as double,
       premiRate: parsedJson['premiRate'] as double,
       premiAmount: parsedJson['premiAmount'] as double,
       biayaAdministrasi: parsedJson['biayaAdministrasi'] as double,
@@ -125,9 +128,11 @@ class Polis {
       produkCode: parsedJson['produkCode'] as String,
       kategori: parsedJson['kategori'] as String,
       subKategori: parsedJson['subKategori'] as String,
-      nilaiPertanggunganSppa: parsedJson['nilaiPertanggunganSppa'] as double,
+      nilaiPertanggunganSppa:
+          parsedJson['nilaiPertanggunganSppa'].toDouble(), // as double,
       tenorSppa: parsedJson['tenorSppa'] as int,
       invoiceNo: parsedJson['invoiceNo'] as String,
+      invoiceAmount: parsedJson['invoiceAmount'] as double,
       tglInvoice: parsedJson['tglInvoice'] as String,
       tglInvoiceMillis: parsedJson['tglInvoiceMillis'] as int,
       tglPaymentDue: parsedJson['tglPaymentDue'] as String,
@@ -183,6 +188,8 @@ class Polis {
         'tenorSppa': tenorSppa,
         'invoiceNo': invoiceNo,
         'tglInvoice': tglInvoice,
+        'invoiceAmount': invoiceAmount,
+
         'tglInvoiceMillis': tglInvoiceMillis,
         'tglPaymentDue': tglPaymentDue,
         'tglPaymentDueMillis': tglPaymentDueMillis,
